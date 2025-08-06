@@ -1,0 +1,53 @@
+<div class="contenedor">
+    <div class="cerrar-sesion">
+  <button (click)="cerrarSesion()">Cerrar sesión</button>
+</div>
+  <h1>Registro de Participación</h1>
+
+  <div class="grupo">
+    <label for="actividad-select">Seleccione actividad</label>
+    <select id="actividad-select" (change)="seleccionarActividad($event)">
+      <option value="">--Seleccione--</option>
+      <option *ngFor="let act of actividades" [value]="act.id">{{ act.nombre }}</option>
+    </select>
+  </div>
+
+  <div *ngIf="actividadSeleccionadaId !== null">
+    <h2>Estudiantes inscritos</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Identidad</th>
+          <th>Estado de participación</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let estudiante of inscritosPorActividad[actividadSeleccionadaId]">
+          <td>{{ estudiante.nombre }}</td>
+          <td>{{ estudiante.identidad }}</td>
+          <td>{{ estudiante.estado }}</td>
+          <td>
+            <button 
+              class="btn completar" 
+              [disabled]="estudiante.estado === 'Validado'" 
+              (click)="marcarCompletado(estudiante)">
+              Marcar como completado
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  <div class="enlaces-rapidos">
+    
+    <div class="botones">
+      <a routerLink="/principal">Inicio</a>
+      <a routerLink="/actividades">Gestión de actividades</a>
+    </div>
+  </div>
+</div>

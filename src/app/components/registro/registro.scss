@@ -1,0 +1,127 @@
+.contenedor {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  font-family: 'Segoe UI', sans-serif;
+
+  h1 {
+    text-align: center;
+    color: #007bff;
+    margin-bottom: 2rem;
+  }
+
+  .grupo {
+    margin-bottom: 1.5rem;
+
+    label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    select {
+      width: 100%;
+      padding: 0.6rem;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+  }
+
+  h2 {
+    margin-bottom: 1rem;
+    color: #333;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+
+    thead {
+      background-color: #007bff;
+      color: white;
+    }
+
+    th, td {
+      padding: 0.8rem 1rem;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+
+    td:last-child {
+      white-space: nowrap;
+    }
+
+    .btn.completar {
+      background-color: #28a745;
+      border: none;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background-color 0.3s;
+
+      &:disabled {
+        background-color: #94d3a2;
+        cursor: default;
+      }
+
+      &:not(:disabled):hover {
+        background-color: #218838;
+      }
+    }
+  }
+
+  .enlaces-rapidos {
+    margin-top: 3rem;
+    text-align: center;
+
+    h2 {
+      margin-bottom: 1rem;
+      color: #007bff;
+    }
+
+    .botones {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+
+      a {
+        padding: 0.8rem 1.5rem;
+        background: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: background 0.3s;
+
+        &:hover {
+          background: #0056b3;
+        }
+      }
+    }
+  }
+}
+.cerrar-sesion {
+  text-align: right;
+  margin-bottom: 1rem;
+
+  button {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #b52a3a;
+    }
+  }
+}

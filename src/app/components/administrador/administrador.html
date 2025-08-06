@@ -1,0 +1,35 @@
+<div class="contenedor">
+    <div class="cerrar-sesion">
+  <button (click)="cerrarSesion()">Cerrar sesión</button>
+</div>
+  <h1>Panel de Resumen</h1>
+
+  <div class="resumen">
+    <div class="tarjeta total">
+      <h2>{{ totalActividades }}</h2>
+      <p>Actividades creadas</p>
+    </div>
+    <div class="tarjeta estudiantes">
+      <h2>{{ totalEstudiantes }}</h2>
+      <p>Estudiantes inscritos</p>
+    </div>
+  </div>
+
+  <div class="horas-mensuales">
+    <h2>Horas generadas por mes</h2>
+    <ul>
+      <li *ngFor="let item of horasPorMes">
+        <strong>{{ item.mes }}:</strong> {{ item.horas }} horas
+      </li>
+    </ul>
+  </div>
+
+  
+  <div class="enlaces-rapidos">
+ 
+    <div class="botones">
+      <a routerLink="/actividades">Gestión de actividades</a>
+      <a routerLink="/registro">Registro de participación</a>
+    </div>
+  </div>
+</div>

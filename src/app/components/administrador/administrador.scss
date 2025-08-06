@@ -1,0 +1,110 @@
+.contenedor {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 2rem;
+  font-family: 'Segoe UI', sans-serif;
+
+  h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #007bff;
+  }
+
+  .resumen {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 2rem;
+
+    .tarjeta {
+      background: #f1f1f1;
+      border-radius: 10px;
+      padding: 2rem;
+      text-align: center;
+      width: 40%;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+
+      h2 {
+        margin: 0;
+        font-size: 2.5rem;
+        color: #007bff;
+      }
+
+      p {
+        margin-top: 0.5rem;
+        font-size: 1.2rem;
+      }
+    }
+
+    .total {
+      background: #e3f2fd;
+    }
+
+    .estudiantes {
+      background: #e8f5e9;
+    }
+  }
+
+  .horas-mensuales {
+    background: #fefefe;
+    padding: 1.5rem;
+    border-left: 5px solid #17a2b8;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+
+    h2 {
+      margin-top: 0;
+      color: #17a2b8;
+    }
+
+    ul {
+      list-style: none;
+      padding-left: 0;
+
+      li {
+        margin-bottom: 0.5rem;
+      }
+    }
+  }
+
+  .enlaces-rapidos {
+    text-align: center;
+
+    .botones {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+
+      a {
+        padding: 0.8rem 1.5rem;
+        background: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: background 0.3s;
+
+        &:hover {
+          background: #0056b3;
+        }
+      }
+    }
+  }
+}
+.cerrar-sesion {
+  text-align: right;
+  margin-bottom: 1rem;
+
+  button {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #b52a3a;
+    }
+  }
+}
