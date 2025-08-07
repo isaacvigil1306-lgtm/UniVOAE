@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
   imports: [CommonModule, RouterModule],
 })
 export class Historial {
+   estudiante = 'David Salvador'; 
   historialActividades = [
     {
       nombre: 'Reforestación en el parque',

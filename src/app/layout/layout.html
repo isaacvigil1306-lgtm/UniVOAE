@@ -1,0 +1,36 @@
+
+<!-- layout.component.html -->
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <i class="fas fa-user-circle logo"></i>
+      <p class="username">{{ estudiante }}</p>
+    </div>
+
+    <nav class="sidebar-menu">
+      <a routerLink="/principal" class="menu-item" title="Inicio">
+        <i class="fas fa-home"></i>
+        <span>Inicio</span>
+      </a>
+      <a routerLink="/calendario" class="menu-item" title="Calendario">
+        <i class="fas fa-calendar-alt"></i>
+        <span>Calendario</span>
+      </a>
+      <a routerLink="/historial" class="menu-item" title="Historial">
+        <i class="fas fa-history"></i>
+        <span>Historial</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button (click)="cerrarSesion()" class="btn-logout" title="Cerrar sesión">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Cerrar sesión</span>
+      </button>
+    </div>
+  </aside>
+
+  <main div="main-content" style="margin-left: 70px; width: 100%">
+    <router-outlet></router-outlet>
+  </main>
+</div>

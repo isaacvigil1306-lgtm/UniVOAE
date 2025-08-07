@@ -1,0 +1,35 @@
+<!-- layout-admin.component.html -->
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <i class="fas fa-user-shield logo"></i>
+      <p class="username">Administrador</p>
+    </div>
+
+    <nav class="sidebar-menu">
+      <a routerLink="/administrador" class="menu-item" title="Dashboard">
+        <i class="fas fa-tachometer-alt"></i>
+        <span>Dashboard</span>
+      </a>
+      <a routerLink="/actividades" class="menu-item" title="Actividades">
+        <i class="fas fa-users"></i>
+        <span>Actividades</span>
+      </a>
+      <a routerLink="/registro" class="menu-item" title="Listas">
+        <i class="fas fa-file-alt"></i>
+        <span>Listas</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button (click)="cerrarSesion()" class="btn-logout" title="Cerrar sesión">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Cerrar sesión</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main-content" >
+    <router-outlet></router-outlet>
+  </main>
+</div>

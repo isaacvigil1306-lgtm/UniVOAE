@@ -1,48 +1,42 @@
+
 <div class="contenedor">
-    <div class="cerrar-sesion">
-  <button (click)="cerrarSesion()">Cerrar sesión</button>
-</div>
-  <h1>¡Bienvenido/a, {{ estudiante }}!</h1>
 
-  <!-- Horas acumuladas -->
-  <div class="resumen-horas">
-    <div class="caja">
-      <h3>Horas Acumuladas</h3>
-      <p>{{ horasAcumuladas }} horas</p>
-    </div>
-    <div class="caja">
-      <h3>Horas Pendientes</h3>
-      <p>{{ horasPendientes }} horas</p>
-    </div>
-  </div>
 
-  <!-- Última actividad -->
-  <div class="ultima-actividad">
-    <h2>Última actividad realizada</h2>
-    <p><strong>{{ ultimaActividad.titulo }}</strong> - {{ ultimaActividad.fecha }}</p>
-  </div>
 
-  <!-- Actividades próximas -->
-  <div class="actividades">
-    <h2>Actividades próximas</h2>
-    <div class="cards">
-      <div class="card" *ngFor="let act of actividadesProximas">
-        <h4>{{ act.titulo }}</h4>
-        <p><strong>Fecha:</strong> {{ act.fecha }}</p>
-        <p><strong>Lugar:</strong> {{ act.lugar }}</p>
+  <!-- Contenido -->
+  <main class="contenido">
+    <div class="contenido-wrapper">
+      <h1 class="bienvenida">Bienvenido/a, {{ estudiante }}!</h1>
+
+      <!-- Horas acumuladas -->
+      <div class="resumen-horas">
+        <div class="caja">
+          <h3>Horas Acumuladas</h3>
+          <p>{{ horasAcumuladas }} horas</p>
+        </div>
+        <div class="caja">
+          <h3>Horas Pendientes</h3>
+          <p>{{ horasPendientes }} horas</p>
+        </div>
+      </div>
+
+      <!-- Última actividad -->
+      <div class="ultima-actividad">
+        <h2>Última actividad realizada</h2>
+        <p><strong>{{ ultimaActividad.titulo }}</strong> - {{ ultimaActividad.fecha }}</p>
+      </div>
+
+      <!-- Actividades próximas -->
+      <div class="actividades">
+        <h2>Actividades próximas</h2>
+        <div class="cards">
+          <div class="card" *ngFor="let act of actividadesProximas">
+            <h4>{{ act.titulo }}</h4>
+            <p><strong>Fecha:</strong> {{ act.fecha }}</p>
+            <p><strong>Lugar:</strong> {{ act.lugar }}</p>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-
- 
-  <div class="enlaces-rapidos">
-   
-    <div class="botones">
-      <a routerLink="/calendario">Calendario</a>
-      <a routerLink="/historial">Historial</a>
-
-    </div>
-
-    
-  </div>
+  </main>
 </div>

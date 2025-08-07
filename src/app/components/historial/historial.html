@@ -1,39 +1,34 @@
-<div class="contenedor">
-    <div class="cerrar-sesion">
-  <button (click)="cerrarSesion()">Cerrar sesión</button>
-</div>
-  <h1>Historial de Actividades</h1>
 
-  <table class="tabla-historial">
-    <thead>
-      <tr>
-        <th>Nombre de la Actividad</th>
-        <th>Fecha</th>
-        <th>Horas</th>
-        <th>Estado</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let actividad of historialActividades">
-        <td>{{ actividad.nombre }}</td>
-        <td>{{ actividad.fecha }}</td>
-        <td>{{ actividad.horas }}</td>
-        <td>
-          <span class="estado" [ngClass]="actividad.estado.toLowerCase()">
-            {{ actividad.estado }}
-          </span>
-        </td>
-      </tr>
-    </tbody>
-  </table>
 
- 
-  <div class="enlaces-rapidos">
-    
-    <div class="botones">
-      <a routerLink="/principal">Inicio</a>
-      <a routerLink="/calendario">Calendario</a>
-      
+  <!-- Contenido -->
+  <main class="contenido">
+    <div class="contenedor">
+      <h1>Historial de Actividades</h1>
+
+      <table class="tabla-historial">
+        <thead>
+          <tr>
+            <th>Nombre de la Actividad</th>
+            <th>Fecha</th>
+            <th>Horas</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let actividad of historialActividades">
+            <td>{{ actividad.nombre }}</td>
+            <td>{{ actividad.fecha }}</td>
+            <td>{{ actividad.horas }}</td>
+            <td>
+              <span class="estado" [ngClass]="actividad.estado.toLowerCase()">
+                {{ actividad.estado }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+   
     </div>
-  </div>
-</div>
+  </main>
+

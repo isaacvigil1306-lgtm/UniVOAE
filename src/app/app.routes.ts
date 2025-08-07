@@ -1,63 +1,76 @@
 import { Routes } from '@angular/router';
 import { Inscripcion } from './components/inscripcion/inscripcion';
+import { Login } from './components/login/login';
+import { Calendario } from './components/calendario/calendario';
+import { Historial } from './components/historial/historial';
+import { Layout } from './layout/layout';
 
 export const routes: Routes = [
-    {
-        path: '',
+  // RUTA SIN SIDEBAR
+  {
+    path: '',
+    loadComponent: () =>
+      import('./components/login/login').then((m) => m.Login),
+  },
+ 
 
-        loadComponent: () => 
-            import('./components/login/login').then((m) => m.Login),
-
-    },
-    {
+  // RUTAS CON SIDEBAR (anidadas bajo layout)
+  {
+    path: '',
+    loadComponent: () =>
+      import('./layout/layout').then((m) => m.Layout), // TU LAYOUT
+    children: [
+      {
         path: 'principal',
-
-        loadComponent: () => 
-            import('./components/principal/principal').then((m) => m.Principal),
-
-    },
-    {
+        loadComponent: () =>
+          import('./components/principal/principal').then((m) => m.Principal),
+      },
+      {
         path: 'calendario',
-
-        loadComponent: () => 
-            import('./components/calendario/calendario').then((m) => m.Calendario),
-
-    },
-    {
+        loadComponent: () =>
+          import('./components/calendario/calendario').then((m) => m.Calendario),
+      },
+      {
         path: 'historial',
-
-        loadComponent: () => 
-            import('./components/historial/historial').then((m) => m.Historial),
-
-    },
-    {
+        loadComponent: () =>
+          import('./components/historial/historial').then((m) => m.Historial),
+      },
+      {
         path: 'inscripcion',
-
-        loadComponent: () => 
-            import('./components/inscripcion/inscripcion').then((m) => Inscripcion),
-
-    },
-    {
+        loadComponent: () =>
+          import('./components/inscripcion/inscripcion').then((m) => m.Inscripcion),
+      },
+     
+      
+    ],
+  },
+  {
+  path: '',
+  loadComponent: () =>
+    import('./layout-admin/layout-admin').then((m) => m.LayoutAdmin),
+  children: [
+     {
+    path: 'registro',
+    loadComponent: () =>
+      import('./components/registro/registro').then((m) => m.Registro),
+  },
+ {
         path: 'administrador',
-
-        loadComponent: () => 
-            import('./components/administrador/administrador').then((m) => m.Administrador),
-
-    },
-    {
+        loadComponent: () =>
+          import('./components/administrador/administrador').then((m) => m.Administrador),
+      },
+      {
         path: 'actividades',
-
-        loadComponent: () => 
-            import('./components/actividades/actividades').then((m) => m.Actividades),
-
-    },
+        loadComponent: () =>
+          import('./components/actividades/actividades').then((m) => m.Actividades),
+      },
     {
-        path: 'registro',
+      path: '',
+      redirectTo: 'dashboard',
+      pathMatch: 'full'
+    }
+  ]
+}
 
-        loadComponent: () => 
-            import('./components/registro/registro').then((m) => m.Registro),
-
-    },   
-    
-
+  
 ];

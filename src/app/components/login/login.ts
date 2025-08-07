@@ -26,4 +26,9 @@ export class Login {
       this.errorMessage = 'Usuario o contraseña incorrectos.';
     }
   }
+  togglePassword() {
+  const passwordInput = document.getElementById('password') as HTMLInputElement;
+  passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+}
+
 }
