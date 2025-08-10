@@ -1,30 +1,40 @@
 <div class="contenedor">
 
-  <h1>Calendario de Actividades</h1>
+ <h1>Calendario de Actividades</h1>
 
-  <div class="calendario">
-    <div
-      class="dia"
-      *ngFor="let actividad of actividades"
-      (click)="seleccionarActividad(actividad.fecha)"
-    >
-      <span class="fecha">{{ actividad.fecha }}</span>
-      <span class="titulo">{{ actividad.titulo }}</span>
-    </div>
+<div class="navegacion-meses">
+  <button (click)="cambiarMes(-1)">&#8592;</button>
+  <span>{{ obtenerNombreMes(mesActual) }} {{ anioActual }}</span>
+  <button (click)="cambiarMes(1)">&#8594;</button>
+
+  <button class="btn-hoy" (click)="irAHoy()">Hoy</button>
+
+  <select [(ngModel)]="filtro" (change)="generarCalendario()">
+    <option value="todas">Todas</option>
+    <option value="futuras">Solo futuras</option>
+  </select>
+</div>
+
+<div class="calendario-grid">
+  <div class="dia-header" *ngFor="let dia of diasSemana">{{ dia }}</div>
+
+ <div
+  class="celda-dia"
+  *ngFor="let dia of calendarioDias"
+  [class.con-actividad]="tieneActividad(dia)"
+  [class.dia-hoy]="esHoy(dia)"
+  [class.dia-pasado]="esPasado(dia)"
+  (click)="seleccionarActividad(dia)"
+>
+  <div class="numero-dia">{{ dia.getDate() }}</div>
+
+  <div class="actividad" *ngFor="let act of actividadesDelDia(dia)">
+    {{ act.titulo }}
   </div>
+</div>
 
-  <!-- Detalles de actividad seleccionada -->
-  <div *ngIf="actividadSeleccionada" class="detalles">
-    <h2>Detalles de la actividad</h2>
-    <p><strong>Nombre:</strong> {{ actividadSeleccionada.titulo }}</p>
-    <p><strong>Fecha:</strong> {{ actividadSeleccionada.fecha }}</p>
-    <p><strong>Lugar:</strong> {{ actividadSeleccionada.lugar }}</p>
-    <p><strong>Cupo:</strong> {{ actividadSeleccionada.cupo }}</p>
-    <p><strong>Horas:</strong> {{ actividadSeleccionada.horas }}</p>
-    <p><strong>Requiere pago:</strong> {{ actividadSeleccionada.pago ? 'Sí' : 'No' }}</p>
 
-    <a routerLink="/inscripcion" class="btn-inscribirse">Inscribirse</a>
-  </div>
+
 
  
 

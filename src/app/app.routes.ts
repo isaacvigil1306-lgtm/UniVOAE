@@ -4,15 +4,18 @@ import { Login } from './components/login/login';
 import { Calendario } from './components/calendario/calendario';
 import { Historial } from './components/historial/historial';
 import { Layout } from './layout/layout';
+import { Error404 } from './error404/error404';
+
+
 
 export const routes: Routes = [
   // RUTA SIN SIDEBAR
-  {
+ {
     path: '',
     loadComponent: () =>
       import('./components/login/login').then((m) => m.Login),
   },
- 
+
 
   // RUTAS CON SIDEBAR (anidadas bajo layout)
   {
@@ -64,11 +67,10 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./components/actividades/actividades').then((m) => m.Actividades),
       },
-    {
-      path: '',
-      redirectTo: 'dashboard',
-      pathMatch: 'full'
-    }
+     {
+    path: '**',
+    component: Error404,
+  },
   ]
 }
 

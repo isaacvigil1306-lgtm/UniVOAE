@@ -7,7 +7,7 @@
   h1 {
     text-align: center;
     margin-bottom: 2rem;
-    color: #007bff;
+    color: #b52a3a;
   }
 
   .calendario {
@@ -33,7 +33,7 @@
       .fecha {
         font-weight: bold;
         display: block;
-        color: #007bff;
+        color: #001333;
         margin-bottom: 0.5rem;
       }
 
@@ -69,28 +69,7 @@
     }
   }
 
-  .enlaces-rapidos {
-    text-align: center;
 
-    .botones {
-      display: flex;
-      justify-content: center;
-      gap: 1.5rem;
-
-      a {
-        padding: 0.8rem 1.5rem;
-        background: #007bff;
-        color: white;
-        text-decoration: none;
-        border-radius: 8px;
-        transition: background 0.3s;
-
-        &:hover {
-          background: #0056b3;
-        }
-      }
-    }
-  }
 }
 .cerrar-sesion {
   text-align: right;
@@ -111,3 +90,122 @@
     }
   }
 }
+.calendario-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.dia-header {
+  font-weight: bold;
+  background-color: #b52a3a;
+  color: white;
+  padding: 0.5rem 0;
+  border-radius: 5px;
+}
+
+.celda-dia {
+  min-height: 100px;
+  background: #f1f1f1;
+  border-radius: 10px;
+  padding: 0.3rem;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.3s;
+}
+
+.celda-dia:hover {
+  background: #e0f0ff;
+}
+
+.numero-dia {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #001333;
+}
+
+.actividad {
+  font-size: 0.8rem;
+  background-color: #d1ecf1;
+  margin: 0.2rem 0;
+  padding: 0.2rem;
+  border-radius: 5px;
+}
+
+.con-actividad {
+  border: 2px solid #001333;
+}
+.navegacion-meses {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+
+  button {
+    background-color: #b52a3a;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 1.2rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #b52a3a;
+    }
+  }
+
+  span {
+    font-weight: bold;
+  }
+}
+
+.navegacion-meses {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+
+ 
+
+  .btn-hoy {
+    background-color: #001333;
+
+    &:hover {
+      background-color: #218838;
+    }
+  }
+
+  select {
+    padding: 0.4rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+}
+
+.dia-hoy {
+  background-color: #b3d4f5 !important;
+  color: white;
+
+  .actividad {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+}
+
+/*.dia-pasado {
+  background-color: #e0e0e0;
+  color: #a7a2a2;
+
+  .actividad {
+    background-color: #e0d6d6;
+  }
+}
+*/
