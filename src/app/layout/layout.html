@@ -1,22 +1,31 @@
-
 <!-- layout.component.html -->
 <div class="layout">
-  <aside class="sidebar">
+  <header class="mobile-header">
+    <button class="hamburger-btn" (click)="toggleMenu()" aria-label="Abrir menú">
+      <i class="fas fa-bars"></i>
+    </button>
+    <p class="mobile-username">{{ estudiante.split(' ')[0] }}</p>
+  </header>
+
+  <aside [class.sidebar]="true" [class.open]="menuAbierto">
     <div class="sidebar-header">
       <i class="fas fa-user-circle logo"></i>
       <p class="username">{{ estudiante }}</p>
+      <button class="close-btn" (click)="toggleMenu()" aria-label="Cerrar menú">
+        <i class="fas fa-times"></i>
+      </button>
     </div>
 
     <nav class="sidebar-menu">
-      <a routerLink="/principal" class="menu-item" title="Inicio">
+      <a routerLink="/principal" class="menu-item" title="Inicio" (click)="toggleMenu()">
         <i class="fas fa-home"></i>
         <span>Inicio</span>
       </a>
-      <a routerLink="/calendario" class="menu-item" title="Calendario">
+      <a routerLink="/calendario" class="menu-item" title="Calendario" (click)="toggleMenu()">
         <i class="fas fa-calendar-alt"></i>
         <span>Calendario</span>
       </a>
-      <a routerLink="/historial" class="menu-item" title="Historial">
+      <a routerLink="/historial" class="menu-item" title="Historial" (click)="toggleMenu()">
         <i class="fas fa-history"></i>
         <span>Historial</span>
       </a>
@@ -30,7 +39,7 @@
     </div>
   </aside>
 
-  <main div="main-content" style="margin-left: 70px; width: 100%">
+  <main class="main-content" [class.menu-open]="menuAbierto">
     <router-outlet></router-outlet>
   </main>
 </div>

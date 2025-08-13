@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
   imports: [CommonModule, RouterModule],
 })
 export class Principal {
-  estudiante = 'David Salvador'; 
+estudiante: string = ''; 
 
   actividadesProximas = [
     { titulo: 'Reforestación en el parque', fecha: '10/08/2025', lugar: 'Parque Central' },
@@ -26,11 +26,20 @@ export class Principal {
     titulo: 'Voluntariado en hogar de ancianos',
     fecha: '01/08/2025'
   };
+
   constructor(private router: Router) {}
 
-cerrarSesion() {
-  
-  this.router.navigate(['/']);
-}
-  
+  ngOnInit() {
+    const usuarioString = localStorage.getItem('usuario');
+    if (usuarioString) {
+      const usuario = JSON.parse(usuarioString);
+      this.estudiante = usuario.nombre || 'Usuario';
+    } else {
+      this.estudiante = 'Usuario';
+    }
+  }
+
+  cerrarSesion() {
+    this.router.navigate(['/']);
+  }
 }

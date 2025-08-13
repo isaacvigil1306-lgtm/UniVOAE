@@ -1,10 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 
+import { Firestore, collection, collectionData } from '@angular/fire/firestore';
+import { Timestamp } from 'firebase/firestore';
 
 
 @Component({
@@ -14,46 +16,8 @@ import Swal from 'sweetalert2';
   styleUrls: ['./calendario.scss'],
   imports: [CommonModule, RouterModule, FormsModule],
 })
-export class Calendario {
-  actividades = [
-    {
-      id: 1,
-      titulo: 'Reforestación en el parque',
-      fecha: '2025-08-10',
-      lugar: 'Parque Central',
-      cupo: 30,
-      horas: 5,
-      pago: false
-    },
-    {
-      id: 2,
-      titulo: 'Jornada de limpieza',
-      fecha: '2025-08-15',
-      lugar: 'Río Choluteca',
-      cupo: 20,
-      horas: 4,
-      pago: false
-    },
-    {
-      id: 3,
-      titulo: 'Evento cultural',
-      fecha: '2025-08-20',
-      lugar: 'Casa de la Cultura',
-      cupo: 50,
-      horas: 3,
-      pago: true
-    },
-    {
-      id: 4,
-      titulo: 'Pintado de aulas',
-      fecha: '2025-08-02',
-      lugar: 'Escuela Peniel',
-      cupo: 40,
-      horas: 10,
-      pago: false
-    }
-  ];
-
+export class Calendario implements OnInit {
+   actividades: any[] = [];
   diasSemana = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
   calendarioDias: Date[] = [];
 
@@ -61,12 +25,26 @@ export class Calendario {
   anioActual: number;
 
   actividadSeleccionada: any = null;
+  filtro: 'todas' | 'futuras' = 'todas';
+  hoy: Date = new Date();
 
-  constructor(private router: Router) {
+  constructor(private firestore: Firestore, private router: Router) {
     const hoy = new Date();
     this.mesActual = hoy.getMonth();
     this.anioActual = hoy.getFullYear();
+  }
+
+  ngOnInit() {
+    this.cargarActividades();
     this.generarCalendario();
+  }
+
+  cargarActividades() {
+    const actividadesRef = collection(this.firestore, 'actividades');
+    collectionData(actividadesRef, { idField: 'id' }).subscribe(data => {
+      this.actividades = data;
+      this.generarCalendario();
+    });
   }
 
   generarCalendario() {
@@ -78,7 +56,7 @@ export class Calendario {
 
     this.calendarioDias = [];
 
-    // Días vacíos al inicio
+    // Días vacíos al inicio para ajustar la primera semana
     for (let i = 0; i < primerDiaSemana; i++) {
       this.calendarioDias.push(new Date(NaN));
     }
@@ -112,59 +90,76 @@ export class Calendario {
     return meses[mes];
   }
 
+  // Función para normalizar fechas sin horas ni minutos ni segundos
+  fechaSinHora(fecha: Date): Date {
+    const f = new Date(fecha);
+    f.setHours(0, 0, 0, 0);
+    return f;
+  }
+
   tieneActividad(dia: Date): boolean {
     if (isNaN(dia.getTime())) return false;
     return this.actividades.some(act => this.fechaIgual(act.fecha, dia));
   }
 
   actividadesDelDia(dia: Date) {
-  if (isNaN(dia.getTime())) return [];
+    if (isNaN(dia.getTime())) return [];
 
-  return this.actividades.filter(act => {
-    const fechaAct = new Date(act.fecha);
+    const diaNormalizado = this.fechaSinHora(dia);
 
-    const esMismoDia =
-      fechaAct.getFullYear() === dia.getFullYear() &&
-      fechaAct.getMonth() === dia.getMonth() &&
-      fechaAct.getDate() === dia.getDate();
+    return this.actividades.filter(act => {
+      let fechaAct: Date;
 
-    if (!esMismoDia) return false;
+      if (act.fecha instanceof Timestamp) {
+        fechaAct = act.fecha.toDate();
+      } else {
+        fechaAct = new Date(act.fecha);
+      }
 
-    if (this.filtro === 'futuras') {
-      const hoy = new Date();
-      hoy.setHours(0, 0, 0, 0);
-      return fechaAct >= hoy;
-    }
+      const fechaActNormalizada = this.fechaSinHora(fechaAct);
 
-    return true;
-  });
-}
+      const esMismoDia = fechaActNormalizada.getTime() === diaNormalizado.getTime();
 
+      if (!esMismoDia) return false;
+
+      if (this.filtro === 'futuras') {
+        const hoy = this.fechaSinHora(new Date());
+        return fechaActNormalizada.getTime() >= hoy.getTime();
+      }
+
+      return true;
+    });
+  }
 
   seleccionarActividad(dia: Date) {
-  if (isNaN(dia.getTime())) return;
+    if (isNaN(dia.getTime())) return;
 
-  const actividad = this.actividades.find(act => this.fechaIgual(act.fecha, dia));
-  if (!actividad) return;
+    const actividad = this.actividades.find(act => this.fechaIgual(act.fecha, dia));
+    if (!actividad) return;
 
-  const fechaActividad = new Date(actividad.fecha);
-const hoy = new Date();
+    let fechaActividad: Date;
+    if (actividad.fecha instanceof Timestamp) {
+      fechaActividad = actividad.fecha.toDate();
+    } else {
+      fechaActividad = new Date(actividad.fecha);
+    }
 
-// Establecemos solo la parte de la fecha (sin horas)
-fechaActividad.setHours(0, 0, 0, 0);
-hoy.setHours(0, 0, 0, 0);
+    const hoy = new Date();
 
-// Verificamos si la actividad ya pasó
-const actividadPasada = fechaActividad < hoy;
-Swal.fire({
-  title: actividad.titulo,
+    const fechaActividadNormalizada = this.fechaSinHora(fechaActividad);
+    const hoyNormalizado = this.fechaSinHora(hoy);
+
+    const actividadPasada = fechaActividadNormalizada < hoyNormalizado;
+
+    Swal.fire({
+  title: actividad.titulo || actividad.nombre || 'Actividad',
   html: `
-    <p><strong>Fecha:</strong> ${actividad.fecha}</p>
+    <p><strong>Fecha:</strong> ${fechaActividadNormalizada.toLocaleDateString()}</p>
     <p><strong>Lugar:</strong> ${actividad.lugar}</p>
     <p><strong>Cupo:</strong> ${actividad.cupo}</p>
     <p><strong>Horas:</strong> ${actividad.horas}</p>
     <p><strong>Requiere pago:</strong> ${actividad.pago ? 'Sí' : 'No'}</p>
-    ${actividadPasada ? '<p style="color:red;"><strong>Esta actividad no esta disponible</strong></p>' : ''}
+    ${actividadPasada ? '<p style="color:red;"><strong>Esta actividad no está disponible</strong></p>' : ''}
   `,
   showCancelButton: !actividadPasada,
   showConfirmButton: !actividadPasada,
@@ -174,46 +169,51 @@ Swal.fire({
   cancelButtonColor: '#dc3545'
 }).then(resultado => {
   if (resultado.isConfirmed && !actividadPasada) {
-    this.router.navigate(['/inscripcion']);
+    if (actividad.cupo > 0) {
+      this.router.navigate(['/inscripcion'], { queryParams: { idActividad: actividad.id } });
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Cupos llenos',
+        text: 'Lo sentimos, esta actividad ya no tiene cupos disponibles.',
+      });
+    }
   }
-});}
+});
+  }
 
-  fechaIgual(fechaStr: string, dia: Date): boolean {
-    const f = new Date(fechaStr);
-    return f.getFullYear() === dia.getFullYear() &&
-           f.getMonth() === dia.getMonth() &&
-           f.getDate() === dia.getDate();
+  fechaIgual(fechaStr: any, dia: Date): boolean {
+    let f: Date;
+    if (fechaStr instanceof Timestamp) {
+      f = fechaStr.toDate();
+    } else {
+      f = new Date(fechaStr);
+    }
+
+    return this.fechaSinHora(f).getTime() === this.fechaSinHora(dia).getTime();
   }
 
   cerrarSesion() {
     this.router.navigate(['/']);
   }
-  filtro: 'todas' | 'futuras' = 'todas';
-hoy: Date = new Date();
 
-irAHoy() {
-  this.mesActual = this.hoy.getMonth();
-  this.anioActual = this.hoy.getFullYear();
-  this.generarCalendario();
-}
+  irAHoy() {
+    this.mesActual = this.hoy.getMonth();
+    this.anioActual = this.hoy.getFullYear();
+    this.generarCalendario();
+  }
 
-esHoy(dia: Date): boolean {
-  if (isNaN(dia.getTime())) return false;
-  const hoy = new Date();
-  return (
-    dia.getFullYear() === hoy.getFullYear() &&
-    dia.getMonth() === hoy.getMonth() &&
-    dia.getDate() === hoy.getDate()
-  );
-}
+  esHoy(dia: Date): boolean {
+    if (isNaN(dia.getTime())) return false;
 
-esPasado(dia: Date): boolean {
-  if (isNaN(dia.getTime())) return false;
+    return this.fechaSinHora(dia).getTime() === this.fechaSinHora(new Date()).getTime();
+  }
 
-  const hoy = new Date();
-  hoy.setHours(0, 0, 0, 0);
+  esPasado(dia: Date): boolean {
+    if (isNaN(dia.getTime())) return false;
 
-  return dia < hoy;
-}
+    const hoy = this.fechaSinHora(new Date());
 
+    return dia < hoy;
+  }
 }
