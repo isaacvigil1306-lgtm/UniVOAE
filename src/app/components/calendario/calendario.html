@@ -1,3 +1,4 @@
+
 <div class="contenedor">
 
  <h1>Calendario de Actividades</h1>
@@ -28,14 +29,14 @@
 >
   <div class="numero-dia">{{ dia.getDate() }}</div>
 
-  <div class="actividad" *ngFor="let act of actividadesDelDia(dia)">
-    {{ act.titulo }}
-  </div>
+  <div 
+  class="actividad" 
+  [class.cupos-llenos]="act.cupo === 0"
+  *ngFor="let act of actividadesDelDia(dia)"
+>
+  {{ act.nombre }}
+  <span *ngIf="act.cupo === 0" class="etiqueta-lleno"> (Cupos llenos) </span>
 </div>
 
-
-
-
- 
-
+</div>
 </div>

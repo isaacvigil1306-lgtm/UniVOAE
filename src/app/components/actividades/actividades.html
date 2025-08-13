@@ -46,13 +46,15 @@
     <table>
       <thead>
         <tr>
+        
           <th>Nombre completo</th>
           <th>Identidad / Carnet</th>
           <th>Correo</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let estudiante of inscritosPorActividad[actividadSeleccionada?.id]">
+        <tr *ngFor="let estudiante of inscritos">
+           
           <td>{{ estudiante.nombre }}</td>
           <td>{{ estudiante.identidad }}</td>
           <td>{{ estudiante.correo }}</td>

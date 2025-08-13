@@ -1,170 +1,21 @@
+/* Contenedor principal */
 .contenedor {
   max-width: 1000px;
   margin: 2rem auto;
   padding: 1.5rem;
   font-family: 'Segoe UI', sans-serif;
-
-  h1 {
-    text-align: center;
-    margin-bottom: 2rem;
-    color: #b52a3a;
-  }
-
-  .calendario {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    justify-content: center;
-    margin-bottom: 2rem;
-
-    .dia {
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      padding: 1rem;
-      background: #f1f1f1;
-      width: 220px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-
-      &:hover {
-        background-color: #d9ecff;
-      }
-
-      .fecha {
-        font-weight: bold;
-        display: block;
-        color: #001333;
-        margin-bottom: 0.5rem;
-      }
-
-      .titulo {
-        font-size: 1rem;
-      }
-    }
-  }
-
-  .detalles {
-    background: #e2f0d9;
-    border-left: 5px solid #28a745;
-    padding: 1rem 1.5rem;
-    border-radius: 10px;
-    margin-bottom: 2rem;
-
-    h2 {
-      margin-top: 0;
-    }
-
-    .btn-inscribirse {
-      display: inline-block;
-      margin-top: 1rem;
-      background-color: #28a745;
-      color: white;
-      padding: 0.7rem 1.2rem;
-      border-radius: 8px;
-      text-decoration: none;
-
-      &:hover {
-        background-color: #218838;
-      }
-    }
-  }
-
-
+  color: #222;
 }
-.cerrar-sesion {
-  text-align: right;
-  margin-bottom: 1rem;
 
-  button {
-    background-color: #dc3545;
-    color: white;
-    border: none;
-    padding: 0.6rem 1.2rem;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s;
-
-    &:hover {
-      background-color: #b52a3a;
-    }
-  }
-}
-.calendario-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 0.5rem;
-  margin-bottom: 2rem;
+.contenedor h1 {
   text-align: center;
+  margin-bottom: 2rem;
+  color: #b52a3a;
+  font-weight: 700;
+  font-size: 2rem;
 }
 
-.dia-header {
-  font-weight: bold;
-  background-color: #b52a3a;
-  color: white;
-  padding: 0.5rem 0;
-  border-radius: 5px;
-}
-
-.celda-dia {
-  min-height: 100px;
-  background: #f1f1f1;
-  border-radius: 10px;
-  padding: 0.3rem;
-  cursor: pointer;
-  position: relative;
-  transition: background 0.3s;
-}
-
-.celda-dia:hover {
-  background: #e0f0ff;
-}
-
-.numero-dia {
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-  color: #001333;
-}
-
-.actividad {
-  font-size: 0.8rem;
-  background-color: #d1ecf1;
-  margin: 0.2rem 0;
-  padding: 0.2rem;
-  border-radius: 5px;
-}
-
-.con-actividad {
-  border: 2px solid #001333;
-}
-.navegacion-meses {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1rem;
-  font-size: 1.5rem;
-
-  button {
-    background-color: #b52a3a;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    font-size: 1.2rem;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-
-    &:hover {
-      background-color: #b52a3a;
-    }
-  }
-
-  span {
-    font-weight: bold;
-  }
-}
-
+/* Navegación meses */
 .navegacion-meses {
   display: flex;
   flex-wrap: wrap;
@@ -173,39 +24,257 @@
   gap: 1rem;
   margin-bottom: 1rem;
   font-size: 1.2rem;
-
- 
-
-  .btn-hoy {
-    background-color: #001333;
-
-    &:hover {
-      background-color: #218838;
-    }
-  }
-
-  select {
-    padding: 0.4rem;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-  }
 }
 
-.dia-hoy {
-  background-color: #b3d4f5 !important;
+.navegacion-meses button {
+  background-color: #b52a3a;
   color: white;
-
-  .actividad {
-    background-color: rgba(255, 255, 255, 0.2);
-  }
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 1.2rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-/*.dia-pasado {
-  background-color: #e0e0e0;
-  color: #a7a2a2;
+.navegacion-meses button:hover,
+.navegacion-meses button:focus {
+  background-color: #8b202a;
+  outline: none;
+}
 
+.navegacion-meses .btn-hoy {
+  background-color: #001333;
+}
+
+.navegacion-meses .btn-hoy:hover,
+.navegacion-meses .btn-hoy:focus {
+  background-color: #218838;
+  outline: none;
+}
+
+.navegacion-meses select {
+  padding: 0.4rem 0.6rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.navegacion-meses select:focus {
+  border-color: #b52a3a;
+  outline: none;
+}
+
+/* Grid calendario */
+.calendario-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+/* Encabezado de días */
+.dia-header {
+  font-weight: 700;
+  background-color: #b52a3a;
+  color: white;
+  padding: 0.5rem 0;
+  border-radius: 5px;
+  user-select: none;
+}
+
+/* Celdas de día */
+.celda-dia {
+  min-height: 100px;
+  background: #f1f1f1;
+  border-radius: 10px;
+  padding: 0.3rem 0.4rem;
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+
+.celda-dia:hover,
+.celda-dia:focus {
+  background: #e0f0ff;
+  box-shadow: 0 0 8px rgba(33, 136, 255, 0.4);
+  outline: none;
+}
+
+/* Número del día */
+.numero-dia {
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #001333;
+  font-size: 1.1rem;
+  user-select: none;
+}
+
+/* Actividades dentro del día */
+.actividad {
+  font-size: 0.8rem;
+  background-color: #d1ecf1;
+  margin: 0.2rem 0;
+  padding: 0.2rem 0.3rem;
+  border-radius: 5px;
+  color: #0c5460;
+  width: 100%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.actividad.cupos-llenos {
+  background-color: #f8d7da;
+  color: #721c24;
+  font-weight: 600;
+}
+
+/* Celda con actividad */
+.con-actividad {
+  border: 2px solid #001333;
+}
+
+/* Día de hoy */
+.dia-hoy {
+  background-color: #4a90e2 !important;
+  color: white !important;
+}
+
+.dia-hoy .actividad {
+  background-color: rgba(255, 255, 255, 0.3) !important;
+  color: white !important;
+}
+
+/* Día pasado */
+.dia-pasado {
+  background-color: #e9ecef;
+  color: #6c757d;
+  cursor: default;
+}
+
+.dia-pasado .actividad {
+  background-color: #dee2e6;
+  color: #6c757d;
+}
+
+/* Botón cerrar sesión (si existe) */
+.cerrar-sesion {
+  text-align: right;
+  margin-bottom: 1rem;
+}
+
+.cerrar-sesion button {
+  background-color: #b11424;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background-color 0.3s ease;
+}
+
+.cerrar-sesion button:hover,
+.cerrar-sesion button:focus {
+  background-color: #830917;
+  outline: none;
+}
+
+/* Detalles y botón inscribirse (si aplican) */
+.detalles {
+  background: #e2f0d9;
+  border-left: 5px solid #28a745;
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+}
+
+.detalles h2 {
+  margin-top: 0;
+}
+
+.btn-inscribirse {
+  display: inline-block;
+  margin-top: 1rem;
+  background-color: #28a745;
+  color: white;
+  padding: 0.7rem 1.2rem;
+  border-radius: 8px;
+  text-decoration: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.btn-inscribirse:hover,
+.btn-inscribirse:focus {
+  background-color: #218838;
+  outline: none;
+}
+
+/* Ajustes responsive: móviles */
+@media (max-width: 599px) {
+  /* Grid reducido a 2 columnas */
+  .calendario-grid {
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.4rem;
+    
+  }
+
+  /* Ocultar nombres de días para ahorrar espacio */
+
+
+  /* Celdas más compactas */
+  .celda-dia {
+    min-height: 85px;
+    width: 100%;
+    padding: 0.1rem;
+    border-radius: 5px;
+
+  }
+
+  /* Número de día más pequeño */
+  .numero-dia {
+    font-size: 0.9rem;
+    margin-bottom: 0.2rem;
+  }
+
+  /* Texto de actividad más chico */
   .actividad {
-    background-color: #e0d6d6;
+    font-size: 0.7rem;
+    padding: 0.15rem 0.2rem;
+    border-radius: 3px;
+  }
+
+
+  /* Botones más pequeños */
+  .navegacion-meses {
+    gap: 0.5rem;
+    font-size: 1rem;
+  }
+
+  .navegacion-meses button {
+    padding: 0.3rem 0.6rem;
+    font-size: 1rem;
+    border-radius: 4px;
+  }
+
+  .navegacion-meses select {
+    font-size: 0.9rem;
+    padding: 0.3rem 0.5rem;
+  }
+
+  /* Encabezado más pequeño */
+  .contenedor h1 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
   }
 }
-*/
