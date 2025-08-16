@@ -1,0 +1,29 @@
+<div class="contenedor">
+  <h1>Historial de actividades</h1>
+
+  <!-- Buscador -->
+  <input type="text" placeholder="Buscar actividad o estudiante..." [(ngModel)]="busqueda" class="buscador" />
+
+  <!-- Lista de actividades pasadas -->
+  <div *ngFor="let actividad of actividadesFiltradas()" class="actividad-card">
+    <div class="actividad-header" (click)="toggleExpandir(actividad.id)">
+      <span>{{ actividad.nombre }} - {{ actividad.fecha }}</span>
+      <span class="flecha" [class.abierto]="actividad.expandido">▼</span>
+    </div>
+
+    <!-- Lista de estudiantes -->
+    <div *ngIf="actividad.expandido" class="lista-estudiantes">
+      <div *ngIf="actividad.estudiantes?.length > 0; else noAsistencia">
+        <div *ngFor="let est of actividad.estudiantes" class="estudiante-item">
+          {{ est.identidad }} - {{ est.nombre }}
+          <span [class.asistio]="est.asistio" [class.no-asistio]="!est.asistio">
+            {{ est.asistio ? '✅ Asistió' : '❌ No asistió' }}
+          </span>
+        </div>
+      </div>
+      <ng-template #noAsistencia>
+        <p class="no-datos">No hubo estudiantes registrados.</p>
+      </ng-template>
+    </div>
+  </div>
+</div>

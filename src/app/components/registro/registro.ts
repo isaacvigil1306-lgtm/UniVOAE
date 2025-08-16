@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
-import { Router } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
+import { Firestore, collection, getDocs, query, where, addDoc, doc, getDoc, updateDoc } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-registro',
@@ -11,38 +11,78 @@ import { Router } from '@angular/router';
   styleUrls: ['./registro.scss'],
   imports: [CommonModule, FormsModule, RouterModule],
 })
-export class Registro {
-  actividades = [
-    { id: 1, nombre: 'Reforestación en el parque' },
-    { id: 2, nombre: 'Jornada de limpieza' },
-  ];
+export class Registro implements OnInit {
+  actividades: any[] = [];
+  inscritos: any[] = [];
+  actividadSeleccionadaId: string | null = null;
+  actividadSeleccionada: any = null;
 
-  inscritosPorActividad: { [actividadId: number]: any[] } = {
-    1: [
-      { nombre: 'Juan Pérez', identidad: '0801-1990-12345', estado: 'Pendiente' },
-      { nombre: 'María López', identidad: '0801-1992-67890', estado: 'Pendiente' },
-    ],
-    2: [
-      { nombre: 'Carlos Martínez', identidad: '0801-1988-54321', estado: 'Pendiente' },
-    ]
-  };
+  constructor(private router: Router, private firestore: Firestore) {}
 
-  actividadSeleccionadaId: number | null = null;
+  async ngOnInit() {
+    await this.cargarActividadesFuturas();
+  }
 
-  seleccionarActividad(event: Event) {
+  async cargarActividadesFuturas() {
+    const actividadesRef = collection(this.firestore, 'actividades');
+    const querySnapshot = await getDocs(actividadesRef);
+    const hoy = new Date().toISOString().split('T')[0];
+
+    this.actividades = querySnapshot.docs
+      .map(doc => ({ id: doc.id, ...doc.data() }))
+      .filter((act: any) => act.fecha >= hoy);
+  }
+
+  async seleccionarActividad(event: Event) {
     const select = event.target as HTMLSelectElement;
-    const valor = select.value;
-    this.actividadSeleccionadaId = valor ? +valor : null;
+    this.actividadSeleccionadaId = select.value || null;
+    this.inscritos = [];
+
+    if (this.actividadSeleccionadaId) {
+      // Obtener datos de la actividad
+      const actividadDoc = await getDoc(doc(this.firestore, 'actividades', this.actividadSeleccionadaId));
+      if (actividadDoc.exists()) {
+        this.actividadSeleccionada = { id: actividadDoc.id, ...actividadDoc.data() };
+      }
+
+      // Cargar estudiantes inscritos
+      const inscripcionesRef = collection(this.firestore, 'inscripciones');
+      const q = query(inscripcionesRef, where('idActividad', '==', this.actividadSeleccionadaId));
+      const querySnapshot = await getDocs(q);
+
+      this.inscritos = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        asistio: false // valor inicial para el checkbox
+      }));
+    }
   }
 
-  marcarCompletado(estudiante: any) {
-    estudiante.estado = 'Validado';
-  }
-constructor(private router: Router) {}
+async guardarAsistencia() {
+    if (!this.actividadSeleccionada) return;
 
-cerrarSesion() {
-  
-  this.router.navigate(['/']);
-}
-  
+    const asistenciasRef = collection(this.firestore, 'asistencias');
+
+    for (const estudiante of this.inscritos) {
+      // Evitar duplicados
+      const existeSnap = await getDocs(query(
+        asistenciasRef,
+        where('idActividad', '==', this.actividadSeleccionadaId),
+        where('identidad', '==', estudiante.identidad)
+      ));
+
+      if (existeSnap.empty) {
+        await addDoc(asistenciasRef, {
+          idActividad: this.actividadSeleccionadaId,
+          identidad: estudiante.identidad,
+          nombre: estudiante.nombre,
+          asistio: estudiante.asistio,
+          fechaRegistro: this.actividadSeleccionada.fecha,
+          horasAcreditadas: estudiante.asistio ? this.actividadSeleccionada.horas : 0
+        });
+      }
+    }
+
+    alert('Asistencia guardada con éxito');
+  }
 }

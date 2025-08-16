@@ -1,131 +1,93 @@
 <div class="contenedor">
-    <div class="cerrar-sesion">
-  <button (click)="cerrarSesion()">Cerrar sesión</button>
-</div>
   <h1>Gestión de Actividades</h1>
+  <button class="btn abrir-modal" (click)="abrirModal()">Crear Actividad</button>
 
-  <!-- Tabla de actividades actuales -->
-  <div class="tabla-contenedor">
-    <h2>Actividades actuales</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Nombre</th>
-          <th>Fecha</th>
-          <th>Hora</th>
-          <th>Lugar</th>
-          <th>Horas</th>
-          <th>Cupo</th>
-          <th>Pago</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let act of actividades">
-          <td>{{ act.nombre }}</td>
-          <td>{{ act.fecha }}</td>
-          <td>{{ act.hora }}</td>
-          <td>{{ act.lugar }}</td>
-          <td>{{ act.horas }}</td>
-          <td>{{ act.cupo }}</td>
-          <td>{{ act.pago ? 'Sí' : 'No' }}</td>
-          <td>
-            <button class="btn editar" (click)="editarActividad(act)">Editar</button>
-            <button class="btn eliminar" (click)="eliminarActividad(act.id)">Eliminar</button>
-            <button class="btn ver" (click)="verInscritos(act.id)">Ver inscritos</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <!-- Tabla de actividades -->
+   <div class="tabla-contenedor">
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Fecha</th>
+        <th>Hora</th>
+        <th>Lugar</th>
+        <th>Horas</th>
+        <th>Cupo</th>
+        <th>Pago</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let act of actividades">
+        <td>{{ act.nombre }}</td>
+        <td>{{ act.fecha }}</td>
+        <td>{{ act.hora }}</td>
+        <td>{{ act.lugar }}</td>
+        <td>{{ act.horas }}</td>
+        <td>{{ act.cupo }}</td>
+        <td>{{ act.pago ? 'Sí' : 'No' }}</td>
+        <td>
+          <button class="btn editar" (click)="abrirModal(act)">Editar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table></div>
 
-  <!-- Sección para mostrar inscritos -->
-  <div class="inscritos-contenedor" *ngIf="mostrarInscritos">
-    <h2>Inscritos a: {{ actividadSeleccionada?.nombre }}</h2>
-
-    <table>
-      <thead>
-        <tr>
-        
-          <th>Nombre completo</th>
-          <th>Identidad / Carnet</th>
-          <th>Correo</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let estudiante of inscritos">
-           
-          <td>{{ estudiante.nombre }}</td>
-          <td>{{ estudiante.identidad }}</td>
-          <td>{{ estudiante.correo }}</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <button class="btn cerrar" (click)="cerrarInscritos()">Cerrar lista</button>
-  </div>
-
-  <!-- Formulario para crear/editar actividad -->
-  <div class="formulario-contenedor">
-    <h2>{{ modoEdicion ? 'Editar Actividad' : 'Crear Nueva Actividad' }}</h2>
-    <form (ngSubmit)="crearActividad()">
-      <div class="grupo">
-        <label>Nombre</label>
-        <input type="text" [(ngModel)]="nuevaActividad.nombre" name="nombre" required />
-      </div>
-
-      <div class="grupo doble">
-        <div>
-          <label>Fecha</label>
-          <input type="date" [(ngModel)]="nuevaActividad.fecha" name="fecha" required />
+  <!-- Modal -->
+  <div class="modal" *ngIf="modalAbierto">
+    <div class="modal-contenido">
+      <h2>{{ modoEdicion ? 'Editar Actividad' : 'Crear Actividad' }}</h2>
+      <form #form="ngForm" (ngSubmit)="crearActividad(form)">
+        <div class="grupo">
+          <label>Nombre</label>
+          <input type="text" [(ngModel)]="nuevaActividad.nombre" name="nombre" required />
         </div>
-        <div>
-          <label>Hora</label>
-          <input type="time" [(ngModel)]="nuevaActividad.hora" name="hora" required />
+
+        <div class="grupo doble">
+          <div>
+            <label>Fecha</label>
+            <input type="date" [(ngModel)]="nuevaActividad.fecha" name="fecha" required />
+          </div>
+          <div>
+            <label>Hora</label>
+            <input type="time" [(ngModel)]="nuevaActividad.hora" name="hora" required />
+          </div>
         </div>
-      </div>
 
-      <div class="grupo">
-        <label>Lugar</label>
-        <input type="text" [(ngModel)]="nuevaActividad.lugar" name="lugar" required />
-      </div>
-
-      <div class="grupo doble">
-        <div>
-          <label>Cantidad de horas</label>
-          <input type="number" [(ngModel)]="nuevaActividad.horas" name="horas" min="0" required />
+        <div class="grupo">
+          <label>Lugar</label>
+          <input type="text" [(ngModel)]="nuevaActividad.lugar" name="lugar" required />
         </div>
-        <div>
-          <label>Cupo máximo</label>
-          <input type="number" [(ngModel)]="nuevaActividad.cupo" name="cupo" min="0" required />
+
+        <div class="grupo doble">
+          <div>
+            <label>Cantidad de horas</label>
+            <input type="number" [(ngModel)]="nuevaActividad.horas" name="horas" min="0" required />
+          </div>
+          <div>
+            <label>Cupo máximo</label>
+            <input type="number" [(ngModel)]="nuevaActividad.cupo" name="cupo" min="0" required />
+          </div>
         </div>
-      </div>
 
-      <div class="grupo">
-        <label>¿Requiere pago?</label>
-        <select [(ngModel)]="nuevaActividad.pago" name="pago">
-          <option [value]="false">No</option>
-          <option [value]="true">Sí</option>
-        </select>
-      </div>
+        <div class="grupo">
+          <label>¿Requiere pago?</label>
+          <select [(ngModel)]="nuevaActividad.pago" name="pago" required>
+            <option [value]="false">No</option>
+            <option [value]="true">Sí</option>
+          </select>
+        </div>
 
-      <div class="grupo">
-        <label>Descripción</label>
-        <textarea [(ngModel)]="nuevaActividad.descripcion" name="descripcion"></textarea>
-      </div>
+        <div class="grupo">
+          <label>Descripción</label>
+          <textarea [(ngModel)]="nuevaActividad.descripcion" name="descripcion"></textarea>
+        </div>
 
-      <button type="submit" class="btn submit">
-        {{ modoEdicion ? 'Guardar cambios' : 'Crear actividad' }}
-      </button>
-    </form>
-  </div>
-
-
-  <div class="enlaces-rapidos">
- 
-    <div class="botones">
-      <a routerLink="/administrador">Inicio</a>
-      <a routerLink="/registro">Registro de participación</a>
+        <button type="submit" class="btn submit">
+          {{ modoEdicion ? 'Guardar cambios' : 'Crear actividad' }}
+        </button>
+        <button type="button" class="btn cerrar" (click)="cerrarModal()">Cancelar</button>
+      </form>
     </div>
   </div>
 </div>

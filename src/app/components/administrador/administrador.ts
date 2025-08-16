@@ -1,33 +1,43 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Actividad, ActividadesService } from '../../servicios/actividades';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-administrador',
   standalone: true,
+  imports: [CommonModule, RouterModule],
   templateUrl: './administrador.html',
   styleUrls: ['./administrador.scss'],
-  imports: [CommonModule, RouterModule],
 })
-export class Administrador {
-  totalActividades = 12;
-  totalEstudiantes = 85;
+export class Administrador implements OnInit {
+  actividadesHoy: Actividad[] = [];
+  actividadesProximas: Actividad[] = [];
+  actividadesPasadas: Actividad[] = [];
 
-  horasPorMes = [
-    { mes: 'Enero', horas: 40 },
-    { mes: 'Febrero', horas: 35 },
-    { mes: 'Marzo', horas: 50 },
-    { mes: 'Abril', horas: 60 },
-    { mes: 'Mayo', horas: 30 },
-    { mes: 'Junio', horas: 45 },
-    { mes: 'Julio', horas: 55 },
-  ];
-constructor(private router: Router) {}
+  constructor(private router: Router, private actividadesService: ActividadesService) {}
 
-cerrarSesion() {
-  
-  this.router.navigate(['/']);
-}
-  
+  ngOnInit() {
+    this.cargarActividades();
+  }
+
+  cerrarSesion() {
+    this.router.navigate(['/']);
+  }
+
+  cargarActividades() {
+    this.actividadesService.obtenerActividades().subscribe((actividades) => {
+      const hoy = new Date().toISOString().split('T')[0];
+
+      this.actividadesHoy = actividades.filter(a => a.fecha === hoy);
+      this.actividadesProximas = actividades.filter(a => a.fecha > hoy);
+      this.actividadesPasadas = actividades.filter(a => a.fecha < hoy);
+    });
+  }
+
+  verEstudiantes(act: Actividad) {
+    // Redirigir a la página de registro o abrir modal
+    this.router.navigate(['/actividadespasadas'], { queryParams: { idActividad: act.id } });
+  }
 }

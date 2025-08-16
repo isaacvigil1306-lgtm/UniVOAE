@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 import { ActividadesService, Actividad } from '../../servicios/actividades';
 
@@ -14,9 +15,13 @@ import { ActividadesService, Actividad } from '../../servicios/actividades';
   imports: [CommonModule, FormsModule, RouterModule],
 })
 export class Actividades implements OnInit {
+  hoy: string = new Date().toISOString().split('T')[0];
+
   actividades: Actividad[] = [];
   nuevaActividad: Actividad = this.resetActividad();
+  modalAbierto = false;
   modoEdicion = false;
+
   actividadSeleccionada: Actividad | null = null;
   mostrarInscritos = false;
   inscritosPorActividad: { [key: string]: any[] } = {};
@@ -29,25 +34,59 @@ export class Actividades implements OnInit {
 
   cargarActividades() {
     this.actividadesService.obtenerActividades().subscribe(data => {
-      this.actividades = data;
+      const hoy = new Date();
+      hoy.setHours(0, 0, 0, 0);
+
+      this.actividades = data.filter(act => {
+        const fechaAct = new Date(act.fecha);
+        fechaAct.setHours(0, 0, 0, 0);
+        return fechaAct >= hoy;
+      });
     });
   }
 
-  crearActividad() {
+  abrirModal(editar?: Actividad) {
+    if (editar) {
+      this.nuevaActividad = { ...editar };
+      this.modoEdicion = true;
+    } else {
+      this.nuevaActividad = this.resetActividad();
+      this.modoEdicion = false;
+    }
+    this.modalAbierto = true;
+  }
+
+  cerrarModal() {
+    this.modalAbierto = false;
+    this.resetForm();
+  }
+
+  crearActividad(form: NgForm) {
+    if (!form.valid) {
+      Swal.fire('Error', 'Todos los campos son obligatorios excepto descripción.', 'error');
+      return;
+    }
+
+    if (this.nuevaActividad.fecha < this.hoy) {
+      Swal.fire('Error', 'La fecha no puede ser menor que hoy.', 'error');
+      return;
+    }
+
     if (this.modoEdicion && this.nuevaActividad.id) {
       this.actividadesService.actualizarActividad(this.nuevaActividad.id, this.nuevaActividad).then(() => {
-        this.resetForm();
+        Swal.fire('Actualizado', 'Actividad actualizada correctamente.', 'success');
+        this.cerrarModal();
       });
     } else {
       this.actividadesService.agregarActividad(this.nuevaActividad).then(() => {
-        this.resetForm();
+        Swal.fire('Creado', 'Actividad creada correctamente.', 'success');
+        this.cerrarModal();
       });
     }
   }
 
   editarActividad(act: Actividad) {
-    this.nuevaActividad = { ...act };
-    this.modoEdicion = true;
+    this.abrirModal(act);
   }
 
   eliminarActividad(id?: string) {
@@ -56,7 +95,7 @@ export class Actividades implements OnInit {
   }
 
   verInscritos(id?: string) {
-  if (!id) return;
+    if (!id) return;
     this.actividadSeleccionada = this.actividades.find(a => a.id === id) || null;
     if (!this.actividadSeleccionada) return;
 
@@ -67,17 +106,13 @@ export class Actividades implements OnInit {
   }
 
   get inscritos(): any[] {
-  if (!this.actividadSeleccionada?.id) return [];
-  return this.inscritosPorActividad[this.actividadSeleccionada.id] || [];
-}
+    if (!this.actividadSeleccionada?.id) return [];
+    return this.inscritosPorActividad[this.actividadSeleccionada.id] || [];
+  }
 
   cerrarInscritos() {
     this.mostrarInscritos = false;
     this.actividadSeleccionada = null;
-  }
-
-  cerrarSesion() {
-    // Aquí deberías implementar la lógica para cerrar sesión con Firebase Auth
   }
 
   resetForm() {

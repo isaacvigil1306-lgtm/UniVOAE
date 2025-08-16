@@ -1,11 +1,13 @@
 /* Contenedor principal */
 .contenedor {
-  max-width: 1000px;
+  max-width: 100%;
   margin: 2rem auto;
-  padding: 1.5rem;
+  padding: 0.2rem;
   font-family: 'Segoe UI', sans-serif;
-  color: #222;
+  color: #474747;
+
 }
+
 
 .contenedor h1 {
   text-align: center;
@@ -49,7 +51,7 @@
 
 .navegacion-meses .btn-hoy:hover,
 .navegacion-meses .btn-hoy:focus {
-  background-color: #218838;
+  background-color: #001333;
   outline: none;
 }
 
@@ -74,6 +76,7 @@
   gap: 0.5rem;
   margin-bottom: 2rem;
   text-align: center;
+  
 }
 
 /* Encabezado de días */
@@ -94,19 +97,13 @@
   padding: 0.3rem 0.4rem;
   cursor: pointer;
   position: relative;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  
   display: flex;
   flex-direction: column;
   align-items: center;
   overflow: hidden;
 }
 
-.celda-dia:hover,
-.celda-dia:focus {
-  background: #e0f0ff;
-  box-shadow: 0 0 8px rgba(33, 136, 255, 0.4);
-  outline: none;
-}
 
 /* Número del día */
 .numero-dia {
@@ -120,20 +117,19 @@
 /* Actividades dentro del día */
 .actividad {
   font-size: 0.8rem;
-  background-color: #d1ecf1;
+ 
   margin: 0.2rem 0;
   padding: 0.2rem 0.3rem;
-  border-radius: 5px;
-  color: #0c5460;
+  
+  color: black;
   width: 100%;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
+  
+  
 }
 
 .actividad.cupos-llenos {
   background-color: #f8d7da;
-  color: #721c24;
+  color: black;
   font-weight: 600;
 }
 
@@ -144,7 +140,7 @@
 
 /* Día de hoy */
 .dia-hoy {
-  background-color: #4a90e2 !important;
+  background-color: #f04646 !important;
   color: white !important;
 }
 
@@ -165,60 +161,12 @@
   color: #6c757d;
 }
 
-/* Botón cerrar sesión (si existe) */
-.cerrar-sesion {
-  text-align: right;
-  margin-bottom: 1rem;
-}
 
-.cerrar-sesion button {
-  background-color: #b11424;
-  color: white;
-  border: none;
-  padding: 0.6rem 1.2rem;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 700;
-  transition: background-color 0.3s ease;
-}
 
-.cerrar-sesion button:hover,
-.cerrar-sesion button:focus {
-  background-color: #830917;
-  outline: none;
-}
 
-/* Detalles y botón inscribirse (si aplican) */
-.detalles {
-  background: #e2f0d9;
-  border-left: 5px solid #28a745;
-  padding: 1rem 1.5rem;
-  border-radius: 10px;
-  margin-bottom: 2rem;
-}
 
-.detalles h2 {
-  margin-top: 0;
-}
 
-.btn-inscribirse {
-  display: inline-block;
-  margin-top: 1rem;
-  background-color: #28a745;
-  color: white;
-  padding: 0.7rem 1.2rem;
-  border-radius: 8px;
-  text-decoration: none;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.3s ease;
-}
 
-.btn-inscribirse:hover,
-.btn-inscribirse:focus {
-  background-color: #218838;
-  outline: none;
-}
 
 /* Ajustes responsive: móviles */
 @media (max-width: 599px) {
@@ -228,13 +176,20 @@
     gap: 0.4rem;
     
   }
+  /* Solo visible en móviles */
+@media (min-width: 600px) {
+  .btn-cerrar-sidebar {
+    display: none !important;
+  }
+}
+
 
   /* Ocultar nombres de días para ahorrar espacio */
 
 
   /* Celdas más compactas */
   .celda-dia {
-    min-height: 85px;
+    min-height: 40px;
     width: 100%;
     padding: 0.1rem;
     border-radius: 5px;

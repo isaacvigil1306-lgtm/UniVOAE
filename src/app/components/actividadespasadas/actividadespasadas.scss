@@ -1,0 +1,58 @@
+.buscador {
+  width: 100%;
+  padding: 0.6rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.actividad-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.actividad-header {
+  background: #007bff;
+  color: white;
+  padding: 0.8rem 1rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+}
+
+.flecha {
+  transition: transform 0.3s ease;
+}
+
+.flecha.abierto {
+  transform: rotate(180deg);
+}
+
+.lista-estudiantes {
+  background: #f9f9f9;
+  padding: 0.8rem 1rem;
+}
+
+.estudiante-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.estudiante-item:last-child {
+  border-bottom: none;
+}
+
+.asistio {
+  color: green;
+  font-weight: bold;
+}
+
+.no-asistio {
+  color: red;
+  font-weight: bold;
+}

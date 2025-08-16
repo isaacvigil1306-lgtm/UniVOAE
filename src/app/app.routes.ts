@@ -5,6 +5,7 @@ import { Calendario } from './components/calendario/calendario';
 import { Historial } from './components/historial/historial';
 import { Layout } from './layout/layout';
 import { Error404 } from './error404/error404';
+import { Actividadespasadas } from './components/actividadespasadas/actividadespasadas';
 
 
 
@@ -61,6 +62,11 @@ export const routes: Routes = [
         path: 'administrador',
         loadComponent: () =>
           import('./components/administrador/administrador').then((m) => m.Administrador),
+      },
+       {
+        path: 'actividadespasadas',
+        loadComponent: () =>
+          import('./components/actividadespasadas/actividadespasadas').then((m) => m.Actividadespasadas),
       },
       {
         path: 'actividades',

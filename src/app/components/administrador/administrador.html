@@ -1,35 +1,64 @@
 <div class="contenedor">
-    <div class="cerrar-sesion">
-  <button (click)="cerrarSesion()">Cerrar sesión</button>
-</div>
-  <h1>Panel de Resumen</h1>
 
-  <div class="resumen">
-    <div class="tarjeta total">
-      <h2>{{ totalActividades }}</h2>
-      <p>Actividades creadas</p>
+
+  <h1>Panel de Actividades - CEUTEC</h1>
+
+  <!-- Actividades de hoy -->
+  <div class="seccion">
+    <h2>Actividades de Hoy</h2>
+    <div *ngIf="actividadesHoy.length > 0; else noHoy" class="actividades-lista">
+      <div class="actividad-card" *ngFor="let act of actividadesHoy">
+        <h3>{{ act.nombre }}</h3>
+        <p><strong>Hora:</strong> {{ act.hora }} | <strong>Lugar:</strong> {{ act.lugar }}</p>
+        <p><strong>Cupo:</strong> {{ act.cupo }} | <strong>Horas:</strong> {{ act.horas }}</p>
+      </div>
     </div>
-    <div class="tarjeta estudiantes">
-      <h2>{{ totalEstudiantes }}</h2>
-      <p>Estudiantes inscritos</p>
-    </div>
+    <ng-template #noHoy>
+      <p class="no-datos">No hay actividades programadas para hoy.</p>
+    </ng-template>
   </div>
 
-  <div class="horas-mensuales">
-    <h2>Horas generadas por mes</h2>
-    <ul>
-      <li *ngFor="let item of horasPorMes">
-        <strong>{{ item.mes }}:</strong> {{ item.horas }} horas
-      </li>
-    </ul>
+  <!-- Actividades próximas -->
+  <div class="seccion">
+    <h2>Actividades Próximas</h2>
+    <div *ngIf="actividadesProximas.length > 0; else noProximas" class="actividades-lista">
+      <div class="actividad-card" *ngFor="let act of actividadesProximas">
+        <h3>{{ act.nombre }}</h3>
+        <p><strong>Fecha:</strong> {{ act.fecha }} | <strong>Hora:</strong> {{ act.hora }}</p>
+        <p><strong>Lugar:</strong> {{ act.lugar }} | <strong>Cupo:</strong> {{ act.cupo }}</p>
+      </div>
+    </div>
+    <ng-template #noProximas>
+      <p class="no-datos">No hay actividades próximas programadas.</p>
+    </ng-template>
   </div>
 
-  
-  <div class="enlaces-rapidos">
- 
-    <div class="botones">
-      <a routerLink="/actividades">Gestión de actividades</a>
-      <a routerLink="/registro">Registro de participación</a>
+  <!-- Actividades pasadas -->
+  <div class="seccion">
+    <h2>Actividades Pasadas</h2>
+    <div *ngIf="actividadesPasadas.length > 0; else noPasadas" class="actividades-lista">
+      <div class="actividad-card" *ngFor="let act of actividadesPasadas">
+        <h3>{{ act.nombre }}</h3>
+        <p><strong>Fecha:</strong> {{ act.fecha }} | <strong>Hora:</strong> {{ act.hora }}</p>
+        <p><strong>Lugar:</strong> {{ act.lugar }}</p>
+        <button (click)="verEstudiantes(act)" class="btn ver">Ver Participantes</button>
+      </div>
+    </div>
+    <ng-template #noPasadas>
+      <p class="no-datos">No hay actividades pasadas.</p>
+    </ng-template>
+  </div>
+
+  <!-- Información institucional -->
+  <div class="info-ceutec">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSl7fpXMUU9ryJIKsFmRwu-_Bwq0xdpmUshsw&s" alt="CEUTEC Logo" class="logo">
+    <div class="texto">
+      <h2>Sobre CEUTEC</h2>
+      <p>CEUTEC fomenta la excelencia académica y la formación integral de sus estudiantes, impulsando proyectos innovadores y experiencias de aprendizaje de calidad.</p>
+      <h3>Misión</h3>
+      <p>Brindar educación de calidad con enfoque integral, promoviendo ética, innovación y responsabilidad social.</p>
+      <h3>Visión</h3>
+      <p>Ser reconocidos como líderes en educación superior, formando profesionales competentes y comprometidos con la sociedad.</p>
     </div>
   </div>
 </div>

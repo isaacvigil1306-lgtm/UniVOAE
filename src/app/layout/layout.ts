@@ -41,11 +41,14 @@ export class Layout {
     this.menuAbierto = !this.menuAbierto;
   }
 
+
+  
   cerrarSesion() {
     this.router.navigate(['/']);
   }
 
   toggleSidebar() {
     this.sidebarAbierto = !this.sidebarAbierto;
+    
   }
 }

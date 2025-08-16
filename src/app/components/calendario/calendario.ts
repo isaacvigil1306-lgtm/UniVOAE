@@ -164,7 +164,7 @@ export class Calendario implements OnInit {
   showCancelButton: !actividadPasada,
   showConfirmButton: !actividadPasada,
   confirmButtonText: 'Inscribirse',
-  confirmButtonColor: '#28a745',
+  confirmButtonColor: '#001333',
   cancelButtonText: 'Cerrar',
   cancelButtonColor: '#dc3545'
 }).then(resultado => {

@@ -1,110 +1,125 @@
 .contenedor {
-  max-width: 900px;
+  max-width: 1000px;
   margin: 2rem auto;
-  padding: 2rem;
+  padding: 1.5rem;
   font-family: 'Segoe UI', sans-serif;
 
   h1 {
     text-align: center;
-    margin-bottom: 2rem;
     color: #007bff;
-  }
-
-  .resumen {
-    display: flex;
-    justify-content: space-around;
     margin-bottom: 2rem;
+  }
 
-    .tarjeta {
-      background: #f1f1f1;
-      border-radius: 10px;
-      padding: 2rem;
-      text-align: center;
-      width: 40%;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  .cerrar-sesion {
+    text-align: right;
+    margin-bottom: 1rem;
 
-      h2 {
-        margin: 0;
-        font-size: 2.5rem;
-        color: #007bff;
+    button {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s;
+
+      &:hover {
+        background-color: #b52a3a;
       }
-
-      p {
-        margin-top: 0.5rem;
-        font-size: 1.2rem;
-      }
-    }
-
-    .total {
-      background: #e3f2fd;
-    }
-
-    .estudiantes {
-      background: #e8f5e9;
     }
   }
 
-  .horas-mensuales {
-    background: #fefefe;
-    padding: 1.5rem;
-    border-left: 5px solid #17a2b8;
-    border-radius: 8px;
+  .seccion {
     margin-bottom: 2rem;
 
     h2 {
-      margin-top: 0;
-      color: #17a2b8;
+      color: #007bff;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid #007bff;
+      display: inline-block;
+      padding-bottom: 0.2rem;
     }
 
-    ul {
-      list-style: none;
-      padding-left: 0;
-
-      li {
-        margin-bottom: 0.5rem;
-      }
-    }
-  }
-
-  .enlaces-rapidos {
-    text-align: center;
-
-    .botones {
+    .actividades-lista {
       display: flex;
-      justify-content: center;
-      gap: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
 
-      a {
-        padding: 0.8rem 1.5rem;
-        background: #007bff;
-        color: white;
-        text-decoration: none;
-        border-radius: 8px;
-        transition: background 0.3s;
+      .actividad-card {
+        background: #f1f5f9;
+        padding: 1rem;
+        border-radius: 10px;
+        flex: 1 1 300px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transition: transform 0.2s;
 
         &:hover {
-          background: #0056b3;
+          transform: translateY(-3px);
+        }
+
+        h3 {
+          color: #0056b3;
+          margin-bottom: 0.5rem;
+        }
+
+        p {
+          margin: 0.2rem 0;
+        }
+
+        .btn.ver {
+          margin-top: 0.5rem;
+          padding: 0.4rem 0.8rem;
+          background: #007bff;
+          color: white;
+          border: none;
+          border-radius: 6px;
+          cursor: pointer;
+          transition: background 0.3s;
+
+          &:hover {
+            background: #0056b3;
+          }
         }
       }
     }
+
+    .no-datos {
+      color: #888;
+      font-style: italic;
+    }
   }
-}
-.cerrar-sesion {
-  text-align: right;
-  margin-bottom: 1rem;
 
-  button {
-    background-color: #dc3545;
-    color: white;
-    border: none;
-    padding: 0.6rem 1.2rem;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s;
+  .info-ceutec {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    background: #e9f0fb;
+    border-radius: 12px;
+    padding: 1.5rem;
+    align-items: center;
 
-    &:hover {
-      background-color: #b52a3a;
+    .logo {
+      width: 150px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .texto {
+      h2 {
+        color: #007bff;
+        margin-bottom: 0.5rem;
+      }
+
+      h3 {
+        margin-top: 1rem;
+        color: #0056b3;
+      }
+
+      p {
+        margin: 0.3rem 0;
+        color: #333;
+      }
     }
   }
 }
