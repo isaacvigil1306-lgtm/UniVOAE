@@ -10,10 +10,17 @@ import { Router } from '@angular/router';
   styleUrl: './layout-admin.scss'
 })
 export class LayoutAdmin {
+  menuAbierto: boolean = false;
+
   constructor(private router: Router) {}
 
-cerrarSesion() {
+  toggleMenu() {
+    this.menuAbierto = !this.menuAbierto;
+  }
+
+  cerrarSesion() {
+    this.router.navigate(['/']);
+  }
+
+}
   
-  this.router.navigate(['/']);
-}
-}

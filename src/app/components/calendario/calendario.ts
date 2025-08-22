@@ -110,11 +110,13 @@ export class Calendario implements OnInit {
     return this.actividades.filter(act => {
       let fechaAct: Date;
 
-      if (act.fecha instanceof Timestamp) {
-        fechaAct = act.fecha.toDate();
-      } else {
-        fechaAct = new Date(act.fecha);
-      }
+if (act.fecha instanceof Timestamp) {
+  fechaAct = act.fecha.toDate();
+} else {
+  // Forzar medianoche local para evitar desfase por zona horaria
+  fechaAct = new Date(act.fecha + 'T00:00:00');
+}
+
 
       const fechaActNormalizada = this.fechaSinHora(fechaAct);
 
@@ -184,11 +186,11 @@ export class Calendario implements OnInit {
 
   fechaIgual(fechaStr: any, dia: Date): boolean {
     let f: Date;
-    if (fechaStr instanceof Timestamp) {
-      f = fechaStr.toDate();
-    } else {
-      f = new Date(fechaStr);
-    }
+if (fechaStr instanceof Timestamp) {
+  f = fechaStr.toDate();
+} else {
+  f = new Date(fechaStr + 'T00:00:00');
+}
 
     return this.fechaSinHora(f).getTime() === this.fechaSinHora(dia).getTime();
   }

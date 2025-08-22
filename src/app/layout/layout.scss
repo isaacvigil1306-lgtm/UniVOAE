@@ -12,14 +12,14 @@ body, html, .layout {
   color: #333;
 }
 
-/* Contenedor principal */
+/* Layout */
 .layout {
   display: flex;
   height: 100vh;
   overflow: hidden;
 }
 
-/* Header móvil */
+/* Header móvil / franja PC */
 .mobile-header {
   display: flex;
   align-items: center;
@@ -35,7 +35,7 @@ body, html, .layout {
   z-index: 1001;
 }
 
-.hamburger-btn {
+.hamburger-btn, .close-btn {
   background: none;
   border: none;
   font-size: 1.5rem;
@@ -46,13 +46,14 @@ body, html, .layout {
 .mobile-username {
   font-weight: 600;
   font-size: 1rem;
+  margin-left: auto; /* empuja el texto a la derecha */
 }
 
-/* Sidebar (aside) */
+/* Sidebar */
 .sidebar {
   position: fixed;
-  top: 50px; /* debajo del header móvil */
-  left: -250px; /* oculto fuera de pantalla */
+  top: 50px;
+  left: -250px; /* oculto por defecto */
   width: 250px;
   height: calc(100% - 50px);
   background-color: #001333;
@@ -65,9 +66,10 @@ body, html, .layout {
 }
 
 .sidebar.open {
-  left: 0;
+  left: 0; /* cuando está abierto, visible */
 }
 
+/* Franja usuario */
 .sidebar-header {
   display: flex;
   align-items: center;
@@ -89,15 +91,7 @@ body, html, .layout {
   text-overflow: ellipsis;
 }
 
-.close-btn {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 1.5rem;
-  cursor: pointer;
-}
-
-/* Menú de navegación */
+/* Menú */
 .sidebar-menu {
   flex-grow: 1;
   display: flex;
@@ -127,7 +121,7 @@ body, html, .layout {
   background-color: #3d566e;
 }
 
-/* Footer del sidebar */
+/* Footer */
 .sidebar-footer {
   padding: 1rem 1.5rem;
   border-top: 1px solid rgba(255,255,255,0.1);
@@ -161,74 +155,36 @@ body, html, .layout {
 /* Contenido principal */
 .main-content {
   flex-grow: 1;
-  margin-top: 50px; /* para dejar espacio al header móvil */
+  margin-top: 50px;
   padding: 1.5rem;
   overflow-y: auto;
   width: 100%;
   transition: margin-left 0.3s ease;
 }
-@media (min-width: 768px) {
-  .sidebar.open ~ .main-content {
-    pointer-events: auto;
-    user-select: auto;
-    filter: none;
-  }
+
+.main-content.menu-open {
+  margin-left: 250px;
 }
 
-
-
-/* Media queries para escritorio */
+/* Media queries escritorio */
 @media (min-width: 768px) {
   .mobile-header {
-    display: none;
+    display: flex; /* mostrar franja en PC */
   }
 
   .sidebar {
-    position: relative;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    box-shadow: none;
+    top: 50px;
+    left: -250px; /* oculto por defecto en PC también */
+    height: calc(100% - 50px);
   }
 
   .sidebar.open {
-    left: 0;
+    left: 0; /* abrir con la X */
   }
 
   .main-content {
-    margin-top: 0;
-    margin-left: 250px;
-    pointer-events: auto;
-    user-select: auto;
-    filter: none;
-  }
-  @media (min-width: 768px) {
-
-  .main-content {
-    margin-left: 50px; /* ancho del sidebar */
-    padding: 1.1rem; /* antes 1.5rem, para acercar el contenido */
-  }
-  
-}
-
-}
-
-@media (min-width: 768px) {
-  .sidebar {
-    position: fixed;      /* fijo en toda la pantalla */
-    top: 0;                /* que empiece desde arriba */
-    left: 0;
-    height: 100vh;         /* cubrir toda la altura */
-    box-shadow: none;
-  }
-
-  .main-content {
-    margin-top: 0;         /* quitar margen superior */
-    margin-left: 350px;  
-    margin-right: 100px;  /* solo lo necesario para que no tape el contenido */
-    padding: 0;            /* quitar padding extra */
-    width: calc(100% - 250px);
+    margin-left: 0;
+    margin-top: 50px;
     overflow-y: hidden;
   }
 }
-

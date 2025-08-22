@@ -1,25 +1,38 @@
-<!-- layout-admin.component.html -->
 <div class="layout">
-  <aside class="sidebar">
+  <!-- Header móvil -->
+  <header class="mobile-header">
+    <button class="hamburger-btn" (click)="toggleMenu()" aria-label="Abrir menú">
+      <i class="fas fa-bars"></i>
+    </button>
+    <p class="mobile-username">UniVOAE</p>
+  </header>
+
+  <!-- Sidebar -->
+  <aside [class.sidebar]="true" [class.open]="menuAbierto">
     <div class="sidebar-header">
       <i class="fas fa-user-shield logo"></i>
       <p class="username">Administrador</p>
+      <button class="close-btn" (click)="toggleMenu()" aria-label="Cerrar menú">
+  <i class="fas fa-times"></i>
+</button>
+
+
     </div>
 
     <nav class="sidebar-menu">
-      <a routerLink="/administrador" class="menu-item" title="Dashboard">
+      <a routerLink="/administrador" class="menu-item" title="Dashboard" (click)="toggleMenu()">
         <i class="fas fa-tachometer-alt"></i>
         <span>Dashboard</span>
       </a>
-      <a routerLink="/actividades" class="menu-item" title="Actividades">
+      <a routerLink="/actividades" class="menu-item" title="Actividades" (click)="toggleMenu()">
         <i class="fas fa-users"></i>
         <span>Actividades</span>
       </a>
-      <a routerLink="/actividadespasadas" class="menu-item" title="Actividades">
+      <a routerLink="/actividadespasadas" class="menu-item" title="Actividades Pasadas" (click)="toggleMenu()">
         <i class="fas fa-history"></i>
         <span>Actividades Pasadas</span>
       </a>
-      <a routerLink="/registro" class="menu-item" title="Listas">
+      <a routerLink="/registro" class="menu-item" title="Listas" (click)="toggleMenu()">
         <i class="fas fa-file-alt"></i>
         <span>Listas</span>
       </a>
@@ -33,7 +46,8 @@
     </div>
   </aside>
 
-  <main class="main-content" >
+  <!-- Contenido principal -->
+  <main class="main-content" [class.menu-open]="menuAbierto">
     <router-outlet></router-outlet>
   </main>
 </div>
