@@ -16,7 +16,7 @@
   h1 {
     text-align: center;
     margin-bottom: 2rem;
-    color: #007bff;
+    color: #881f0d;
   }
 
   .tabla-historial {
@@ -31,7 +31,8 @@
     }
 
     thead {
-      background-color: #f1f1f1;
+      background-color: #9b2f1c;
+      color: white;
     }
 
     .estado {
@@ -105,4 +106,18 @@
   }
 }
   }
+}
+.estado {
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 6px;
+  color: white;
+}
+
+.completada {
+  background-color: #001f3f; /* Azul marino */
+}
+
+.noCompletada {
+  background-color: #800020; /* Rojo vino */
 }

@@ -129,7 +129,8 @@ export class Actividades implements OnInit {
       horas: 0,
       cupo: 0,
       pago: false,
-      descripcion: ''
+      descripcion: '',
+      imagen:'',
     };
   }
 }

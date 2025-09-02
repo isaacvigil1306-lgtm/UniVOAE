@@ -1,34 +1,35 @@
+<!-- Contenido -->
+<main class="contenido">
+  <div class="contenedor">
+    <h1>Historial de Actividades</h1>
 
-
-  <!-- Contenido -->
-  <main class="contenido">
-    <div class="contenedor">
-      <h1>Historial de Actividades</h1>
-
-      <table class="tabla-historial">
-        <thead>
-          <tr>
-            <th>Nombre de la Actividad</th>
-            <th>Fecha</th>
-            <th>Horas</th>
-            <th>Estado</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let actividad of historialActividades">
-            <td>{{ actividad.nombre }}</td>
-            <td>{{ actividad.fecha }}</td>
-            <td>{{ actividad.horas }}</td>
-            <td>
-              <span class="estado" [ngClass]="actividad.estado.toLowerCase()">
-                {{ actividad.estado }}
-              </span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
-   
-    </div>
-  </main>
-
+    <table class="tabla-historial">
+      <thead>
+        <tr>
+          <th>Nombre de la Actividad</th>
+          <th>Fecha</th>
+          <th>Horas</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let actividad of historialActividades">
+          <td>{{ actividad.nombre }}</td>
+          <td>{{ actividad.fecha }}</td>
+          <td>{{ actividad.horas }}</td>
+          <td>
+            <span
+              class="estado"
+              [ngClass]="{
+                completada: actividad.estado.toLowerCase() === 'completada',
+                noCompletada: actividad.estado.toLowerCase() !== 'completada'
+              }"
+            >
+              {{ actividad.estado }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</main>

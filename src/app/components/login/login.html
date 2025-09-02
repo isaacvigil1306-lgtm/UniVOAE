@@ -1,22 +1,20 @@
-<div class="login-container">
-  <!-- Header -->
-  <header class="login-header">
-    <img src="https://portal.unitec.edu/imagenes/compuesto.png" alt="Logo" class="logo" />
-  </header>
+<!-- Preloader -->
+<div class="preloader" *ngIf="isLoading">
+  <div class="spinner"></div>
+</div>
 
+<div class="login-container" [class.hidden]="isLoading">
   <!-- Card de Login -->
   <div class="login-card">
     <h2 class="title">Iniciar Sesión</h2>
 
     <form (ngSubmit)="login()" #form="ngForm" class="login-form">
       <div class="form-group">
-        <input type="text" id="username" name="username" [(ngModel)]="username" placeholder=" " required />
-        <label for="username">Escriba su correo electrónico...</label>
+        <input type="text" id="username" name="username" [(ngModel)]="username" placeholder="Escriba su número de cuenta... " required />
       </div>
 
       <div class="form-group">
-        <input type="password" id="password" name="password" [(ngModel)]="password" placeholder=" " required />
-        <label for="password">Escriba su contraseña</label>
+        <input type="password" id="password" name="password" [(ngModel)]="password" placeholder="Escriba su contraseña" required />
       </div>
 
       <div class="checkbox-group">

@@ -1,1 +1,28 @@
 /* You can add global styles to this file, and also import other style files */
+* {
+  margin: 0;
+  padding: 0;
+
+}
+
+.titulo-modal {
+  font-size: 1.6rem !important;
+  font-weight: bold !important;
+  color: #001f3f !important; /* azul marino elegante */
+  font-family: 'Segoe UI', sans-serif !important;
+}
+
+.contenido-modal {
+  font-size: 14px !important;
+  color: #333 !important;
+  text-align: left !important;
+  padding: 0 10px;
+}
+.swal2-popup {
+  border-radius: 15px !important;
+  box-shadow: 0 6px 25px rgba(0,0,0,0.25) !important;
+}
+.swal2-image {
+  border-radius: 12px !important;
+  margin-bottom: 15px !important;
+}

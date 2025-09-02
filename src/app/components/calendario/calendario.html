@@ -27,16 +27,24 @@
   [class.dia-pasado]="esPasado(dia)"
   (click)="seleccionarActividad(dia)"
 >
-  <div class="numero-dia">{{ dia.getDate() }}</div>
+  <div class="numero-dia">
+  {{ esDiaValido(dia) ? dia.getDate() : '' }}
+</div>
 
-  <div 
+
+
+ <div 
   class="actividad" 
   [class.cupos-llenos]="act.cupo === 0"
-  *ngFor="let act of actividadesDelDia(dia)"
+  *ngFor="let act of actividadesDelDia(dia); let i = index"
 >
-  {{ act.nombre }}
-  <span *ngIf="act.cupo === 0" class="etiqueta-lleno"> (Cupos llenos) </span>
+  <!-- Normal en escritorio -->
+  <span class="nombre-actividad">{{ act.nombre }}</span>
+
+  <!-- En móvil: puntito -->
+  <span class="punto-actividad" [class.punto-pasado]="esPasado(dia)"></span>
 </div>
+
 
 </div>
 </div>

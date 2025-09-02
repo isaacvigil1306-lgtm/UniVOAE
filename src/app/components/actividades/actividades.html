@@ -3,35 +3,41 @@
   <button class="btn abrir-modal" (click)="abrirModal()">Crear Actividad</button>
 
   <!-- Tabla de actividades -->
-   <div class="tabla-contenedor">
-  <table>
-    <thead>
-      <tr>
-        <th>Nombre</th>
-        <th>Fecha</th>
-        <th>Hora</th>
-        <th>Lugar</th>
-        <th>Horas</th>
-        <th>Cupo</th>
-        <th>Pago</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let act of actividades">
-        <td>{{ act.nombre }}</td>
-        <td>{{ act.fecha }}</td>
-        <td>{{ act.hora }}</td>
-        <td>{{ act.lugar }}</td>
-        <td>{{ act.horas }}</td>
-        <td>{{ act.cupo }}</td>
-        <td>{{ act.pago ? 'Sí' : 'No' }}</td>
-        <td>
-          <button class="btn editar" (click)="abrirModal(act)">Editar</button>
-        </td>
-      </tr>
-    </tbody>
-  </table></div>
+  <div class="tabla-contenedor">
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Fecha</th>
+          <th>Hora</th>
+          <th>Lugar</th>
+          <th>Horas</th>
+          <th>Cupo</th>
+          <th>Pago</th>
+          <th>Imagen</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let act of actividades">
+          <td>{{ act.nombre }}</td>
+          <td>{{ act.fecha }}</td>
+          <td>{{ act.hora }}</td>
+          <td>{{ act.lugar }}</td>
+          <td>{{ act.horas }}</td>
+          <td>{{ act.cupo }}</td>
+          <td>{{ act.pago ? 'Sí' : 'No' }}</td>
+          <td>
+            <img *ngIf="act.imagen" [src]="act.imagen" alt="Imagen actividad" width="60" />
+            <span *ngIf="!act.imagen">—</span>
+          </td>
+          <td>
+            <button class="btn editar" (click)="abrirModal(act)">Editar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
   <!-- Modal -->
   <div class="modal" *ngIf="modalAbierto">
@@ -81,6 +87,18 @@
         <div class="grupo">
           <label>Descripción</label>
           <textarea [(ngModel)]="nuevaActividad.descripcion" name="descripcion"></textarea>
+        </div>
+
+        <!-- 📌 Nuevo campo de imagen -->
+        <div class="grupo">
+          <label>URL de Imagen</label>
+          <input type="text" [(ngModel)]="nuevaActividad.imagen" name="imagen" placeholder="https://ejemplo.com/imagen.jpg" />
+        </div>
+
+        <!-- Vista previa -->
+        <div class="grupo" *ngIf="nuevaActividad.imagen">
+          <label>Vista previa</label>
+          <img [src]="nuevaActividad.imagen" alt="Vista previa" width="120" />
         </div>
 
         <button type="submit" class="btn submit">

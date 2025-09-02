@@ -6,7 +6,7 @@
 
   h1 {
     text-align: center;
-    color: #007bff;
+    color: #8b202a;
     margin-bottom: 2rem;
   }
 
@@ -22,7 +22,7 @@
       overflow: hidden;
 
       thead {
-        background-color: #007bff;
+        background-color: #8b202a;
         color: white;
       }
 
@@ -46,10 +46,10 @@
         font-size: 0.9rem;
 
         &.editar {
-          background-color: #007bff;
+          background-color: #8b202a;
 
           &:hover {
-            background-color: #0056b3;
+            background-color: #072a50;
           }
         }
 
@@ -192,7 +192,7 @@
 
       a {
         padding: 0.8rem 1.5rem;
-        background: #007bff;
+        background: #072a50;
         color: white;
         text-decoration: none;
         border-radius: 8px;
@@ -269,7 +269,7 @@
 
 
 .btn.abrir-modal {
-  background: #007bff;
+  background: #072a50;
   color: #fff;
   border: none;
   padding: 0.6rem 1.2rem;
@@ -277,5 +277,41 @@
   cursor: pointer;
   margin-bottom: 1rem;
 
-  &:hover { background: #0056b3; }
+  &:hover { background: #8b202a; }
+}
+
+/* Contenedor de la tabla */
+.tabla-contenedor {
+  width: 100%;
+  overflow-x: auto;   /* permite desplazamiento horizontal */
+  -webkit-overflow-scrolling: touch; /* scroll suave en iOS */
+}
+
+/* Estilos básicos de tabla */
+.tabla-contenedor table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px;  /* evita que se comprima demasiado en móvil */
+}
+
+.tabla-contenedor th,
+.tabla-contenedor td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.tabla-contenedor th {
+  background-color: #b52a3a;
+  color: white;
+  font-weight: 600;
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+  .tabla-contenedor {
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
 }

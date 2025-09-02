@@ -12,6 +12,7 @@ export interface Actividad {
   cupo: number;
   pago: boolean;
   descripcion?: string;
+    imagen?: string; // 📌 nuevo
 }
 
 @Injectable({

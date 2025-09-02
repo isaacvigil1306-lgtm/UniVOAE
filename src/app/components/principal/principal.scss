@@ -39,7 +39,7 @@ body, html, .contenedor {
   font-size: 1.8rem;
   font-weight: 700;
   margin-bottom: 1rem;
-  color: #34495e;
+  color: #811111;
 }
 
 /* Resumen horas: flex columnas en móvil */
@@ -53,8 +53,9 @@ body, html, .contenedor {
 /* Cada caja */
 .caja {
   flex: 1 1 150px;
-  background: #ecf0f1;
+  background: #0d1a61;
   border-radius: 6px;
+  
   padding: 1rem 1.25rem;
   box-shadow: inset 0 0 4px rgb(0 0 0 / 0.05);
   text-align: center;
@@ -63,19 +64,19 @@ body, html, .contenedor {
 }
 
 .caja:hover {
-  background: #d0d7de;
+  background: #881f0d;
 }
 
 .caja h3 {
   margin: 0 0 0.5rem 0;
   font-weight: 600;
-  color: #2c3e50;
+  color: white;
 }
 
 .caja p {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #34495e;
+  color: white;
 }
 
 /* Última actividad */

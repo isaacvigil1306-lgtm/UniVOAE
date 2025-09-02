@@ -16,6 +16,9 @@ export class Registro implements OnInit {
   inscritos: any[] = [];
   actividadSeleccionadaId: string | null = null;
   actividadSeleccionada: any = null;
+  mostrarModal: boolean = false;
+    mostrarModalAsistencia: boolean = false; // Modal para asistencia
+    
 
   constructor(private router: Router, private firestore: Firestore) {}
 
@@ -24,14 +27,31 @@ export class Registro implements OnInit {
   }
 
   async cargarActividadesFuturas() {
-    const actividadesRef = collection(this.firestore, 'actividades');
-    const querySnapshot = await getDocs(actividadesRef);
-    const hoy = new Date().toISOString().split('T')[0];
+  const actividadesRef = collection(this.firestore, 'actividades');
+  const querySnapshot = await getDocs(actividadesRef);
+  
 
-    this.actividades = querySnapshot.docs
-      .map(doc => ({ id: doc.id, ...doc.data() }))
-      .filter((act: any) => act.fecha >= hoy);
+  const hoy = new Date().toLocaleDateString("es-HN", { timeZone: "America/Tegucigalpa" });
+  const todasActividades = querySnapshot.docs
+    .map(doc => ({ id: doc.id, ...doc.data() }))
+    .filter((act: any) => act.fecha == hoy);
+
+  const actividadesDisponibles: any[] = [];
+
+  for (const act of todasActividades) {
+    // Verificar si ya tiene asistencia registrada
+    const asistenciasRef = collection(this.firestore, 'asistencias');
+    const asistenciasSnap = await getDocs(query(asistenciasRef, where('idActividad', '==', act.id)));
+
+    if (asistenciasSnap.empty) {
+      // ✅ Solo agregar si no hay asistencia aún
+      actividadesDisponibles.push(act);
+    }
   }
+
+  this.actividades = actividadesDisponibles;
+}
+
 
   async seleccionarActividad(event: Event) {
     const select = event.target as HTMLSelectElement;

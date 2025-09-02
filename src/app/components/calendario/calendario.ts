@@ -134,55 +134,120 @@ if (act.fecha instanceof Timestamp) {
   }
 
   seleccionarActividad(dia: Date) {
-    if (isNaN(dia.getTime())) return;
+  if (isNaN(dia.getTime())) return;
 
-    const actividad = this.actividades.find(act => this.fechaIgual(act.fecha, dia));
-    if (!actividad) return;
+  const actividadesDia = this.actividadesDelDia(dia);
+  if (!actividadesDia.length) return;
 
-    let fechaActividad: Date;
-    if (actividad.fecha instanceof Timestamp) {
-      fechaActividad = actividad.fecha.toDate();
-    } else {
-      fechaActividad = new Date(actividad.fecha);
-    }
-
-    const hoy = new Date();
-
-    const fechaActividadNormalizada = this.fechaSinHora(fechaActividad);
-    const hoyNormalizado = this.fechaSinHora(hoy);
-
-    const actividadPasada = fechaActividadNormalizada < hoyNormalizado;
+  if (actividadesDia.length === 1) {
+    // 👉 Solo una actividad → mostrar normal
+    this.mostrarModalActividad(actividadesDia[0]);
+  } else {
+    // 👉 Varias actividades → mostrar lista y elegir
+    const listaHtml = actividadesDia.map((act, index) => `
+      <button style="display:block;width:100%;margin:5px 0;padding:10px;border-radius:8px;border:1px solid #ccc;background:#641010ff; color: white;" 
+              onclick="window.seleccionarActividad(${index})">
+        ${act.nombre} - ${new Date(act.fecha).toLocaleDateString()}
+      </button>
+    `).join('');
 
     Swal.fire({
-  title: actividad.titulo || actividad.nombre || 'Actividad',
-  html: `
-    <p><strong>Fecha:</strong> ${fechaActividadNormalizada.toLocaleDateString()}</p>
-    <p><strong>Lugar:</strong> ${actividad.lugar}</p>
-    <p><strong>Cupo:</strong> ${actividad.cupo}</p>
-    <p><strong>Horas:</strong> ${actividad.horas}</p>
-    <p><strong>Requiere pago:</strong> ${actividad.pago ? 'Sí' : 'No'}</p>
-    ${actividadPasada ? '<p style="color:red;"><strong>Esta actividad no está disponible</strong></p>' : ''}
-  `,
-  showCancelButton: !actividadPasada,
-  showConfirmButton: !actividadPasada,
-  confirmButtonText: 'Inscribirse',
-  confirmButtonColor: '#001333',
-  cancelButtonText: 'Cerrar',
-  cancelButtonColor: '#dc3545'
-}).then(resultado => {
-  if (resultado.isConfirmed && !actividadPasada) {
-    if (actividad.cupo > 0) {
-      this.router.navigate(['/inscripcion'], { queryParams: { idActividad: actividad.id } });
-    } else {
-      Swal.fire({
-        icon: 'error',
-        title: 'Cupos llenos',
-        text: 'Lo sentimos, esta actividad ya no tiene cupos disponibles.',
-      });
+      title: 'Actividades disponibles',
+      html: `<div>${listaHtml}</div>`,
+      showConfirmButton: false,
+    });
+
+    // 👉 Truco para comunicar SweetAlert con Angular
+    (window as any).seleccionarActividad = (index: number) => {
+      Swal.close();
+      this.mostrarModalActividad(actividadesDia[index]);
+    };
+  }
+}
+
+mostrarModalActividad(actividad: any) {
+  let fechaActividad: Date;
+  if (actividad.fecha instanceof Timestamp) {
+    fechaActividad = actividad.fecha.toDate();
+  } else {
+    fechaActividad = new Date(actividad.fecha + 'T00:00:00');
+  }
+
+  const hoyNormalizado = this.fechaSinHora(new Date());
+  const fechaActividadNormalizada = this.fechaSinHora(fechaActividad);
+
+  const actividadPasada = fechaActividadNormalizada < hoyNormalizado;
+
+  Swal.fire({
+    title: actividad.titulo || actividad.nombre || 'Actividad',
+    html: `
+      <div style="text-align:center; margin-bottom:15px;">
+        <!-- Loader -->
+        <div id="loader" style="border: 4px solid #f3f3f3; border-top: 4px solid #641010ff; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+
+        <!-- Imagen (oculta hasta que cargue) -->
+        <img id="actividad-img"
+             src="${actividad.imagen || 'https://ceutec.hn/wp-content/uploads/2023/11/Premio-Fundahrse-2.png'}"
+             alt="Imagen de la actividad"
+             style="display:none; max-width:100%; border-radius:8px; margin-top:10px;" />
+      </div>
+
+      <div style="text-align:left; font-family:Arial, sans-serif; line-height:1.6;">
+        <p><strong>📅 Fecha:</strong> ${fechaActividadNormalizada.toLocaleDateString()}</p>
+        <p><strong>📍 Lugar:</strong> ${actividad.lugar}</p>
+        <p><strong>👥 Cupo:</strong> ${actividad.cupo}</p>
+        <p><strong>⏰ Horas:</strong> ${actividad.horas}</p>
+        <p><strong>💰 Requiere pago:</strong> ${actividad.pago ? 'Sí' : 'No'}</p>
+        ${actividad.descripcion ? `<p style="margin-top:12px;">${actividad.descripcion}</p>` : ''}
+        ${actividadPasada ? '<p style="color:#b71c1c; font-weight:bold; margin-top:15px;">⚠️ Esta actividad ya no está disponible</p>' : ''}
+      </div>
+
+      <style>
+        @keyframes spin { 
+          0% { transform: rotate(0deg); } 
+          100% { transform: rotate(360deg); } 
+        }
+      </style>
+    `,
+    showCancelButton: true,
+    showConfirmButton: !actividadPasada,
+    confirmButtonText: 'Inscribirse',
+    confirmButtonColor: '#001f3f',  // azul marino
+    cancelButtonText: actividadPasada ? 'Cerrar' : 'Cancelar',
+    cancelButtonColor: '#800020',   // rojo vino
+    width: '500px',
+    background: '#fdfdfd',
+    didRender: () => {
+      const img: any = document.getElementById("actividad-img");
+      const loader = document.getElementById("loader");
+
+      if (img) {
+        img.onload = () => {
+          if (loader) loader.style.display = "none";
+          img.style.display = "block";
+        };
+      }
     }
-  }
-});
-  }
+  }).then(resultado => {
+    if (resultado.isConfirmed && !actividadPasada) {
+      if (actividad.cupo > 0) {
+        this.router.navigate(['/inscripcion'], { queryParams: { idActividad: actividad.id } });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Cupos llenos',
+          text: 'Lo sentimos, esta actividad ya no tiene cupos disponibles.',
+        });
+      }
+    }
+  });
+}
+
+esDiaValido(dia: Date): boolean {
+  return dia instanceof Date && !isNaN(dia.getTime());
+}
+
+
 
   fechaIgual(fechaStr: any, dia: Date): boolean {
     let f: Date;

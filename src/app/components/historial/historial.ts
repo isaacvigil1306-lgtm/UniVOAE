@@ -56,6 +56,7 @@ export class Historial implements OnInit {
 
 
 
+
 cerrarSesion() {
   
   this.router.navigate(['/']);

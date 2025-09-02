@@ -1,11 +1,31 @@
-/* Contenedor principal */
-.contenedor {
-  max-width: 100%;
-  margin: 2rem auto;
-  padding: 0.2rem;
-  font-family: 'Segoe UI', sans-serif;
-  color: #474747;
 
+/* Normalmente muestra nombres */
+.nombre-actividad {
+  display: inline;
+}
+
+/* Ocultar nombres y mostrar puntitos en móvil */
+@media (max-width: 768px) {
+  .nombre-actividad {
+    display: none;
+  }
+
+
+
+
+
+  .punto-actividad {
+    display: inline-flex;
+    width: 5px;
+    height: 5px;
+    margin-right: 1px;
+    border-radius: 70%;
+    background-color: white; /* actividades futuras */
+  }
+
+  .punto-actividad.punto-pasado {
+    background-color: rgb(255, 255, 255); /* actividades pasadas */
+  }
 }
 
 
@@ -76,8 +96,12 @@
   gap: 0.5rem;
   margin-bottom: 2rem;
   text-align: center;
-  
+
+  height: 70vh;         /* limita la altura */
+  overflow-y: auto;     /* habilita scroll vertical */
+  overflow-x: hidden;   /* evita scroll horizontal */
 }
+
 
 /* Encabezado de días */
 .dia-header {
@@ -101,7 +125,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  overflow: hidden;
+  
 }
 
 
@@ -117,48 +141,62 @@
 /* Actividades dentro del día */
 .actividad {
   font-size: 0.8rem;
- 
+ background-color: #a31521;
+  color: white;
   margin: 0.2rem 0;
   padding: 0.2rem 0.3rem;
   
-  color: black;
+  
   width: 100%;
   
   
 }
 
+ .dia-pasado  .actividad{
+ 
+}
+
 .actividad.cupos-llenos {
-  background-color: #f8d7da;
-  color: black;
-  font-weight: 600;
+background-color: #a31521;
+  color: white;
+}
+
+.dia-pasado .actividad.cupos-llenos {
+background-color: #a31521;
+  color: white;
 }
 
 /* Celda con actividad */
 .con-actividad {
-  border: 2px solid #001333;
+  
 }
 
 /* Día de hoy */
 .dia-hoy {
-  background-color: #f04646 !important;
+  background-color: #851616 !important;
   color: white !important;
 }
 
+
 .dia-hoy .actividad {
-  background-color: rgba(255, 255, 255, 0.3) !important;
+ 
   color: white !important;
+}
+
+.dia-hoy .numero-dia{
+  color: white;
 }
 
 /* Día pasado */
 .dia-pasado {
   background-color: #e9ecef;
-  color: #6c757d;
+  
   cursor: default;
 }
 
 .dia-pasado .actividad {
-  background-color: #dee2e6;
-  color: #6c757d;
+ 
+  
 }
 
 
@@ -170,18 +208,58 @@
 
 /* Ajustes responsive: móviles */
 @media (max-width: 599px) {
-  /* Grid reducido a 2 columnas */
   .calendario-grid {
     grid-template-columns: repeat(7, 1fr);
-    gap: 0.4rem;
-    
+    gap: 0.2rem;
   }
-  /* Solo visible en móviles */
-@media (min-width: 600px) {
-  .btn-cerrar-sidebar {
-    display: none !important;
+
+  /* Encabezado de días más compacto */
+  .dia-header {
+    font-size: 0.75rem;      // más pequeño
+    padding: 0.2rem 0;       // menos padding
+    line-height: 1;           // elimina espacio extra
+  }
+
+  /* Abreviar nombres de días (Lun, Mar, etc) */
+  .dia-header::after {
+    content: attr(data-abrev);
+    display: block;
+  }
+
+  /* Celdas más compactas */
+  .celda-dia {
+    min-height: 50px;         // suficiente para el número y puntos
+    padding: 0.1rem;
+    border-radius: 5px;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  /* Número de día más pequeño */
+  .numero-dia {
+    font-size: 0.85rem;
+    margin-bottom: 0.15rem;
+  }
+
+  /* Actividades más compactas */
+  .actividad {
+    font-size: 0.65rem;
+    padding: 0.1rem 0.15rem;
+    border-radius: 3px;
+    margin: 0.1rem 0;
+    white-space: nowrap;       // evita que se alargue el alto
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Puntos de actividad */
+  .punto-actividad {
+    width: 4px;
+    height: 4px;
+    margin: 0 0.5px;
   }
 }
+
 
 
   /* Ocultar nombres de días para ahorrar espacio */
@@ -232,4 +310,53 @@
     font-size: 1.5rem;
     margin-bottom: 1rem;
   }
+
+
+/* Vista de escritorio */
+@media (min-width: 1024px) {
+  .calendar-container {
+
+  }
+  .calendar-day {
+    min-height: 100px;
+    font-size: 1rem;
+  }
 }
+/* Contenedor principal del calendario */
+#calendar-container, 
+.calendar-container {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 1rem;
+  box-sizing: border-box;
+  height: 90vh;
+
+}
+
+
+
+/* Estilos para el calendario */
+.fc {
+  max-width: 100%;
+  min-height: 600px; /* altura mínima para que se expanda */
+}
+
+/* Ajustes de la tabla interna de FullCalendar */
+.fc-scroller {
+  overflow-y: auto !important; /* fuerza el scroll vertical */
+}
+
+/* Opcional: personalizar la barra de desplazamiento */
+.calendar-container::-webkit-scrollbar {
+  width: 10px;
+}
+
+.calendar-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
+}
+
+.calendar-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -12,13 +12,27 @@ import { Auth, signInWithEmailAndPassword } from '@angular/fire/auth';
   styleUrls: ['./login.scss'],
   imports: [FormsModule, CommonModule],
 })
-export class Login {
+export class Login implements OnInit{
   username: string = '';
   password: string = '';
   errorMessage: string = '';
+   isLoading = true; // inicia en true
 
   constructor(private router: Router, private Permisos: Permisos, private auth: Auth) {}
+  ngOnInit() {
+    // Crear un objeto Image para esperar a que se cargue el fondo
+    const img = new Image();
+    img.src = 'https://portal.unitec.edu/Documentos/2025/CEUTEC/FondoZoom_CEUTEC_3.png';
 
+    img.onload = () => {
+      this.isLoading = false; // cuando la imagen cargue, ocultar preloader
+    };
+
+    img.onerror = () => {
+      console.error('Error cargando la imagen');
+      this.isLoading = false; // ocultar aunque falle
+    };
+  }
 login() {
   this.Permisos.login(this.username, this.password).subscribe({
     next: (usuarios) => {
@@ -42,6 +56,8 @@ login() {
     }
   });
 }
+
+
 
 
   togglePassword() {
