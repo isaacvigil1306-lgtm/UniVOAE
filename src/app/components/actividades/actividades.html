@@ -15,7 +15,10 @@
           <th>Cupo</th>
           <th>Pago</th>
           <th>Imagen</th>
+          <th>Estado</th>
+          
           <th>Acciones</th>
+          <th>Estudiantes</th>
         </tr>
       </thead>
       <tbody>
@@ -32,18 +35,32 @@
             <span *ngIf="!act.imagen">—</span>
           </td>
           <td>
+            <button class="btn" [ngClass]="act.estado ? 'activo' : 'inactivo'" 
+                    (click)="toggleEstado(act)">
+              {{ act.estado ? 'Activo' : 'Inactivo' }}
+            </button>
+          </td>
+          
+          <td>
             <button class="btn editar" (click)="abrirModal(act)">Editar</button>
+          </td>
+          <td>
+            <button class="btn ver" 
+                    (click)="act.id && verEstudiantes(act.id)">
+              👥 Ver Estudiantes
+            </button>
           </td>
         </tr>
       </tbody>
     </table>
   </div>
 
-  <!-- Modal -->
+  <!-- Modal Crear/Editar Actividad -->
   <div class="modal" *ngIf="modalAbierto">
     <div class="modal-contenido">
       <h2>{{ modoEdicion ? 'Editar Actividad' : 'Crear Actividad' }}</h2>
       <form #form="ngForm" (ngSubmit)="crearActividad(form)">
+        <!-- Campos de actividad (igual que tu HTML actual) -->
         <div class="grupo">
           <label>Nombre</label>
           <input type="text" [(ngModel)]="nuevaActividad.nombre" name="nombre" required />
@@ -77,11 +94,24 @@
         </div>
 
         <div class="grupo">
-          <label>¿Requiere pago?</label>
-          <select [(ngModel)]="nuevaActividad.pago" name="pago" required>
-            <option [value]="false">No</option>
-            <option [value]="true">Sí</option>
-          </select>
+          <label>
+            <input type="checkbox" [(ngModel)]="nuevaActividad.pago" name="pago" />
+            ¿Requiere pago?
+          </label>
+
+          <div *ngIf="nuevaActividad.pago" class="pago-opciones">
+            <label for="correoPago">Correo electrónico de pagos*</label>
+            <input type="email" id="correoPago" [(ngModel)]="nuevaActividad.correoPago" name="correoPago" required />
+
+            <label for="precio">Precio*</label>
+            <input type="number" id="precio" [(ngModel)]="nuevaActividad.precio" name="precio" required />
+
+            <label for="banco">Banco*</label>
+            <input type="text" id="banco" [(ngModel)]="nuevaActividad.banco" name="banco" required />
+
+            <label for="cuenta">Número de cuenta*</label>
+            <input type="text" id="cuenta" [(ngModel)]="nuevaActividad.numeroCuenta" name="numeroCuenta" required />
+          </div>
         </div>
 
         <div class="grupo">
@@ -89,13 +119,11 @@
           <textarea [(ngModel)]="nuevaActividad.descripcion" name="descripcion"></textarea>
         </div>
 
-        <!-- 📌 Nuevo campo de imagen -->
         <div class="grupo">
           <label>URL de Imagen</label>
           <input type="text" [(ngModel)]="nuevaActividad.imagen" name="imagen" placeholder="https://ejemplo.com/imagen.jpg" />
         </div>
 
-        <!-- Vista previa -->
         <div class="grupo" *ngIf="nuevaActividad.imagen">
           <label>Vista previa</label>
           <img [src]="nuevaActividad.imagen" alt="Vista previa" width="120" />
@@ -107,5 +135,50 @@
         <button type="button" class="btn cerrar" (click)="cerrarModal()">Cancelar</button>
       </form>
     </div>
+  </div>
+
+<!-- Modal estudiantes -->
+<div class="modal" *ngIf="mostrarEstudiantes">
+  <div class="modal-contenido">
+    <!-- Botón de cerrar con X -->
+    <button class="cerrar-x" (click)="cerrarEstudiantes()">×</button>
+
+    <h2>Estudiantes inscritos</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Número de cuenta</th>
+          <th>Nombre</th>
+          <th>Correo</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let est of estudiantes">
+          <td>{{ est.identidad }}</td>
+          <td>{{ est.nombre }}</td>
+          <td>{{ est.correo }}</td>
+          <td>
+            <span [ngClass]="{
+              'pendiente': est.estadoInscripcion === 'pendiente',
+              'aceptado': est.estadoInscripcion === 'aceptado',
+              'falta-pago': est.estadoInscripcion === 'falta-pago',
+              'rechazado': est.estadoInscripcion === 'rechazado'
+            }">
+              {{ est.estadoInscripcion || 'pendiente' }}
+            </span>
+          </td>
+          <td>
+            <select [(ngModel)]="est.estadoInscripcion" (change)="cambiarEstado(est, est.estadoInscripcion)">
+              <option value="aceptado">Aceptar</option>
+              <option value="falta-pago">Falta realizar el pago</option>
+              <option value="pendiente">Pendiente</option>
+              <option value="rechazado">Rechazar</option>
+            </select>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>

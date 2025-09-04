@@ -2,9 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Firestore, doc, getDoc, collection, addDoc, updateDoc } from '@angular/fire/firestore';
-import { Auth } from '@angular/fire/auth'; // si usas autenticación
+import {
+  Firestore, doc, getDocs, getDoc, collection, addDoc, updateDoc, query, where
+} from '@angular/fire/firestore';
 import { RouterModule } from '@angular/router';
+import Swal from 'sweetalert2';
+
+// 👇 importa tu servicio de usuarios (mismo nombre de archivo que ya usas)
+import { UsuariosService } from '../../servicios/usuarios';
 
 @Component({
   selector: 'app-inscripcion',
@@ -14,15 +19,19 @@ import { RouterModule } from '@angular/router';
   imports: [CommonModule, FormsModule, RouterModule],
 })
 export class Inscripcion implements OnInit {
-  
-  nombre: string = '';
-  identidad: string = '';
-  correo: string = '';
-  telefono: string = '';
+  // formulario
+  nombre = '';
+  numeroCuenta = '';
+  correo = '';
+  telefono = '';
   comprobante: File | null = null;
 
-  enviado: boolean = false;
+  // estado UI
+  enviado = false;
+  mostrarModalPago = false;
+  perfilEncontrado = false;
 
+  // actividad
   idActividad!: string;
   actividad: any = null;
 
@@ -30,79 +39,134 @@ export class Inscripcion implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private firestore: Firestore,
-    private auth: Auth
+    private usuariosService: UsuariosService
   ) {}
 
   async ngOnInit() {
-  // Obtener id de la actividad desde la URL
-  this.idActividad = this.route.snapshot.queryParamMap.get('idActividad') || '';
+    // 1) id de actividad desde query param
+    this.idActividad = this.route.snapshot.queryParamMap.get('idActividad') || '';
+    if (!this.idActividad) {
+      Swal.fire('Sin actividad', 'No se encontró la actividad.', 'warning');
+      this.router.navigate(['/calendario']);
+      return;
+    }
 
-  if (!this.idActividad) {
-    alert('No se encontró la actividad');
-    this.router.navigate(['/calendario']);
-    return;
+    // 2) leer usuario desde localStorage (solo para obtener correo)
+    const usuarioGuardado = localStorage.getItem('usuario');
+    if (!usuarioGuardado) {
+      Swal.fire('Sesión requerida', 'Debes iniciar sesión.', 'info');
+      this.router.navigate(['/calendario']);
+      return;
+    }
+
+    const usuarioLocal = JSON.parse(usuarioGuardado);
+    const correoLocal = usuarioLocal?.correo || '';
+
+    // 3) buscar perfil en Firestore por correo y autocompletar si existe
+    if (correoLocal) {
+      this.usuariosService.obtenerUsuarioPorCorreo(correoLocal).subscribe((usuarios) => {
+        if (usuarios && usuarios.length > 0) {
+          const u: any = usuarios[0];
+          this.nombre = u.nombre || '';
+          this.numeroCuenta = u.numeroCuenta || '';
+          this.correo = u.correo || correoLocal;
+          this.telefono = u.telefono || '';
+          this.perfilEncontrado = true; // bloquea edición de los campos base
+        } else {
+          // no hay perfil → campos editables y vacíos (correo sugerido)
+          this.correo = correoLocal;
+          this.perfilEncontrado = false;
+        }
+      });
+    }
+
+    // 4) cargar actividad
+    const actRef = doc(this.firestore, 'actividades', this.idActividad);
+    const actSnap = await getDoc(actRef);
+    if (actSnap.exists()) {
+      this.actividad = actSnap.data();
+    } else {
+      Swal.fire('Sin actividad', 'La actividad no existe.', 'error');
+      this.router.navigate(['/calendario']);
+    }
   }
-
-  // Leer usuario guardado en localStorage
-  const usuarioGuardado = localStorage.getItem('usuario');
-  if (!usuarioGuardado) {
-    alert('Debes iniciar sesión');
-    this.router.navigate(['/calendario']);
-    return;
-  }
-
-  const data = JSON.parse(usuarioGuardado);
-  this.nombre = data.nombre || '';
-  this.identidad = data.dni || '';
-  this.correo = data.correo || '';
-
-  // Obtener datos de la actividad
-  const actRef = doc(this.firestore, 'actividades', this.idActividad);
-  const actSnap = await getDoc(actRef);
-  if (actSnap.exists()) {
-    this.actividad = actSnap.data();
-  }
-}
-
 
   onFileChange(event: any) {
-    const file = event.target.files[0];
-    this.comprobante = file;
+    const file = event.target.files?.[0];
+    this.comprobante = file ?? null;
   }
 
   async enviarInscripcion() {
-    if (!this.nombre || !this.identidad || !this.correo) {
-      alert('Por favor, complete los campos requeridos.');
+    if (!this.nombre || !this.numeroCuenta || !this.correo) {
+      Swal.fire('Campos requeridos', 'Completa nombre, número de cuenta y correo.', 'warning');
       return;
     }
 
     try {
+      const inscripcionesRef = collection(this.firestore, 'inscripciones');
+
+      // Evitar duplicados por numeroCuenta + idActividad
+      const qIns = query(
+        inscripcionesRef,
+        where('numeroCuenta', '==', this.numeroCuenta),
+        where('idActividad', '==', this.idActividad)
+      );
+      const querySnapshot = await getDocs(qIns);
+
+      if (!querySnapshot.empty) {
+        Swal.fire('Ya inscrito', 'No puedes inscribirte más de una vez en esta actividad.', 'info');
+        return;
+      }
+
       // Guardar inscripción
-      await addDoc(collection(this.firestore, 'inscripciones'), {
+      await addDoc(inscripcionesRef, {
         idActividad: this.idActividad,
         nombre: this.nombre,
-        identidad: this.identidad,
+        numeroCuenta: this.numeroCuenta,
         correo: this.correo,
-        telefono: this.telefono,
+        telefono: this.telefono || null,
+        estadoInscripcion: 'pendiente',
         fechaInscripcion: new Date()
-        
       });
 
-      // Restar cupo de actividad
-      const actRef = doc(this.firestore, 'actividades', this.idActividad);
-      await updateDoc(actRef, {
-        cupo: (this.actividad.cupo || 0) - 1
-      });
+      // Restar cupo (si el campo existe)
+      if (this.actividad?.cupo !== undefined) {
+        const actRef = doc(this.firestore, 'actividades', this.idActividad);
+        await updateDoc(actRef, { cupo: (this.actividad.cupo || 0) - 1 });
+      }
 
       this.enviado = true;
 
-      // Resetear teléfono y comprobante (los otros datos no)
-      this.telefono = '';
-      this.comprobante = null;
+      // Mostrar modal solo si requiere pago
+      if (this.actividad?.pago === true) {
+        this.mostrarModalPago = true;
+      } else {
+        this.mostrarModalPago = false;
+      }
 
+      Swal.fire('Inscripción exitosa', 'Tu inscripción ha sido registrada.', 'success');
     } catch (error) {
       console.error('Error al guardar inscripción', error);
+      Swal.fire('Error', 'Ocurrió un problema al inscribirse.', 'error');
     }
+  }
+
+  cerrarModalPago() {
+    this.mostrarModalPago = false;
+  }
+
+  mailtoLink() {
+    if (!this.actividad) return '#';
+    const subject = `Comprobante de pago - ${this.actividad.nombre}`;
+    const body =
+      `No elimine la siguiente información:\n\n` +
+      `Nombre de la actividad: ${this.actividad.nombre}\n` +
+      `Nombre del alumno: ${this.nombre}\n` +
+      `Número de cuenta (alumno): ${this.numeroCuenta}\n\n` +
+      `Adjunte su comprobante de pago, por favor.`;
+
+    const correoPago = this.actividad.correoPago || 'pagos@ejemplo.com';
+    return `mailto:${correoPago}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   }
 
   cerrarSesion() {

@@ -11,12 +11,10 @@
   <aside [class.sidebar]="true" [class.open]="menuAbierto">
     <div class="sidebar-header">
       <i class="fas fa-user-shield logo"></i>
-      <p class="username">Administrador</p>
+      <p class="username">{{ usuarioCorreo }}</p>
       <button class="close-btn" (click)="toggleMenu()" aria-label="Cerrar menú">
-  <i class="fas fa-times"></i>
-</button>
-
-
+        <i class="fas fa-times"></i>
+      </button>
     </div>
 
     <nav class="sidebar-menu">

@@ -13,6 +13,14 @@ export interface Actividad {
   pago: boolean;
   descripcion?: string;
     imagen?: string; // 📌 nuevo
+    estado: boolean;
+    visible: boolean;
+      correoPago?: string | null;
+  precio?: number | null;
+  banco?: string | null;
+  numeroCuenta?: string | null;
+  
+  
 }
 
 @Injectable({
@@ -27,10 +35,35 @@ export class ActividadesService {
     return collectionData(actividadesRef, { idField: 'id' }) as Observable<Actividad[]>;
   }
 
-  agregarActividad(actividad: Actividad) {
-    const actividadesRef = collection(this.firestore, 'actividades');
-    return addDoc(actividadesRef, actividad);
-  }
+  
+
+  actualizarInscripcion(id: string, cambios: any) {
+  const inscripcionDoc = doc(this.firestore, `inscripciones/${id}`);
+  return updateDoc(inscripcionDoc, cambios);
+}
+
+ agregarActividad(actividad: Actividad) {
+  const actividadesRef = collection(this.firestore, 'actividades');
+  return addDoc(actividadesRef, {
+    nombre: actividad.nombre,
+    fecha: actividad.fecha,
+    hora: actividad.hora,
+    lugar: actividad.lugar,
+    horas: actividad.horas,
+    cupo: actividad.cupo,
+    pago: actividad.pago || false,
+    correoPago: actividad.correoPago || null,
+    precio: actividad.precio || null,
+    banco: actividad.banco || null,
+    numeroCuenta: actividad.numeroCuenta || null,
+    descripcion: actividad.descripcion || '',
+    imagen: actividad.imagen || '',
+    estado: actividad.estado,
+    visible: actividad.visible,
+    
+  });
+}
+
 
   actualizarActividad(id: string, actividad: Partial<Actividad>) {
     const actividadDoc = doc(this.firestore, `actividades/${id}`);

@@ -14,19 +14,31 @@
   <div *ngIf="actividadSeleccionadaId">
     <h2>Estudiantes inscritos</h2>
 
-    <div *ngIf="inscritos.length > 0; else noInscritos" class="asistencia-lista">
-      <div class="asistencia-item" *ngFor="let estudiante of inscritos">
-        <span>{{ estudiante.identidad }} - {{ estudiante.nombre }}</span>
-        <label>
-          <input type="checkbox" [(ngModel)]="estudiante.asistio">
-          Asistió
-        </label>
-      </div>
-      <button class="btn guardar" (click)="guardarAsistencia()">Guardar asistencia</button>
-    </div>
+    <table *ngIf="inscritos.length > 0; else noInscritos" class="tabla-inscritos">
+      <thead>
+        <tr>
+          <th>Identidad</th>
+          <th>Nombre</th>
+          <th>Asistió</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let estudiante of inscritos">
+          <td>{{ estudiante.identidad }}</td>
+          <td>{{ estudiante.nombre }}</td>
+          <td>
+            <input type="checkbox" [(ngModel)]="estudiante.asistio">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <button *ngIf="inscritos.length > 0" class="btn guardar" (click)="guardarAsistencia()">
+      Guardar asistencia
+    </button>
 
     <ng-template #noInscritos>
-      <p class="no-datos">No hay nadie inscrito para esta actividad.</p>
+      <p class="no-datos">No hay estudiantes con inscripción aceptada para esta actividad.</p>
     </ng-template>
   </div>
 </div>

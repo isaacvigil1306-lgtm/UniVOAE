@@ -2,28 +2,72 @@
   <h1>Historial de actividades</h1>
 
   <!-- Buscador -->
-  <input type="text" placeholder="Buscar actividad o estudiante..." [(ngModel)]="busqueda" class="buscador" />
+  <input
+    type="text"
+    placeholder="Buscar actividad o estudiante..."
+    [(ngModel)]="busqueda"
+    class="buscador"
+  />
 
-  <!-- Lista de actividades pasadas -->
-  <div *ngFor="let actividad of actividadesFiltradas()" class="actividad-card">
-    <div class="actividad-header" (click)="toggleExpandir(actividad.id)">
-      <span>{{ actividad.nombre }} - {{ actividad.fecha }}</span>
-      <span class="flecha" [class.abierto]="actividad.expandido">▼</span>
+  <!-- Tabla de actividades -->
+  <table class="tabla-actividades">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Fecha</th>
+        <th>Lugar</th>
+        <th>Horas</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let actividad of actividadesFiltradas()">
+        <td>{{ actividad.nombre }}</td>
+        <td>{{ actividad.fecha }}</td>
+        <td>{{ actividad.lugar || '-' }}</td>
+        <td>{{ actividad.horas || '-' }}</td>
+        <td>
+          <button class="btn-ver" (click)="abrirModalEstudiantes(actividad)">
+            👥 Ver estudiantes
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal estudiantes -->
+<div class="modal" *ngIf="actividadSeleccionada">
+  <div class="modal-contenido">
+    <h2>Estudiantes - {{ actividadSeleccionada.nombre }}</h2>
+
+    <div *ngIf="actividadSeleccionada.estudiantes?.length > 0; else noAsistencia">
+      <table class="tabla-estudiantes">
+        <thead>
+          <tr>
+            <th>Identidad</th>
+            <th>Nombre</th>
+            <th>Asistencia</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let est of actividadSeleccionada.estudiantes">
+            <td>{{ est.identidad }}</td>
+            <td>{{ est.nombre }}</td>
+            <td>
+              <span [class.asistio]="est.asistio" [class.no-asistio]="!est.asistio">
+                {{ est.asistio ? '✅ Asistió' : '❌ No asistió' }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
-    <!-- Lista de estudiantes -->
-    <div *ngIf="actividad.expandido" class="lista-estudiantes">
-      <div *ngIf="actividad.estudiantes?.length > 0; else noAsistencia">
-        <div *ngFor="let est of actividad.estudiantes" class="estudiante-item">
-          {{ est.identidad }} - {{ est.nombre }}
-          <span [class.asistio]="est.asistio" [class.no-asistio]="!est.asistio">
-            {{ est.asistio ? '✅ Asistió' : '❌ No asistió' }}
-          </span>
-        </div>
-      </div>
-      <ng-template #noAsistencia>
-        <p class="no-datos">No hubo estudiantes registrados.</p>
-      </ng-template>
-    </div>
+    <ng-template #noAsistencia>
+      <p class="no-datos">No hubo estudiantes registrados.</p>
+    </ng-template>
+
+    <button class="btn-cerrar" (click)="cerrarModal()">Cerrar</button>
   </div>
 </div>

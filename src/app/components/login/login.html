@@ -10,11 +10,13 @@
 
     <form (ngSubmit)="login()" #form="ngForm" class="login-form">
       <div class="form-group">
-        <input type="text" id="username" name="username" [(ngModel)]="username" placeholder="Escriba su número de cuenta... " required />
+        <input type="text" id="username" name="username" [(ngModel)]="username"
+          placeholder="Escriba su número de cuenta... " required />
       </div>
 
       <div class="form-group">
-        <input type="password" id="password" name="password" [(ngModel)]="password" placeholder="Escriba su contraseña" required />
+        <input type="password" id="password" name="password" [(ngModel)]="password"
+          placeholder="Escriba su contraseña" required />
       </div>
 
       <div class="checkbox-group">
@@ -22,10 +24,24 @@
         <label for="showPassword">Mostrar contraseña</label>
       </div>
 
-      <button type="submit" class="btn-login" [disabled]="!form.valid">
-        Ingresar
+      <!-- Botón Ingresar -->
+     <button
+  type="button"
+  class="btn-login"
+  [disabled]="!form.valid"
+  (click)="iniciarSesion()"
+>
+  Ingresar
+</button>
+
+      <!-- Botón Registrar (mismo estilo) -->
+      <button type="button" class="btn-login" (click)="register()">
+        Registrar
       </button>
 
+      <button type="button" class="btn-login" (click)="logout()">
+        Cerrar Sesion
+      </button>
       <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
     </form>
   </div>

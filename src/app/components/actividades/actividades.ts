@@ -4,8 +4,10 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { Timestamp } from 'firebase/firestore';
 
 import { ActividadesService, Actividad } from '../../servicios/actividades';
+type EstadoInscripcion = 'aceptado' | 'rechazado' | 'pendiente' | 'falta-pago';
 
 @Component({
   selector: 'app-actividades',
@@ -21,6 +23,8 @@ export class Actividades implements OnInit {
   nuevaActividad: Actividad = this.resetActividad();
   modalAbierto = false;
   modoEdicion = false;
+estudiantes: any[] = [];
+mostrarEstudiantes = false;
 
   actividadSeleccionada: Actividad | null = null;
   mostrarInscritos = false;
@@ -31,6 +35,36 @@ export class Actividades implements OnInit {
   ngOnInit() {
     this.cargarActividades();
   }
+
+  verEstudiantes(idActividad: string) {
+  this.actividadesService.obtenerInscritos(idActividad).subscribe(inscritos => {
+    this.estudiantes = inscritos;
+    this.mostrarEstudiantes = true;
+  });
+}
+
+cerrarEstudiantes() {
+  this.mostrarEstudiantes = false;
+  this.estudiantes = [];
+}
+
+cambiarEstado(estudiante: any, nuevoEstado: EstadoInscripcion) {
+  if (!estudiante.id) return;
+
+  // Actualiza en Firestore
+  this.actividadesService.actualizarInscripcion(estudiante.id, {
+    estadoInscripcion: nuevoEstado
+  }).then(() => {
+    // Actualiza el estado local
+    estudiante.estadoInscripcion = nuevoEstado;
+  }).catch(err => {
+    console.error('Error al actualizar el estado', err);
+    Swal.fire('Error', 'No se pudo actualizar el estado del estudiante', 'error');
+  });
+}
+
+
+
 
   cargarActividades() {
     this.actividadesService.obtenerActividades().subscribe(data => {
@@ -44,6 +78,7 @@ export class Actividades implements OnInit {
       });
     });
   }
+  
 
   abrirModal(editar?: Actividad) {
     if (editar) {
@@ -84,6 +119,23 @@ export class Actividades implements OnInit {
       });
     }
   }
+
+    toggleEstado(act: Actividad) {
+    if (!act.id) return;
+    const nuevoEstado = !act.estado;
+    this.actividadesService.actualizarActividad(act.id, { estado: nuevoEstado }).then(() => {
+      act.estado = nuevoEstado; // actualizar localmente
+    });
+  }
+
+  toggleVisible(act: Actividad) {
+    if (!act.id) return;
+    const nuevoVisible = !act.visible;
+    this.actividadesService.actualizarActividad(act.id, { visible: nuevoVisible }).then(() => {
+      act.visible = nuevoVisible; // actualizar localmente
+    });
+  }
+
 
   editarActividad(act: Actividad) {
     this.abrirModal(act);
@@ -131,6 +183,9 @@ export class Actividades implements OnInit {
       pago: false,
       descripcion: '',
       imagen:'',
+      estado: true,   // por defecto activa
+      visible: true,  // por defecto visible
     };
   }
+  
 }

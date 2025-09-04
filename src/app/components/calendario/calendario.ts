@@ -40,12 +40,15 @@ export class Calendario implements OnInit {
   }
 
   cargarActividades() {
-    const actividadesRef = collection(this.firestore, 'actividades');
-    collectionData(actividadesRef, { idField: 'id' }).subscribe(data => {
-      this.actividades = data;
-      this.generarCalendario();
-    });
-  }
+  const actividadesRef = collection(this.firestore, 'actividades');
+  collectionData(actividadesRef, { idField: 'id' }).subscribe(data => {
+    // 🔥 Filtrar solo las actividades activas y visibles
+    this.actividades = data.filter((act: any) => act.estado === true && act.visible === true);
+    this.generarCalendario();
+  });
+}
+
+
 
   generarCalendario() {
     const primerDiaMes = new Date(this.anioActual, this.mesActual, 1);
@@ -107,29 +110,26 @@ export class Calendario implements OnInit {
 
     const diaNormalizado = this.fechaSinHora(dia);
 
-    return this.actividades.filter(act => {
-      let fechaAct: Date;
+return this.actividades.filter(act => {
+  let fechaAct: Date;
 
-if (act.fecha instanceof Timestamp) {
-  fechaAct = act.fecha.toDate();
-} else {
-  // Forzar medianoche local para evitar desfase por zona horaria
-  fechaAct = new Date(act.fecha + 'T00:00:00');
-}
+  if (act.fecha instanceof Timestamp) {
+    fechaAct = act.fecha.toDate();
+  } else {
+    fechaAct = new Date(act.fecha + 'T00:00:00');
+  }
 
+  const fechaActNormalizada = this.fechaSinHora(fechaAct);
+  const esMismoDia = fechaActNormalizada.getTime() === diaNormalizado.getTime();
 
-      const fechaActNormalizada = this.fechaSinHora(fechaAct);
+  if (!esMismoDia) return false;
 
-      const esMismoDia = fechaActNormalizada.getTime() === diaNormalizado.getTime();
+  if (this.filtro === 'futuras') {
+    const hoy = this.fechaSinHora(new Date());
+    if (fechaActNormalizada.getTime() < hoy.getTime()) return false;
+  }
 
-      if (!esMismoDia) return false;
-
-      if (this.filtro === 'futuras') {
-        const hoy = this.fechaSinHora(new Date());
-        return fechaActNormalizada.getTime() >= hoy.getTime();
-      }
-
-      return true;
+       return act.estado === true && act.visible === true;
     });
   }
 

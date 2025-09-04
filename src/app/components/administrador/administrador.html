@@ -1,7 +1,8 @@
 <div class="contenedor">
-
-
-  <h1>Panel de Actividades - CEUTEC</h1>
+  <!-- Encabezado con usuario logueado -->
+  <div class="admin-header">
+    <h1>Panel de Actividades - CEUTEC</h1>
+      </div>
 
   <!-- Actividades de hoy -->
   <div class="seccion">
@@ -34,31 +35,7 @@
   </div>
 
   <!-- Actividades pasadas -->
-  <div class="seccion">
-    <h2>Actividades Pasadas</h2>
-    <div *ngIf="actividadesPasadas.length > 0; else noPasadas" class="actividades-lista">
-      <div class="actividad-card" *ngFor="let act of actividadesPasadas">
-        <h3>{{ act.nombre }}</h3>
-        <p><strong>Fecha:</strong> {{ act.fecha }} | <strong>Hora:</strong> {{ act.hora }}</p>
-        <p><strong>Lugar:</strong> {{ act.lugar }}</p>
-        <button (click)="verEstudiantes(act)" class="btn ver">Ver Participantes</button>
-      </div>
-    </div>
-    <ng-template #noPasadas>
-      <p class="no-datos">No hay actividades pasadas.</p>
-    </ng-template>
-  </div>
+ 
 
-  <!-- Información institucional -->
-  <div class="info-ceutec">
-    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSl7fpXMUU9ryJIKsFmRwu-_Bwq0xdpmUshsw&s" alt="CEUTEC Logo" class="logo">
-    <div class="texto">
-      <h2>Sobre CEUTEC</h2>
-      <p>CEUTEC fomenta la excelencia académica y la formación integral de sus estudiantes, impulsando proyectos innovadores y experiencias de aprendizaje de calidad.</p>
-      <h3>Misión</h3>
-      <p>Brindar educación de calidad con enfoque integral, promoviendo ética, innovación y responsabilidad social.</p>
-      <h3>Visión</h3>
-      <p>Ser reconocidos como líderes en educación superior, formando profesionales competentes y comprometidos con la sociedad.</p>
-    </div>
-  </div>
+  
 </div>

@@ -1,26 +1,39 @@
 import { Component } from '@angular/core';
-import { RouterModule, RouterOutlet } from '@angular/router';
-import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-layout-admin',
-  imports: [CommonModule, RouterOutlet, RouterModule],
+  standalone: true,
+  imports: [CommonModule, RouterModule],
   templateUrl: './layout-admin.html',
-  styleUrl: './layout-admin.scss'
+  styleUrls: ['./layout-admin.scss'],
 })
 export class LayoutAdmin {
-  menuAbierto: boolean = false;
+  menuAbierto = false;
+  usuarioCorreo: string = 'Administrador';
 
   constructor(private router: Router) {}
+
+  ngOnInit() {
+    const usuario = localStorage.getItem('usuario');
+    if (usuario) {
+      const userObj = JSON.parse(usuario);
+      const correo = userObj.correo || '';
+
+      this.usuarioCorreo = correo.endsWith('@unitec.edu')
+        ? correo.replace('@unitec.edu', '')
+        : correo;
+    }
+  }
 
   toggleMenu() {
     this.menuAbierto = !this.menuAbierto;
   }
 
   cerrarSesion() {
+    localStorage.removeItem('usuario');
     this.router.navigate(['/']);
   }
-
 }
-  

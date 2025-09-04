@@ -13,10 +13,9 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './actividadespasadas.scss'
 })
 export class Actividadespasadas {
-
-
   actividades: any[] = [];
   busqueda = '';
+  actividadSeleccionada: any = null;
 
   constructor(private firestore: Firestore) {}
 
@@ -25,28 +24,34 @@ export class Actividadespasadas {
     const q = query(collection(this.firestore, 'actividades'), where('fecha', '<', hoy));
     const snap = await getDocs(q);
 
-    this.actividades = snap.docs.map(doc => ({ id: doc.id, ...doc.data(), expandido: false }));
+    this.actividades = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   }
 
-  async toggleExpandir(idActividad: string) {
-    const actividad = this.actividades.find(a => a.id === idActividad);
-    if (!actividad) return;
-
-    actividad.expandido = !actividad.expandido;
-
-    if (actividad.expandido && !actividad.estudiantes) {
-      const q = query(collection(this.firestore, 'asistencias'), where('idActividad', '==', idActividad));
+  async abrirModalEstudiantes(actividad: any) {
+    // Si ya cargó estudiantes antes, no vuelve a consultar
+    if (!actividad.estudiantes) {
+      const q = query(collection(this.firestore, 'asistencias'), where('idActividad', '==', actividad.id));
       const snap = await getDocs(q);
       actividad.estudiantes = snap.docs.map(doc => doc.data());
     }
+
+    this.actividadSeleccionada = actividad;
+  }
+
+  cerrarModal() {
+    this.actividadSeleccionada = null;
   }
 
   actividadesFiltradas() {
     if (!this.busqueda) return this.actividades;
     const texto = this.busqueda.toLowerCase();
-    return this.actividades.filter(a =>
-      a.nombre.toLowerCase().includes(texto) ||
-      a.estudiantes?.some((est: any) => est.nombre.toLowerCase().includes(texto) || est.identidad.includes(texto))
+    return this.actividades.filter(
+      a =>
+        a.nombre.toLowerCase().includes(texto) ||
+        a.estudiantes?.some(
+          (est: any) =>
+            est.nombre.toLowerCase().includes(texto) || est.identidad.includes(texto)
+        )
     );
   }
 }

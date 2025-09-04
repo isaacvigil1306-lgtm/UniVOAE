@@ -4,20 +4,15 @@
     <button class="hamburger-btn" (click)="toggleMenu()" aria-label="Abrir menú">
       <i class="fas fa-bars"></i>
     </button>
-    <p class="mobile-username">UniVOAE</p>
-    <!-- X visible también en móvil y escritorio -->
-    <button class="close-btn" (click)="toggleMenu()" aria-label="Cerrar menú">
-      
-    </button>
+    <p class="mobile-username">{{ 'UniVOAE' }}</p>
+    <button class="close-btn" (click)="toggleMenu()" aria-label="Cerrar menú"></button>
   </header>
 
   <!-- Sidebar -->
   <aside [class.sidebar]="true" [class.open]="menuAbierto">
-    <!-- Franja usuario (PC y móvil) -->
     <div class="sidebar-header">
       <i class="fas fa-user-circle logo"></i>
       <p class="username">{{ estudiante || 'UniVOAE' }}</p>
-      <!-- X visible solo en móvil -->
       <button class="close-btn" (click)="toggleMenu()" aria-label="Cerrar menú">
         <i class="fas fa-times"></i>
       </button>

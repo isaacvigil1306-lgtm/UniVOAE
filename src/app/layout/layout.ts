@@ -7,48 +7,38 @@ import { RouterOutlet, RouterModule } from '@angular/router';
   standalone: true,
   imports: [RouterOutlet, RouterModule],
   templateUrl: './layout.html',
-  styleUrl: './layout.scss'
+  styleUrls: ['./layout.scss']
 })
 export class Layout {
   estudiante = 'Usuario'; 
   sidebarAbierto = false;
+  menuAbierto = false;
 
   constructor(private router: Router) {}
 
   ngOnInit() {
-  const usuarioString = localStorage.getItem('usuario');
-  if (usuarioString) {
-    const usuario = JSON.parse(usuarioString);
-    if (usuario.nombre) {
-      const partes = usuario.nombre.trim().split(' ');
-      // partes[0] = primer nombre
-      // partes[partes.length - 2] = primer apellido (antes del último)
-      // Solo tomar primer nombre y primer apellido
-      if (partes.length >= 2) {
-        this.estudiante = partes[0] + ' ' + partes[partes.length - 2];
+    const usuarioString = localStorage.getItem('usuario');
+    if (usuarioString) {
+      const usuario = JSON.parse(usuarioString);
+      if (usuario.correo) {
+        // Mostrar solo la parte antes de @unitec.edu
+        this.estudiante = usuario.correo.replace('@unitec.edu', '');
       } else {
-        this.estudiante = usuario.nombre; // si solo hay un nombre, mostrar completo
+        this.estudiante = 'Usuario';
       }
-    } else {
-      this.estudiante = 'Usuario';
     }
   }
-}
-
-  menuAbierto = false;
 
   toggleMenu() {
     this.menuAbierto = !this.menuAbierto;
   }
 
-
-  
   cerrarSesion() {
+    localStorage.removeItem('usuario'); // limpiar correo
     this.router.navigate(['/']);
   }
 
   toggleSidebar() {
     this.sidebarAbierto = !this.sidebarAbierto;
-    
   }
 }

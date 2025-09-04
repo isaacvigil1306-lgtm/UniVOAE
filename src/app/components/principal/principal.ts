@@ -1,67 +1,125 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FormsModule, NgForm } from '@angular/forms';
+import Swal from 'sweetalert2';
 
 import { ActividadesService, Actividad } from '../../servicios/actividades';
-import { Firestore, collection, collectionData, query, where } from '@angular/fire/firestore';
+import { UsuariosService, Usuario } from '../../servicios/usuarios';
+import { Firestore, collection, collectionData, doc, deleteDoc, query, where, getDocs } from '@angular/fire/firestore';
+
+type EstadoInscripcion = 'aceptado' | 'rechazado' | 'pendiente' | 'falta-pago';
+type ActividadEstudiante = Actividad & { estadoInscripcion: EstadoInscripcion };
 
 @Component({
   selector: 'app-principal',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './principal.html',
   styleUrls: ['./principal.scss'],
 })
 export class Principal implements OnInit {
-  estudiante: string = '';
-  horasAcumuladas: number = 0;
-  horasPendientes: number = 70;
+  estudiante = '';
+  horasAcumuladas = 0;
+  horasPendientes = 70;
 
-  // Tu HTML espera .titulo y .fecha
-  ultimaActividad: { titulo: string; fecha: string } = { titulo: 'Aún no has completado ninguna actividad', fecha: '' };
+  ultimaActividad: { titulo: string; fecha?: string } = { 
+    titulo: 'Aún no has completado ninguna actividad' 
+  };
 
-  // Tu HTML espera que cada item tenga { titulo, fecha, lugar }
-  actividadesProximas: Array<{ titulo: string; fecha: string; lugar: string }> = [];
+  actividadesProximas: ActividadEstudiante[] = [];
 
-  // Identificadores del usuario logueado (desde localStorage)
-  private identidad!: string; // dni
-  private correo!: string;
+  usuario: Usuario = {
+    nombre: '',
+    numeroCuenta: '',
+    correo: '',
+    telefono: '',
+    identidad: '',
+    carrera: ''
+  };
+
+  modoEdicion = true; // true = formulario visible, false = card visible
+
+  estudiantes: { 
+    id?: string; 
+    identidad: string; 
+    nombre: string; 
+    correo: string; 
+    estadoInscripcion: EstadoInscripcion; 
+  }[] = [];
 
   constructor(
     private router: Router,
+    private ngZone: NgZone,
     private actividadesService: ActividadesService,
+    private usuarios: UsuariosService,
     private firestore: Firestore
   ) {}
 
   ngOnInit() {
-    // 1) Sesión
     const usuarioGuardado = localStorage.getItem('usuario');
     if (!usuarioGuardado) {
-      this.router.navigate(['/']); // sin sesión -> login
+      this.router.navigate(['/']);
       return;
     }
 
-    const usuario = JSON.parse(usuarioGuardado);
-    // nombre para saludo (primer nombre + primer apellido si se puede)
-    const partes = (usuario.nombre || '').trim().split(/\s+/);
-    this.estudiante = (partes[0] && partes[1]) ? `${partes[0]} ${partes[1]}` : (usuario.nombre || usuario.username || 'Estudiante');
+    const usuarioLocal: Partial<Usuario> = JSON.parse(usuarioGuardado);
+    this.usuario.correo = usuarioLocal.correo || '';
+    this.estudiante = this.usuario.correo.replace('@unitec.edu', '');
 
-    // claves para consultar
-    this.identidad = usuario.dni;     // en tus colecciones "inscripciones" y "asistencias" está "identidad"
-    this.correo = usuario.correo;     // también está disponible por si lo necesitas más tarde
+    this.usuarios.obtenerUsuarioPorCorreo(this.usuario.correo).subscribe((data: Usuario[]) => {
+      this.ngZone.run(() => {
+        if (data.length > 0) {
+          this.usuario = data[0];
+          this.estudiante = this.usuario.correo.replace('@unitec.edu', '');
+          this.modoEdicion = false;
+          localStorage.setItem('usuario', JSON.stringify(this.usuario));
+        } else {
+          this.modoEdicion = true;
+        }
 
-    // 2) Cargar datos
-    this.cargarHorasYUltimaActividad();
-    this.cargarActividadesProximas();
+        this.cargarHorasYUltimaActividad();
+        this.cargarActividadesProximas();
+      });
+    });
   }
 
-  // --- HORAS y ÚLTIMA ACTIVIDAD (desde 'asistencias') ---
+  guardarUsuario(form: NgForm) {
+    if (!form.valid) {
+      Swal.fire('Error', 'Por favor completa todos los campos obligatorios', 'error');
+      return;
+    }
+
+    const identidadAnterior = JSON.parse(localStorage.getItem('usuario') || '{}').identidad;
+
+    if (identidadAnterior && identidadAnterior !== this.usuario.identidad) {
+      const docRefAnt = doc(this.firestore, `usuarios/${identidadAnterior}`);
+      deleteDoc(docRefAnt);
+    }
+
+    this.usuarios.guardarUsuario(this.usuario)
+      .then(() => {
+        localStorage.setItem('usuario', JSON.stringify(this.usuario));
+        this.estudiante = this.usuario.correo.replace('@unitec.edu', '');
+        Swal.fire('Éxito', 'Usuario guardado correctamente', 'success');
+        this.modoEdicion = false;
+      })
+      .catch(err => {
+        console.error('Error al guardar usuario', err);
+        Swal.fire('Error', 'No se pudo guardar la información', 'error');
+      });
+  }
+
+  editarUsuario() {
+    this.modoEdicion = true;
+  }
+
   private cargarHorasYUltimaActividad() {
     const asistenciasRef = collection(this.firestore, 'asistencias');
-    const qAsist = query(asistenciasRef, where('identidad', '==', this.identidad));
+    const qAsist = query(asistenciasRef, where('correo', '==', this.usuario.correo));
+
     collectionData(qAsist, { idField: 'id' }).subscribe((asistencias: any[]) => {
-      // Horas acumuladas
       const acumuladas = asistencias
         .filter(a => a.asistio === true)
         .reduce((sum, a) => sum + (Number(a.horasAcreditadas) || 0), 0);
@@ -69,57 +127,75 @@ export class Principal implements OnInit {
       this.horasAcumuladas = acumuladas;
       this.horasPendientes = Math.max(0, 70 - this.horasAcumuladas);
 
-      // Última actividad realizada (si hay)
       const completadas = asistencias.filter(a => a.asistio === true);
       if (completadas.length > 0) {
-        // Normaliza fechaRegistro (puede ser string o Timestamp)
         const toDate = (f: any): Date => (f && typeof f.toDate === 'function') ? f.toDate() : new Date(f);
+        const ultima = completadas.reduce((a, b) => toDate(a.fechaRegistro) > toDate(b.fechaRegistro) ? a : b);
 
-        const ultima = completadas.reduce((a, b) =>
-          toDate(a.fechaRegistro) > toDate(b.fechaRegistro) ? a : b
-        );
-
-        // Buscar nombre/fecha en 'actividades'
         this.actividadesService.obtenerActividades().subscribe((acts: Actividad[]) => {
           const act = acts.find(x => x.id === ultima.idActividad);
-          if (act) {
-            this.ultimaActividad = { titulo: act.nombre, fecha: act.fecha };
-          } else {
-            // Si no se encuentra, dejamos mensaje genérico
-            this.ultimaActividad = { titulo: 'Actividad registrada', fecha: '' };
-          }
+          this.ultimaActividad = act 
+            ? { titulo: act.nombre, fecha: act.fecha } 
+            : { titulo: 'Actividad registrada' };
         });
       } else {
-        this.ultimaActividad = { titulo: 'Aún no has completado ninguna actividad', fecha: '' };
+        this.ultimaActividad = { titulo: 'Aún no has completado ninguna actividad' };
       }
     });
   }
 
-  // --- PRÓXIMAS ACTIVIDADES (desde 'inscripciones' + join con 'actividades') ---
   private cargarActividadesProximas() {
     const inscripcionesRef = collection(this.firestore, 'inscripciones');
-    const qIns = query(inscripcionesRef, where('identidad', '==', this.identidad));
+    const qIns = query(inscripcionesRef, where('correo', '==', this.usuario.correo));
+
     collectionData(qIns, { idField: 'id' }).subscribe((inscripciones: any[]) => {
-      // obtenemos todas las actividades y hacemos join por id
       this.actividadesService.obtenerActividades().subscribe((acts: Actividad[]) => {
         const hoy = new Date();
         hoy.setHours(0, 0, 0, 0);
 
         const idsInscrito = new Set(inscripciones.map(i => i.idActividad));
-        const proximas = acts.filter(act => {
-          if (!idsInscrito.has(act.id!)) return false;
+        this.actividadesProximas = acts.filter(act => {
           const f = new Date(act.fecha);
           f.setHours(0, 0, 0, 0);
-          return f >= hoy;
+          return f >= hoy && idsInscrito.has(act.id!);
+        }).map(act => {
+          const insc = inscripciones.find(i => i.idActividad === act.id);
+          return {
+            ...act,
+            estadoInscripcion: insc?.estadoInscripcion || 'pendiente'
+          } as ActividadEstudiante;
         });
-
-        // adapta al HTML esperado (titulo, fecha, lugar)
-        this.actividadesProximas = proximas.map(a => ({
-          titulo: a.nombre,
-          fecha: a.fecha,
-          lugar: a.lugar
-        }));
       });
     });
   }
+
+  async cancelarInscripcion(idActividad: string) {
+    try {
+      const inscripcionesRef = collection(this.firestore, 'inscripciones');
+      const q = query(
+        inscripcionesRef,
+        where('correo', '==', this.usuario.correo),
+        where('idActividad', '==', idActividad)
+      );
+
+      const querySnapshot = await getDocs(q);
+      if (querySnapshot.empty) {
+        Swal.fire('Error', 'No se encontró la inscripción para cancelar.', 'error');
+        return;
+      }
+
+      for (const inscripcion of querySnapshot.docs) {
+        await deleteDoc(doc(this.firestore, 'inscripciones', inscripcion.id));
+      }
+
+      Swal.fire('Cancelada', 'Tu inscripción ha sido cancelada correctamente.', 'success');
+      this.cargarActividadesProximas();
+
+    } catch (err) {
+      console.error(err);
+      Swal.fire('Error', 'No se pudo cancelar la inscripción.', 'error');
+    }
+  }
 }
+
+

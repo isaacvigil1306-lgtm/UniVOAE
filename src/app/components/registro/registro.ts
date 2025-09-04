@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
-import { Firestore, collection, getDocs, query, where, addDoc, doc, getDoc, updateDoc } from '@angular/fire/firestore';
+import { Firestore, collection, getDocs, query, where, addDoc, doc, getDoc } from '@angular/fire/firestore';
+import { Timestamp } from '@angular/fire/firestore';
+type EstadoInscripcion = 'aceptado' | 'rechazado' | 'pendiente' | 'falta-pago';
 
 @Component({
   selector: 'app-registro',
@@ -16,41 +18,59 @@ export class Registro implements OnInit {
   inscritos: any[] = [];
   actividadSeleccionadaId: string | null = null;
   actividadSeleccionada: any = null;
-  mostrarModal: boolean = false;
-    mostrarModalAsistencia: boolean = false; // Modal para asistencia
-    
 
   constructor(private router: Router, private firestore: Firestore) {}
 
   async ngOnInit() {
-    await this.cargarActividadesFuturas();
+    await this.cargarActividadesHoy();
   }
 
   async cargarActividadesFuturas() {
-  const actividadesRef = collection(this.firestore, 'actividades');
-  const querySnapshot = await getDocs(actividadesRef);
-  
+    const actividadesRef = collection(this.firestore, 'actividades');
+    const querySnapshot = await getDocs(actividadesRef);
 
-  const hoy = new Date().toLocaleDateString("es-HN", { timeZone: "America/Tegucigalpa" });
-  const todasActividades = querySnapshot.docs
-    .map(doc => ({ id: doc.id, ...doc.data() }))
-    .filter((act: any) => act.fecha == hoy);
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
 
-  const actividadesDisponibles: any[] = [];
+    const todasActividades = querySnapshot.docs
+      .map(doc => ({ id: doc.id, ...doc.data() }))
+      .filter((act: any) => {
+        const fechaAct = new Date(act.fecha);
+        fechaAct.setHours(0, 0, 0, 0);
+        return fechaAct >= hoy; // Solo actividades de hoy en adelante
+      });
 
-  for (const act of todasActividades) {
-    // Verificar si ya tiene asistencia registrada
-    const asistenciasRef = collection(this.firestore, 'asistencias');
-    const asistenciasSnap = await getDocs(query(asistenciasRef, where('idActividad', '==', act.id)));
-
-    if (asistenciasSnap.empty) {
-      // ✅ Solo agregar si no hay asistencia aún
-      actividadesDisponibles.push(act);
-    }
+    this.actividades = todasActividades;
   }
 
-  this.actividades = actividadesDisponibles;
+async cargarActividadesHoy() {
+  const actividadesRef = collection(this.firestore, 'actividades');
+  const querySnapshot = await getDocs(actividadesRef);
+
+  // Fecha de hoy en Honduras en formato "YYYY-MM-DD"
+  const hoyHonduras = new Date().toLocaleString("en-US", { timeZone: "America/Tegucigalpa" });
+  const hoy = new Date(hoyHonduras);
+  const hoyStr = hoy.toISOString().split('T')[0]; // "YYYY-MM-DD"
+
+  const actividadesHoy = querySnapshot.docs
+    .map(doc => {
+      const data = doc.data();
+      let fechaStr: string;
+
+      if (data['fecha'] instanceof Timestamp) {
+        fechaStr = data['fecha'].toDate().toISOString().split('T')[0];
+      } else {
+        fechaStr = new Date(data['fecha']).toISOString().split('T')[0];
+      }
+
+      return { id: doc.id, ...data, fechaStr };
+    })
+    .filter(act => act.fechaStr >= hoyStr); // hoy o futura
+
+  this.actividades = actividadesHoy;
 }
+
+
 
 
   async seleccionarActividad(event: Event) {
@@ -65,26 +85,29 @@ export class Registro implements OnInit {
         this.actividadSeleccionada = { id: actividadDoc.id, ...actividadDoc.data() };
       }
 
-      // Cargar estudiantes inscritos
+      // Cargar estudiantes inscritos con estado "aceptado"
       const inscripcionesRef = collection(this.firestore, 'inscripciones');
-      const q = query(inscripcionesRef, where('idActividad', '==', this.actividadSeleccionadaId));
+      const q = query(
+        inscripcionesRef,
+        where('idActividad', '==', this.actividadSeleccionadaId),
+        where('estadoInscripcion', '==', 'aceptado')
+      );
       const querySnapshot = await getDocs(q);
 
       this.inscritos = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
-        asistio: false // valor inicial para el checkbox
+        asistio: false
       }));
     }
   }
 
-async guardarAsistencia() {
+  async guardarAsistencia() {
     if (!this.actividadSeleccionada) return;
 
     const asistenciasRef = collection(this.firestore, 'asistencias');
 
     for (const estudiante of this.inscritos) {
-      // Evitar duplicados
       const existeSnap = await getDocs(query(
         asistenciasRef,
         where('idActividad', '==', this.actividadSeleccionadaId),
@@ -97,7 +120,7 @@ async guardarAsistencia() {
           identidad: estudiante.identidad,
           nombre: estudiante.nombre,
           asistio: estudiante.asistio,
-          fechaRegistro: this.actividadSeleccionada.fecha,
+          fechaRegistro: new Date(),
           horasAcreditadas: estudiante.asistio ? this.actividadSeleccionada.horas : 0
         });
       }
@@ -106,3 +129,26 @@ async guardarAsistencia() {
     alert('Asistencia guardada con éxito');
   }
 }
+
+/*
+//Codigo para actividades de hoy
+async cargarActividadesHoy() {
+  const actividadesRef = collection(this.firestore, 'actividades');
+  const querySnapshot = await getDocs(actividadesRef);
+
+  // Obtener fecha de hoy en Honduras
+  const hoy = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Tegucigalpa" }));
+  hoy.setHours(0, 0, 0, 0); // inicio del día
+  const finDia = new Date(hoy);
+  finDia.setHours(23, 59, 59, 999); // fin del día
+
+  const actividadesHoy = querySnapshot.docs
+    .map(doc => ({ id: doc.id, ...doc.data() }))
+    .filter((act: any) => {
+      const fechaAct = new Date(act.fecha);
+      return fechaAct >= hoy && fechaAct <= finDia;
+    });
+
+  this.actividades = actividadesHoy;
+}
+*/ 

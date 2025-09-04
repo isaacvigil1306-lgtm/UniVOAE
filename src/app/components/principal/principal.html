@@ -1,38 +1,114 @@
 <div class="contenedor">
-  <!-- Contenido -->
-  <main class="main-content">
-    <div class="contenido-wrapper">
-      <h1 class="bienvenida">{{ estudiante }}!</h1>
+  <h1>Bienvenido, {{ estudiante }}!</h1>
 
-      <!-- Horas acumuladas -->
-      <div class="resumen-horas">
-        <div class="caja">
-          <h3>Horas Acumuladas</h3>
-          <p>{{ horasAcumuladas }} horas</p>
+  <!-- FORMULARIO DE DATOS DEL USUARIO -->
+  <div *ngIf="modoEdicion" class="formulario-usuario">
+    <h2>Perfil</h2>
+    <form #form="ngForm" (ngSubmit)="guardarUsuario(form)">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Nombre Completo</label>
+          <input type="text" [(ngModel)]="usuario.nombre" name="nombre" required>
         </div>
-        <div class="caja">
-          <h3>Horas Pendientes</h3>
-          <p>{{ horasPendientes }} horas</p>
+
+        <div class="form-group">
+          <label>Número de Cuenta</label>
+          <input type="text" [(ngModel)]="usuario.numeroCuenta" name="numeroCuenta" required>
+        </div>
+
+        <div class="form-group">
+          <label>Correo</label>
+          <input type="email" [(ngModel)]="usuario.correo" name="correo" required>
+        </div>
+
+        <div class="form-group">
+          <label>Teléfono</label>
+          <input type="text" [(ngModel)]="usuario.telefono" name="telefono">
+        </div>
+
+        <div class="form-group">
+          <label>Identidad</label>
+          <input type="text" [(ngModel)]="usuario.identidad" name="identidad" required>
+        </div>
+
+        <div class="form-group">
+          <label>Carrera</label>
+          <select [(ngModel)]="usuario.carrera" name="carrera">
+            <option value="Ingenieria en Informatica">Ingeniería en Informática</option>
+            <option value="Ingenieria Electronica">Ingeniería Electrónica</option>
+            <option value="Ingenieria en Gestion y Logistica">Ingeniería en Gestión y Logística</option>
+            <option value="Otro">Otro</option>
+          </select>
         </div>
       </div>
 
-      <!-- Última actividad -->
-      <div class="ultima-actividad">
-        <h2>Última actividad realizada</h2>
-        <p><strong>{{ ultimaActividad.titulo }}</strong> - {{ ultimaActividad.fecha }}</p>
-      </div>
+      <button type="submit" class="btn-actualizar">Guardar / Actualizar</button>
+    </form>
+  </div>
 
-      <!-- Actividades próximas -->
-      <div class="actividades">
-        <h2>Actividades próximas</h2>
-        <div class="cards">
-          <div class="card" *ngFor="let act of actividadesProximas">
-            <h4>{{ act.titulo }}</h4>
-            <p><strong>Fecha:</strong> {{ act.fecha }}</p>
-            <p><strong>Lugar:</strong> {{ act.lugar }}</p>
-          </div>
-        </div>
-      </div>
+  <div *ngIf="!modoEdicion" class="card-usuario">
+  <h2>Perfil</h2>
+  <div class="info-grid">
+    <p><strong>Nombre:</strong> {{ usuario.nombre }}</p>
+    <p><strong>Número de Cuenta:</strong> {{ usuario.numeroCuenta }}</p>
+
+    <p><strong>Correo:</strong> {{ usuario.correo }}</p>
+    <p><strong>Teléfono:</strong> {{ usuario.telefono }}</p>
+
+    <p><strong>Identidad:</strong> {{ usuario.identidad }}</p>
+    <p><strong>Carrera:</strong> {{ usuario.carrera }}</p>
+  </div>
+  <button class="btn-editar" (click)="editarUsuario()">Editar</button>
+</div>
+
+  <!-- Horas acumuladas -->
+  <div class="resumen-horas">
+    <div class="caja">
+      <h3>Horas Acumuladas</h3>
+      <p>{{ horasAcumuladas }} horas</p>
     </div>
-  </main>
+    <div class="caja">
+      <h3>Horas Pendientes</h3>
+      <p>{{ horasPendientes }} horas</p>
+    </div>
+  </div>
+
+<br><br>
+  <!-- Actividades próximas -->
+  <div class="actividades">
+  <h2>Actividades Próximas</h2>
+
+  <table *ngIf="actividadesProximas.length > 0" class="tabla-actividades">
+    <thead>
+      <tr>
+        <th>Actividad</th>
+        <th>Fecha</th>
+        <th>Lugar</th>
+        <th>Acción</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let act of actividadesProximas">
+        <td>{{ act.nombre }}</td>
+        <td>{{ act.fecha }}</td>
+        <td>{{ act.lugar }}</td>
+        <td>
+          <button class="btn-cancelar" (click)="cancelarInscripcion(act.id!)">
+            ❌ Cancelar
+          </button>
+        </td>
+       <td>
+  {{ act.estadoInscripcion || 'pendiente' }}
+</td>
+
+      </tr>
+    </tbody>
+  </table>
+
+  <p *ngIf="actividadesProximas.length === 0">
+    No tienes actividades próximas registradas.
+  </p>
+</div>
+
 </div>

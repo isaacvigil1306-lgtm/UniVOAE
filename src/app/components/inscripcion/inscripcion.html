@@ -1,31 +1,92 @@
 <div class="contenedor">
-  
-
   <h1>Formulario de Inscripción</h1>
 
-  <form (ngSubmit)="enviarInscripcion()" *ngIf="!enviado">
-    <label for="nombre">Nombre completo*</label>
-    <input type="text" id="nombre" [(ngModel)]="nombre" name="nombre" required readonly />
+  <form (ngSubmit)="enviarInscripcion()" *ngIf="!enviado" class="form">
+    <div class="grid">
+      <div class="campo">
+        <label for="nombre">Nombre completo*</label>
+        <input
+          type="text"
+          id="nombre"
+          [(ngModel)]="nombre"
+          name="nombre"
+          required
+          [readOnly]="perfilEncontrado"
+          placeholder="Ej. Ana López"
+        />
+      </div>
 
-    <label for="identidad">Identidad / Carnet*</label>
-    <input type="text" id="identidad" [(ngModel)]="identidad" name="identidad" required readonly />
+      <div class="campo">
+        <label for="numeroCuenta">Número de cuenta*</label>
+        <input
+          type="text"
+          id="numeroCuenta"
+          [(ngModel)]="numeroCuenta"
+          name="numeroCuenta"
+          required
+          [readOnly]="perfilEncontrado"
+          placeholder="Ej. 20231234567"
+        />
+      </div>
 
-    <label for="correo">Correo electrónico*</label>
-    <input type="email" id="correo" [(ngModel)]="correo" name="correo" required />
+      <div class="campo">
+        <label for="correo">Correo electrónico*</label>
+        <input
+          type="email"
+          id="correo"
+          [(ngModel)]="correo"
+          name="correo"
+          required
+          [readOnly]="perfilEncontrado"
+          placeholder="tu@unitec.edu"
+        />
+      </div>
 
-    <label for="telefono">Teléfono (opcional)</label>
-    <input type="tel" id="telefono" [(ngModel)]="telefono" name="telefono" />
+      <div class="campo">
+        <label for="telefono">Teléfono (opcional)</label>
+        <input
+          type="tel"
+          id="telefono"
+          [(ngModel)]="telefono"
+          name="telefono"
+          placeholder="Ej. 9876-5432"
+        />
+      </div>
+    </div>
 
-    <label for="comprobante">Subir comprobante de pago (si aplica)</label>
-    <input type="file" id="comprobante" (change)="onFileChange($event)" />
-
-    <button type="submit">Enviar inscripción</button>
+    <button type="submit" class="btn-principal">Enviar inscripción</button>
   </form>
 
   <div *ngIf="enviado" class="confirmacion">
     <h2>¡Inscripción enviada con éxito!</h2>
     <p>Gracias por registrarte.</p>
   </div>
+</div>
 
+<!-- Modal de pago -->
+<div class="modal" *ngIf="mostrarModalPago">
+  <div class="modal-contenido">
+    <button class="btn-cerrar-x" (click)="cerrarModalPago()">×</button>
+    <h2>Información de Pago</h2>
 
+    <div class="detalle">
+      <p><strong>Actividad:</strong> {{ actividad?.nombre }}</p>
+      <p><strong>Precio:</strong> {{ actividad?.precio }} Lps</p>
+      <p><strong>Banco:</strong> {{ actividad?.banco }}</p>
+      <p><strong>Número de cuenta:</strong> {{ actividad?.numeroCuenta }}</p>
+    </div>
+
+    <p class="nota">Realiza la transferencia y envía el comprobante por correo:</p>
+
+    <a
+      [href]="mailtoLink()"
+      class="btn-mail"
+      target="_blank"
+      rel="noopener"
+    >
+      📧Presione aqui para enviar su comprobante.
+    </a>
+
+    
+  </div>
 </div>
