@@ -150,6 +150,9 @@ export class Inscripcion implements OnInit {
       Swal.fire('Error', 'Ocurrió un problema al inscribirse.', 'error');
     }
   }
+irCalendario() {
+  this.router.navigate(['/calendario']); // Ajusta la ruta según tu proyecto
+}
 
   cerrarModalPago() {
     this.mostrarModalPago = false;

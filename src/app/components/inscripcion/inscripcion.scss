@@ -85,6 +85,8 @@ input[readonly] {
   background-color: #660b0b;
   font-weight: 700;
   cursor: pointer;
+  text-align: center;
+  align-items: center;
   transition: transform .05s ease-in, box-shadow .2s ease;
   box-shadow: 0 8px 18px rgba(123, 30, 58, 0.25);
 }
@@ -195,4 +197,16 @@ input[readonly] {
     width: auto;
     min-width: 260px;
   }
+}
+
+.btn-flecha {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #1976d2;
+  font-weight: bold;
 }

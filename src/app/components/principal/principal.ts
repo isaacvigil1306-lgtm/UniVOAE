@@ -7,7 +7,7 @@ import Swal from 'sweetalert2';
 
 import { ActividadesService, Actividad } from '../../servicios/actividades';
 import { UsuariosService, Usuario } from '../../servicios/usuarios';
-import { Firestore, collection, collectionData, doc, deleteDoc, query, where, getDocs } from '@angular/fire/firestore';
+import { Firestore, collection, collectionData, doc, deleteDoc, query, where, getDocs,updateDoc, getDoc } from '@angular/fire/firestore';
 
 type EstadoInscripcion = 'aceptado' | 'rechazado' | 'pendiente' | 'falta-pago';
 type ActividadEstudiante = Actividad & { estadoInscripcion: EstadoInscripcion };
@@ -23,7 +23,11 @@ export class Principal implements OnInit {
   estudiante = '';
   horasAcumuladas = 0;
   horasPendientes = 70;
-
+ mostrarModalPago = false;
+  actividadPago: Actividad | null = null;
+  nombreAlumno = '';
+  numeroCuentaAlumno = '';
+  correoAlumno = '';
   ultimaActividad: { titulo: string; fecha?: string } = { 
     titulo: 'Aún no has completado ninguna actividad' 
   };
@@ -169,33 +173,92 @@ export class Principal implements OnInit {
     });
   }
 
-  async cancelarInscripcion(idActividad: string) {
-    try {
-      const inscripcionesRef = collection(this.firestore, 'inscripciones');
-      const q = query(
-        inscripcionesRef,
-        where('correo', '==', this.usuario.correo),
-        where('idActividad', '==', idActividad)
-      );
-
-      const querySnapshot = await getDocs(q);
-      if (querySnapshot.empty) {
-        Swal.fire('Error', 'No se encontró la inscripción para cancelar.', 'error');
-        return;
-      }
-
-      for (const inscripcion of querySnapshot.docs) {
-        await deleteDoc(doc(this.firestore, 'inscripciones', inscripcion.id));
-      }
-
-      Swal.fire('Cancelada', 'Tu inscripción ha sido cancelada correctamente.', 'success');
-      this.cargarActividadesProximas();
-
-    } catch (err) {
-      console.error(err);
-      Swal.fire('Error', 'No se pudo cancelar la inscripción.', 'error');
-    }
+  abrirModalPago(act: Actividad, nombre: string, numeroCuenta: string, correo: string) {
+    this.actividadPago = act;
+    this.nombreAlumno = nombre;
+    this.numeroCuentaAlumno = numeroCuenta;
+    this.correoAlumno = correo;
+    this.mostrarModalPago = true;
   }
+
+  cerrarModalPago() {
+    this.mostrarModalPago = false;
+    this.actividadPago = null;
+    this.nombreAlumno = '';
+    this.numeroCuentaAlumno = '';
+    this.correoAlumno = '';
+  }
+
+  mailtoLink() {
+    if (!this.actividadPago) return '#';
+    const subject = `Comprobante de pago - ${this.actividadPago.nombre}`;
+    const body = 
+      `No elimine la siguiente información:\n\n` +
+      `Nombre de la actividad: ${this.actividadPago.nombre}\n` +
+      `Nombre del alumno: ${this.nombreAlumno}\n` +
+      `Número de cuenta (alumno): ${this.numeroCuentaAlumno}\n\n` +
+      `Adjunte su comprobante de pago, por favor.`;
+
+    const correoPago = this.actividadPago.correoPago || 'pagos@ejemplo.com';
+    return `mailto:${correoPago}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  }
+
+ 
+async cancelarInscripcion(idActividad: string) {
+  try {
+    // Confirmación antes de cancelar
+    const result = await Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¿Quieres cancelar tu inscripción? Recuerda que los cupos podrían acabarse pronto.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, cancelar',
+      cancelButtonText: 'No, mantener',
+      reverseButtons: true
+    });
+
+    if (!result.isConfirmed) {
+      return; // Si el usuario cancela, no hace nada
+    }
+
+    const inscripcionesRef = collection(this.firestore, 'inscripciones');
+    const q = query(
+      inscripcionesRef,
+      where('correo', '==', this.usuario.correo),
+      where('idActividad', '==', idActividad)
+    );
+
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.empty) {
+      Swal.fire('Error', 'No se encontró la inscripción para cancelar.', 'error');
+      return;
+    }
+
+    // Eliminar la inscripción
+    for (const inscripcion of querySnapshot.docs) {
+      await deleteDoc(doc(this.firestore, 'inscripciones', inscripcion.id));
+    }
+
+    // 📌 Leer la actividad actualizada desde Firestore
+    const actRef = doc(this.firestore, 'actividades', idActividad);
+    const actSnap = await getDoc(actRef);
+
+    if (actSnap.exists()) {
+      const actividad = actSnap.data();
+      const nuevoCupo = (actividad['cupo'] || 0) + 1;
+
+      // Actualizar el cupo en Firestore
+      await updateDoc(actRef, { cupo: nuevoCupo });
+    }
+
+    Swal.fire('Cancelada', 'Tu inscripción ha sido cancelada correctamente.', 'success');
+    this.cargarActividadesProximas();
+
+  } catch (err) {
+    console.error(err);
+    Swal.fire('Error', 'No se pudo cancelar la inscripción.', 'error');
+  }
+}
 }
 
 

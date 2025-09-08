@@ -1,65 +1,47 @@
 <div class="contenedor">
+
+  <!-- Flecha para volver al calendario -->
+  <button class="btn-flecha" (click)="irCalendario()">← Calendario</button>
+
   <h1>Formulario de Inscripción</h1>
 
+  <!-- Formulario -->
   <form (ngSubmit)="enviarInscripcion()" *ngIf="!enviado" class="form">
     <div class="grid">
+      <!-- Campos del formulario -->
       <div class="campo">
         <label for="nombre">Nombre completo*</label>
-        <input
-          type="text"
-          id="nombre"
-          [(ngModel)]="nombre"
-          name="nombre"
-          required
-          [readOnly]="perfilEncontrado"
-          placeholder="Ej. Ana López"
-        />
+        <input type="text" id="nombre" [(ngModel)]="nombre" name="nombre" required [readOnly]="perfilEncontrado" placeholder="Ej. Ana López"/>
       </div>
 
       <div class="campo">
         <label for="numeroCuenta">Número de cuenta*</label>
-        <input
-          type="text"
-          id="numeroCuenta"
-          [(ngModel)]="numeroCuenta"
-          name="numeroCuenta"
-          required
-          [readOnly]="perfilEncontrado"
-          placeholder="Ej. 20231234567"
-        />
+        <input type="text" id="numeroCuenta" [(ngModel)]="numeroCuenta" name="numeroCuenta" required [readOnly]="perfilEncontrado" placeholder="Ej. 20231234567"/>
       </div>
 
       <div class="campo">
         <label for="correo">Correo electrónico*</label>
-        <input
-          type="email"
-          id="correo"
-          [(ngModel)]="correo"
-          name="correo"
-          required
-          [readOnly]="perfilEncontrado"
-          placeholder="tu@unitec.edu"
-        />
+        <input type="email" id="correo" [(ngModel)]="correo" name="correo" required [readOnly]="perfilEncontrado" placeholder="tu@unitec.edu"/>
       </div>
 
       <div class="campo">
         <label for="telefono">Teléfono (opcional)</label>
-        <input
-          type="tel"
-          id="telefono"
-          [(ngModel)]="telefono"
-          name="telefono"
-          placeholder="Ej. 9876-5432"
-        />
+        <input type="tel" id="telefono" [(ngModel)]="telefono" name="telefono" placeholder="Ej. 9876-5432"/>
       </div>
     </div>
 
     <button type="submit" class="btn-principal">Enviar inscripción</button>
   </form>
 
+  <!-- Mensaje de confirmación -->
   <div *ngIf="enviado" class="confirmacion">
     <h2>¡Inscripción enviada con éxito!</h2>
     <p>Gracias por registrarte.</p>
+
+    <!-- Botón para enviar comprobante -->
+    <button *ngIf="actividad?.pago" class="btn-principal" (click)="mostrarModalPago = true">
+      Enviar comprobante
+    </button>
   </div>
 </div>
 
@@ -78,15 +60,8 @@
 
     <p class="nota">Realiza la transferencia y envía el comprobante por correo:</p>
 
-    <a
-      [href]="mailtoLink()"
-      class="btn-mail"
-      target="_blank"
-      rel="noopener"
-    >
-      📧Presione aqui para enviar su comprobante.
+    <a [href]="mailtoLink()" class="btn-mail" target="_blank" rel="noopener">
+      📧 Presione aquí para enviar su comprobante.
     </a>
-
-    
   </div>
 </div>

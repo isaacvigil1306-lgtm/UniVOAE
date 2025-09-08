@@ -46,7 +46,7 @@
     </form>
   </div>
 
-  <div *ngIf="!modoEdicion" class="card-usuario">
+  <div *ngIf="!modoEdicion" class="card-usuario" >
   <h2>Perfil</h2>
   <div class="info-grid">
     <p><strong>Nombre:</strong> {{ usuario.nombre }}</p>
@@ -78,37 +78,67 @@
   <div class="actividades">
   <h2>Actividades Próximas</h2>
 
-  <table *ngIf="actividadesProximas.length > 0" class="tabla-actividades">
-    <thead>
-      <tr>
-        <th>Actividad</th>
-        <th>Fecha</th>
-        <th>Lugar</th>
-        <th>Acción</th>
-        <th>Estado</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let act of actividadesProximas">
-        <td>{{ act.nombre }}</td>
-        <td>{{ act.fecha }}</td>
-        <td>{{ act.lugar }}</td>
-        <td>
-          <button class="btn-cancelar" (click)="cancelarInscripcion(act.id!)">
-            ❌ Cancelar
-          </button>
-        </td>
-       <td>
-  {{ act.estadoInscripcion || 'pendiente' }}
-</td>
+  <div class="tabla-wrapper">
 
-      </tr>
-    </tbody>
-  </table>
+  <div class="tabla-scroll">
+    <table *ngIf="actividadesProximas.length > 0" class="tabla-actividades">
+      <thead>
+        <tr>
+          <th>Actividad</th>
+          <th>Fecha</th>
+          <th>Lugar</th>
+          <th>Acción</th>
+          <th>Estado</th>
+          <th>Pago</th>
+        </tr>
+      </thead>
+      <tbody>
+       <tr *ngFor="let act of actividadesProximas">
+  <td>{{ act.nombre }}</td>
+  <td>{{ act.fecha }}</td>
+  <td>{{ act.lugar }}</td>
+  <td>
+    <button class="btn-cancelar" (click)="cancelarInscripcion(act.id!)">❌ Cancelar</button>
+
+    <!-- Botón de pago solo si requiere pago -->
+   
+  </td>
+  <td>{{ act.estadoInscripcion || 'pendiente' }}</td>
+  <td> <button *ngIf="act.pago"
+            class="btn-pago"
+            (click)="abrirModalPago(act, usuario.nombre, usuario.numeroCuenta, usuario.correo)">
+      Enviar comprobante
+    </button></td>
+</tr>
+
+      </tbody>
+    </table>
+  </div>
+</div>
 
   <p *ngIf="actividadesProximas.length === 0">
     No tienes actividades próximas registradas.
   </p>
+</div>
+<!-- Modal de pago -->
+<div class="modal" *ngIf="mostrarModalPago">
+  <div class="modal-contenido">
+    <button class="btn-cerrar-x" (click)="cerrarModalPago()">×</button>
+    <h2>Información de Pago</h2>
+
+    <div class="detalle" *ngIf="actividadPago">
+      <p><strong>Actividad:</strong> {{ actividadPago.nombre }}</p>
+      <p><strong>Precio:</strong> {{ actividadPago.precio }} Lps</p>
+      <p><strong>Banco:</strong> {{ actividadPago.banco }}</p>
+      <p><strong>Número de cuenta:</strong> {{ actividadPago.numeroCuenta }}</p>
+    </div>
+
+    <p class="nota">Realiza la transferencia y envía el comprobante por correo:</p>
+
+    <a [href]="mailtoLink()" class="btn-mail" target="_blank" rel="noopener">
+      📧 Presione aquí para enviar su comprobante
+    </a>
+  </div>
 </div>
 
 </div>

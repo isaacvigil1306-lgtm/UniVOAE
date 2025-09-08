@@ -1,6 +1,7 @@
 /* Reset básico */
 * {
   box-sizing: border-box;
+  
 }
 
 html, body {
@@ -10,6 +11,7 @@ html, body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: #f9fafb;
   color: #222;
+  
   /* Scroll vertical general */
 }
 
@@ -18,6 +20,7 @@ html, body {
   max-width: 960px;
   margin: 1rem auto;
   padding: 0 1rem;
+  
 }
 
 /* Main */
@@ -136,7 +139,7 @@ html, body {
 }
 
 .card p {
-  margin: 0.25rem 0;
+  margin: 0.15rem ;
   color: #444;
   font-size: 0.95rem;
 }
@@ -433,12 +436,6 @@ input, select {
   background: #811111;
 }
 
-/* Scroll en pantallas grandes */
-@media (min-width: 1024px) {
-  body {
-    overflow-y: auto;
-  }
-}
 
 .modal-contenido {
   position: relative; /* necesario para que la X se posicione correctamente */
@@ -457,4 +454,108 @@ input, select {
   border: none;
   font-size: 24px;
   cursor: pointer;
+}
+
+.tabla-scroll {
+  overflow-x: auto;
+  border-radius: 8px;
+}
+
+.tabla-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+
+.tabla-scroll::-webkit-scrollbar-thumb {
+  background: #6e1616;
+  border-radius: 4px;
+}
+
+
+/* Modal */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(16, 8, 10, 0.55);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  z-index: 50;
+}
+
+.modal-contenido {
+  width: 100%;
+  max-width: 540px;
+  background: #fff;
+  border-radius: 1.2rem;
+  padding: 1.2rem 1.2rem 1rem;
+  border: 1px solid var(--borde);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+  position: relative;
+}
+
+.modal-contenido h2 {
+  color: var(--vino);
+  margin: 0 0 0.6rem;
+}
+
+.detalle {
+  background: #fdf7f9;
+  border: 1px dashed var(--vino-claro);
+  border-radius: 0.9rem;
+  padding: 0.9rem;
+  margin-bottom: 0.9rem;
+}
+
+.nota {
+  color: #5a4f52;
+  margin-bottom: 0.7rem;
+}
+
+.btn-mail, .btn-secundario {
+  display: inline-block;
+  padding: 0.85rem 1rem;
+  border-radius: 0.8rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.btn-mail {
+  background: var(--vino);
+  color: #312e2e;
+  text-decoration: none;
+  margin-right: 0.5rem;
+}
+.btn-mail:hover { background: var(--vino-oscuro); }
+
+.btn-secundario {
+
+  color: white;
+  color: var(--vino);
+  border: 2px solid var(--vino);
+}
+.btn-secundario:hover {
+  background: #fff3f6;
+}
+
+.btn-cerrar-x {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: none;
+  color: #580606;
+  background: var(--vino);
+  cursor: pointer;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.btn-pago{
+  background-color: rgb(110, 11, 11);
+  
+  color: white;
+  border: none;
+  
 }
