@@ -132,7 +132,8 @@
   <td>{{ act.estadoInscripcion || 'pendiente' }}</td>
   <td> <button *ngIf="act.pago"
             class="btn-pago"
-            (click)="abrirModalPago(act, usuario.nombre, usuario.numeroCuenta, usuario.correo)">
+            (click)="abrirModalPago(act, usuario.nombre ?? '', usuario.numeroCuenta ?? '', usuario.correo ?? '')"
+>
       Enviar comprobante
     </button></td>
 </tr>

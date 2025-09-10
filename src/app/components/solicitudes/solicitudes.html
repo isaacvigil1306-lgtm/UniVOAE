@@ -1,1 +1,25 @@
-<p>solicitudes works!</p>
+<div class="contenedor">
+  <h2>Solicitudes de Usuarios</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Correo</th>
+        <th>Nombre</th>
+        <th>Rol solicitado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of usuariosPendientes">
+        <td>{{ user.correo }}</td>
+        <td>{{ user.nombre }}</td>
+        <td>{{ user.rol }}</td>
+        <td>
+          <button (click)="aprobar(user, 'usuario')">✅ Usuario</button>
+          <button (click)="aprobar(user, 'admin')">🛡️ Admin</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
