@@ -20,6 +20,12 @@
       </div>
 
       <div class="campo">
+  <label for="identidad">Número de identidad*</label>
+  <input type="text" id="identidad" [(ngModel)]="identidad" name="identidad" required placeholder="Ej. 0801-1990-12345"/>
+</div>
+
+
+      <div class="campo">
         <label for="correo">Correo electrónico*</label>
         <input type="email" id="correo" [(ngModel)]="correo" name="correo" required [readOnly]="perfilEncontrado" placeholder="tu@unitec.edu"/>
       </div>

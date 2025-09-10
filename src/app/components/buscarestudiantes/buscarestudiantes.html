@@ -1,0 +1,63 @@
+<div class="contenedor">
+  <h1>Buscar estudiantes</h1>
+
+  <input
+  type="text"
+  placeholder="Buscar estudiante por nombre o identidad..."
+  [(ngModel)]="busqueda"
+  (ngModelChange)="filtrarEstudiantes()"
+  class="buscador"
+/>
+
+<ul class="lista-estudiantes">
+  <li *ngFor="let est of estudiantesFiltradosList">
+    👤 {{ est.nombre }} - {{ est.identidad }}
+  </li>
+</ul>
+
+<p *ngIf="estudiantesFiltradosList.length === 0 && busqueda">
+  No se encontraron estudiantes con esa búsqueda.
+</p>
+</div>
+
+<!-- Modal de perfil -->
+<div class="modal" *ngIf="estudianteSeleccionado">
+  <div class="modal-contenido">
+    <h2>Perfil de {{ estudianteSeleccionado.nombre }}</h2>
+
+    <div class="info-perfil">
+      <p><strong>Identidad:</strong> {{ estudianteSeleccionado.identidad }}</p>
+      <p><strong>Correo:</strong> {{ estudianteSeleccionado.correo }}</p>
+      <p><strong>Carrera:</strong> {{ estudianteSeleccionado.carrera }}</p>
+      <p><strong>Horas acumuladas:</strong> {{ estudianteSeleccionado.horasAcumuladas }} horas</p>
+    </div>
+
+    <h3>Actividades</h3>
+    <table class="tabla-actividades">
+      <thead>
+        <tr>
+          <th>Actividad</th>
+          <th>Fecha</th>
+          <th>Lugar</th>
+          <th>Horas</th>
+          <th>Asistencia</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let act of estudianteSeleccionado.actividades">
+          <td>{{ act.nombre }}</td>
+          <td>{{ act.fecha }}</td>
+          <td>{{ act.lugar || '-' }}</td>
+          <td>{{ act.horas || '-' }}</td>
+          <td>
+            <span [class.asistio]="act.asistio" [class.no-asistio]="!act.asistio">
+              {{ act.asistio ? '✅ Asistió' : '❌ No asistió' }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <button class="btn-cerrar" (click)="cerrarModal()">Cerrar</button>
+  </div>
+</div>

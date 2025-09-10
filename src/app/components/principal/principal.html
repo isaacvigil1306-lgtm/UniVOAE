@@ -74,6 +74,32 @@
   </div>
 
 <br><br>
+
+<!-- Actividades de Hoy -->
+<!-- Actividades de Hoy -->
+<!-- Actividades de Hoy -->
+<div class="actividades-hoy" *ngIf="actividadesHoy.length > 0">
+  <div class="recordatorio">
+    <span class="icono-alerta">⚠️</span>
+    <strong>¡EY! Recuerda que tienes esta(s) actividad(es) el día de hoy</strong>
+  </div>
+
+  <div class="cards-container">
+    <div class="card" *ngFor="let act of actividadesHoy">
+      <h3><span class="icono-actividad">📌</span> {{ act.nombre }}</h3>
+      
+      <p><span class="icono-lugar">📍</span> <strong>Lugar:</strong> {{ act.lugar }}</p>
+      <p><span class="icono-hora">⏰</span> <strong>Hora:</strong> {{ act.hora || 'No especificada' }}</p>
+      <p><span class="icono-estado">✅</span> <strong>Estado:</strong> {{ act.estadoInscripcion || 'pendiente' }}</p>
+      
+
+    </div>
+  </div>
+</div>
+
+
+
+<br>
   <!-- Actividades próximas -->
   <div class="actividades">
   <h2>Actividades Próximas</h2>

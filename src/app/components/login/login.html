@@ -8,15 +8,27 @@
   <div class="login-card">
     <h2 class="title">Iniciar Sesión</h2>
 
-    <form (ngSubmit)="login()" #form="ngForm" class="login-form">
+    <form #form="ngForm" class="login-form">
       <div class="form-group">
-        <input type="text" id="username" name="username" [(ngModel)]="username"
-          placeholder="Escriba su número de cuenta... " required />
+        <input
+          type="text"
+          id="username"
+          name="username"
+          [(ngModel)]="username"
+          placeholder="Escriba su número de cuenta..."
+          required
+        />
       </div>
 
       <div class="form-group">
-        <input type="password" id="password" name="password" [(ngModel)]="password"
-          placeholder="Escriba su contraseña" required />
+        <input
+          type="password"
+          id="password"
+          name="password"
+          [(ngModel)]="password"
+          placeholder="Escriba su contraseña"
+          required
+        />
       </div>
 
       <div class="checkbox-group">
@@ -25,23 +37,26 @@
       </div>
 
       <!-- Botón Ingresar -->
-     <button
-  type="button"
-  class="btn-login"
-  [disabled]="!form.valid"
-  (click)="iniciarSesion()"
->
-  Ingresar
-</button>
+      <button
+        type="button"
+        class="btn-login"
+        [disabled]="!form.valid"
+        (click)="iniciarSesion()"
+      >
+        Ingresar
+      </button>
 
-      <!-- Botón Registrar (mismo estilo) -->
+      <!-- Botón Registrar -->
       <button type="button" class="btn-login" (click)="register()">
         Registrar
       </button>
 
+      <!-- Botón Cerrar Sesión -->
       <button type="button" class="btn-login" (click)="logout()">
-        Cerrar Sesion
+        Cerrar Sesión
       </button>
+
+      <!-- Mensaje de error -->
       <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
     </form>
   </div>

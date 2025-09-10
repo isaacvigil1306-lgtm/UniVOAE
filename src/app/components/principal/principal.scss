@@ -559,3 +559,84 @@ input, select {
   border: none;
   
 }
+.actividades-hoy {
+  margin-bottom: 30px;
+
+  .recordatorio {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+    border-radius: 8px;
+    padding: 12px 15px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+
+  .cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .card {
+    background: #f0f8ff;
+    border-radius: 12px;
+    padding: 20px;
+    width: 280px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    h3 {
+      margin: 0;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #0d6efd;
+    }
+
+    p {
+      margin: 4px 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .acciones {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+
+      .btn-cancelar {
+        background-color: #f8d7da;
+        color: #842029;
+        border: none;
+        padding: 6px 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .btn-cancelar:hover {
+        background-color: #f5c2c7;
+      }
+
+      .btn-pago {
+        background-color: #d1e7dd;
+        color: #0f5132;
+        border: none;
+        padding: 6px 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .btn-pago:hover {
+        background-color: #badbcc;
+      }
+    }
+  }
+}

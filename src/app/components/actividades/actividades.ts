@@ -2,9 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
-import { Timestamp } from 'firebase/firestore';
 
 import { ActividadesService, Actividad } from '../../servicios/actividades';
 type EstadoInscripcion = 'aceptado' | 'rechazado' | 'pendiente' | 'falta-pago';
@@ -17,14 +15,14 @@ type EstadoInscripcion = 'aceptado' | 'rechazado' | 'pendiente' | 'falta-pago';
   imports: [CommonModule, FormsModule, RouterModule],
 })
 export class Actividades implements OnInit {
-  hoy: string = new Date().toISOString().split('T')[0];
+  hoy: string = this.getFechaLocal();
 
   actividades: Actividad[] = [];
   nuevaActividad: Actividad = this.resetActividad();
   modalAbierto = false;
   modoEdicion = false;
-estudiantes: any[] = [];
-mostrarEstudiantes = false;
+  estudiantes: any[] = [];
+  mostrarEstudiantes = false;
 
   actividadSeleccionada: Actividad | null = null;
   mostrarInscritos = false;
@@ -36,49 +34,48 @@ mostrarEstudiantes = false;
     this.cargarActividades();
   }
 
+  // ---------------- FECHA LOCAL ----------------
+  getFechaLocal(): string {
+    const hoy = new Date();
+    const año = hoy.getFullYear();
+    const mes = String(hoy.getMonth() + 1).padStart(2, '0');
+    const dia = String(hoy.getDate()).padStart(2, '0');
+    return `${año}-${mes}-${dia}`;
+  }
+
+  // ---------------- ESTUDIANTES ----------------
   verEstudiantes(idActividad: string) {
-  this.actividadesService.obtenerInscritos(idActividad).subscribe(inscritos => {
-    this.estudiantes = inscritos;
-    this.mostrarEstudiantes = true;
-  });
-}
-
-cerrarEstudiantes() {
-  this.mostrarEstudiantes = false;
-  this.estudiantes = [];
-}
-
-cambiarEstado(estudiante: any, nuevoEstado: EstadoInscripcion) {
-  if (!estudiante.id) return;
-
-  // Actualiza en Firestore
-  this.actividadesService.actualizarInscripcion(estudiante.id, {
-    estadoInscripcion: nuevoEstado
-  }).then(() => {
-    // Actualiza el estado local
-    estudiante.estadoInscripcion = nuevoEstado;
-  }).catch(err => {
-    console.error('Error al actualizar el estado', err);
-    Swal.fire('Error', 'No se pudo actualizar el estado del estudiante', 'error');
-  });
-}
-
-
-
-
-  cargarActividades() {
-    this.actividadesService.obtenerActividades().subscribe(data => {
-      const hoy = new Date();
-      hoy.setHours(0, 0, 0, 0);
-
-      this.actividades = data.filter(act => {
-        const fechaAct = new Date(act.fecha);
-        fechaAct.setHours(0, 0, 0, 0);
-        return fechaAct >= hoy;
-      });
+    this.actividadesService.obtenerInscritos(idActividad).subscribe(inscritos => {
+      this.estudiantes = inscritos;
+      this.mostrarEstudiantes = true;
     });
   }
-  
+
+  cerrarEstudiantes() {
+    this.mostrarEstudiantes = false;
+    this.estudiantes = [];
+  }
+
+  cambiarEstado(estudiante: any, nuevoEstado: EstadoInscripcion) {
+    if (!estudiante.id) return;
+
+    this.actividadesService.actualizarInscripcion(estudiante.id, {
+      estadoInscripcion: nuevoEstado
+    }).then(() => {
+      estudiante.estadoInscripcion = nuevoEstado;
+    }).catch(err => {
+      console.error('Error al actualizar el estado', err);
+      Swal.fire('Error', 'No se pudo actualizar el estado del estudiante', 'error');
+    });
+  }
+
+  // ---------------- ACTIVIDADES ----------------
+  cargarActividades() {
+    this.actividadesService.obtenerActividades().subscribe(data => {
+      const hoyStr = this.getFechaLocal(); // "YYYY-MM-DD"
+      this.actividades = data.filter(act => act.fecha >= hoyStr);
+    });
+  }
 
   abrirModal(editar?: Actividad) {
     if (editar) {
@@ -110,21 +107,23 @@ cambiarEstado(estudiante: any, nuevoEstado: EstadoInscripcion) {
     if (this.modoEdicion && this.nuevaActividad.id) {
       this.actividadesService.actualizarActividad(this.nuevaActividad.id, this.nuevaActividad).then(() => {
         Swal.fire('Actualizado', 'Actividad actualizada correctamente.', 'success');
+        this.cargarActividades(); // refresca lista
         this.cerrarModal();
       });
     } else {
       this.actividadesService.agregarActividad(this.nuevaActividad).then(() => {
         Swal.fire('Creado', 'Actividad creada correctamente.', 'success');
+        this.cargarActividades(); // refresca lista
         this.cerrarModal();
       });
     }
   }
 
-    toggleEstado(act: Actividad) {
+  toggleEstado(act: Actividad) {
     if (!act.id) return;
     const nuevoEstado = !act.estado;
     this.actividadesService.actualizarActividad(act.id, { estado: nuevoEstado }).then(() => {
-      act.estado = nuevoEstado; // actualizar localmente
+      act.estado = nuevoEstado;
     });
   }
 
@@ -132,10 +131,9 @@ cambiarEstado(estudiante: any, nuevoEstado: EstadoInscripcion) {
     if (!act.id) return;
     const nuevoVisible = !act.visible;
     this.actividadesService.actualizarActividad(act.id, { visible: nuevoVisible }).then(() => {
-      act.visible = nuevoVisible; // actualizar localmente
+      act.visible = nuevoVisible;
     });
   }
-
 
   editarActividad(act: Actividad) {
     this.abrirModal(act);
@@ -143,7 +141,9 @@ cambiarEstado(estudiante: any, nuevoEstado: EstadoInscripcion) {
 
   eliminarActividad(id?: string) {
     if (!id) return;
-    this.actividadesService.eliminarActividad(id);
+    this.actividadesService.eliminarActividad(id).then(() => {
+      this.cargarActividades(); // refresca lista
+    });
   }
 
   verInscritos(id?: string) {
@@ -182,10 +182,9 @@ cambiarEstado(estudiante: any, nuevoEstado: EstadoInscripcion) {
       cupo: 0,
       pago: false,
       descripcion: '',
-      imagen:'',
-      estado: true,   // por defecto activa
-      visible: true,  // por defecto visible
+      imagen: '',
+      estado: true,
+      visible: true,
     };
   }
-  
 }

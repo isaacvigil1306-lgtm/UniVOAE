@@ -73,6 +73,16 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./components/actividades/actividades').then((m) => m.Actividades),
       },
+        {
+        path: 'buscarestudiantes',
+        loadComponent: () =>
+          import('./components/buscarestudiantes/buscarestudiantes').then((m) => m.Buscarestudiantes),
+      },
+        {
+        path: 'solicitudes',
+        loadComponent: () =>
+          import('./components/solicitudes/solicitudes').then((m) => m.Solicitudes),
+      },
      {
     path: '**',
     component: Error404,

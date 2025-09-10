@@ -33,6 +33,7 @@ export class Principal implements OnInit {
   };
 
   actividadesProximas: ActividadEstudiante[] = [];
+actividadesHoy: ActividadEstudiante[] = [];
 
   usuario: Usuario = {
     nombre: '',
@@ -40,7 +41,8 @@ export class Principal implements OnInit {
     correo: '',
     telefono: '',
     identidad: '',
-    carrera: ''
+    carrera: '',
+    
   };
 
   modoEdicion = true; // true = formulario visible, false = card visible
@@ -148,30 +150,49 @@ export class Principal implements OnInit {
     });
   }
 
-  private cargarActividadesProximas() {
-    const inscripcionesRef = collection(this.firestore, 'inscripciones');
-    const qIns = query(inscripcionesRef, where('correo', '==', this.usuario.correo));
+private cargarActividadesProximas() {
+  const inscripcionesRef = collection(this.firestore, 'inscripciones');
+  const qIns = query(inscripcionesRef, where('correo', '==', this.usuario.correo));
 
-    collectionData(qIns, { idField: 'id' }).subscribe((inscripciones: any[]) => {
-      this.actividadesService.obtenerActividades().subscribe((acts: Actividad[]) => {
-        const hoy = new Date();
-        hoy.setHours(0, 0, 0, 0);
+  collectionData(qIns, { idField: 'id' }).subscribe((inscripciones: any[]) => {
+    this.actividadesService.obtenerActividades().subscribe((acts: Actividad[]) => {
+      const hoy = this.getFechaLocal(); // usamos mismo método que en administrador
 
-        const idsInscrito = new Set(inscripciones.map(i => i.idActividad));
-        this.actividadesProximas = acts.filter(act => {
-          const f = new Date(act.fecha);
-          f.setHours(0, 0, 0, 0);
-          return f >= hoy && idsInscrito.has(act.id!);
-        }).map(act => {
+      const idsInscrito = new Set(inscripciones.map(i => i.idActividad));
+
+      // Actividades de hoy en las que está inscrito
+      this.actividadesHoy = acts
+        .filter(act => act.fecha === hoy && idsInscrito.has(act.id!))
+        .map(act => {
           const insc = inscripciones.find(i => i.idActividad === act.id);
           return {
             ...act,
             estadoInscripcion: insc?.estadoInscripcion || 'pendiente'
           } as ActividadEstudiante;
         });
-      });
+
+      // Actividades futuras (sin hoy)
+      this.actividadesProximas = acts
+        .filter(act => act.fecha > hoy && idsInscrito.has(act.id!))
+        .map(act => {
+          const insc = inscripciones.find(i => i.idActividad === act.id);
+          return {
+            ...act,
+            estadoInscripcion: insc?.estadoInscripcion || 'pendiente'
+          } as ActividadEstudiante;
+        });
     });
-  }
+  });
+}
+
+// ---------------- FECHA LOCAL ----------------
+private getFechaLocal(): string {
+  const hoy = new Date();
+  const año = hoy.getFullYear();
+  const mes = String(hoy.getMonth() + 1).padStart(2, '0');
+  const dia = String(hoy.getDate()).padStart(2, '0');
+  return `${año}-${mes}-${dia}`;
+}
 
   abrirModalPago(act: Actividad, nombre: string, numeroCuenta: string, correo: string) {
     this.actividadPago = act;

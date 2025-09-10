@@ -25,6 +25,8 @@ export class Inscripcion implements OnInit {
   correo = '';
   telefono = '';
   comprobante: File | null = null;
+  identidad = '';
+
 
   // estado UI
   enviado = false;
@@ -70,6 +72,7 @@ export class Inscripcion implements OnInit {
           this.nombre = u.nombre || '';
           this.numeroCuenta = u.numeroCuenta || '';
           this.correo = u.correo || correoLocal;
+          this.identidad= u.identidad || '';
           this.telefono = u.telefono || '';
           this.perfilEncontrado = true; // bloquea edición de los campos base
         } else {
@@ -97,10 +100,11 @@ export class Inscripcion implements OnInit {
   }
 
   async enviarInscripcion() {
-    if (!this.nombre || !this.numeroCuenta || !this.correo) {
-      Swal.fire('Campos requeridos', 'Completa nombre, número de cuenta y correo.', 'warning');
-      return;
-    }
+   if (!this.nombre || !this.numeroCuenta || !this.correo || !this.identidad) {
+  Swal.fire('Campos requeridos', 'Completa nombre, número de cuenta, correo e identidad.', 'warning');
+  return;
+}
+
 
     try {
       const inscripcionesRef = collection(this.firestore, 'inscripciones');
@@ -119,15 +123,17 @@ export class Inscripcion implements OnInit {
       }
 
       // Guardar inscripción
-      await addDoc(inscripcionesRef, {
-        idActividad: this.idActividad,
-        nombre: this.nombre,
-        numeroCuenta: this.numeroCuenta,
-        correo: this.correo,
-        telefono: this.telefono || null,
-        estadoInscripcion: 'pendiente',
-        fechaInscripcion: new Date()
-      });
+     await addDoc(inscripcionesRef, {
+  idActividad: this.idActividad,
+  nombre: this.nombre,
+  numeroCuenta: this.numeroCuenta,
+  correo: this.correo,
+  telefono: this.telefono || null,
+  identidad: this.identidad, // 📌 Aquí guardas la identidad
+  estadoInscripcion: 'pendiente',
+  fechaInscripcion: new Date()
+});
+
 
       // Restar cupo (si el campo existe)
       if (this.actividad?.cupo !== undefined) {

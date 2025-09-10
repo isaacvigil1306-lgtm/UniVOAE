@@ -26,9 +26,19 @@ export class Administrador implements OnInit {
     this.router.navigate(['/']);
   }
 
+  // ---------------- FECHA LOCAL ----------------
+  getFechaLocal(): string {
+    const hoy = new Date();
+    const año = hoy.getFullYear();
+    const mes = String(hoy.getMonth() + 1).padStart(2, '0');
+    const dia = String(hoy.getDate()).padStart(2, '0');
+    return `${año}-${mes}-${dia}`;
+  }
+
+  // ---------------- CARGAR ACTIVIDADES ----------------
   cargarActividades() {
-    this.actividadesService.obtenerActividades().subscribe((actividades) => {
-      const hoy = new Date().toISOString().split('T')[0];
+    this.actividadesService.obtenerActividades().subscribe((actividades: Actividad[]) => {
+      const hoy = this.getFechaLocal();
 
       this.actividadesHoy = actividades.filter(a => a.fecha === hoy);
       this.actividadesProximas = actividades.filter(a => a.fecha > hoy);
@@ -37,7 +47,7 @@ export class Administrador implements OnInit {
   }
 
   verEstudiantes(act: Actividad) {
-    // Redirigir a la página de registro o abrir modal
+    if (!act.id) return;
     this.router.navigate(['/actividadespasadas'], { queryParams: { idActividad: act.id } });
   }
 }
