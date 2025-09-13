@@ -12,8 +12,8 @@ import { ActividadesService, Actividad } from '../../servicios/actividades';
   styleUrls: ['./historial.scss']
 })
 export class Historial implements OnInit {
-  historialActividades: Array<{ nombre: string; fecha: string; horas: number; estado: string }> = [];
-  private identidad!: string;
+   historialActividades: Array<{ nombre: string; fecha: string; horas: number; estado: string }> = [];
+  private correo!: string;
 
   constructor(
     private firestore: Firestore,
@@ -29,37 +29,39 @@ export class Historial implements OnInit {
     }
 
     const usuario = JSON.parse(usuarioGuardado);
-    this.identidad = usuario.dni;
+
+    // 📌 Ahora trabajamos con el correo
+    this.correo = usuario.correo;
 
     this.cargarHistorial();
   }
 
   private cargarHistorial() {
-  const asistenciasRef = collection(this.firestore, 'asistencias');
-  const qAsistencias = query(asistenciasRef, where('identidad', '==', this.identidad));
+    const asistenciasRef = collection(this.firestore, 'asistencias');
+    const qAsistencias = query(asistenciasRef, where('correo', '==', this.correo));
 
-  collectionData(qAsistencias, { idField: 'id' }).subscribe((asistencias: any[]) => {
-    this.actividadesService.obtenerActividades().subscribe((actividades: Actividad[]) => {
-      this.historialActividades = asistencias.map(asistencia => {
-        const act = actividades.find(a => a.id === asistencia.idActividad);
-        return {
-          nombre: act ? act.nombre : 'Actividad no encontrada',
-          fecha: act ? act.fecha : '',
-          horas: act ? act.horas : 0,
-          estado: asistencia.asistio ? 'Completada' : 'No asistió'
-        };
+    collectionData(qAsistencias, { idField: 'id' }).subscribe((asistencias: any[]) => {
+      console.log('Asistencias:', asistencias); // debug
+
+      this.actividadesService.obtenerActividades().subscribe((actividades: Actividad[]) => {
+        console.log('Actividades:', actividades); // debug
+
+        this.historialActividades = asistencias.map(asistencia => {
+          const act = actividades.find(a => a.id === asistencia.idActividad);
+          return {
+            nombre: act ? act.nombre : 'Actividad no encontrada',
+            fecha: act ? act.fecha : '',
+            horas: act ? act.horas : 0,
+            estado: asistencia.asistio ? 'Completada' : 'No asistió'
+          };
+        });
+
+        console.log('Historial generado:', this.historialActividades); // debug
       });
     });
-  });
-}
+  }
 
-
-
-
-
-cerrarSesion() {
-  
-  this.router.navigate(['/']);
-}
-  
+  cerrarSesion() {
+    this.router.navigate(['/']);
+  }
 }

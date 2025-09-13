@@ -71,7 +71,7 @@ export class Inscripcion implements OnInit {
           const u: any = usuarios[0];
           this.nombre = u.nombre || '';
           this.numeroCuenta = u.numeroCuenta || '';
-          this.correo = u.correo || correoLocal;
+          this.correo = u.correo ;
           this.identidad= u.identidad || '';
           this.telefono = u.telefono || '';
           this.perfilEncontrado = true; // bloquea edición de los campos base
@@ -112,7 +112,7 @@ export class Inscripcion implements OnInit {
       // Evitar duplicados por numeroCuenta + idActividad
       const qIns = query(
         inscripcionesRef,
-        where('numeroCuenta', '==', this.numeroCuenta),
+        where('correo', '==', this.correo),
         where('idActividad', '==', this.idActividad)
       );
       const querySnapshot = await getDocs(qIns);

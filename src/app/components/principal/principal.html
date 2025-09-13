@@ -1,50 +1,100 @@
 <div class="contenedor">
   <h1>Bienvenido, {{ estudiante }}!</h1>
+<br>
+<!-- FORMULARIO DE DATOS DEL USUARIO -->
+<div *ngIf="modoEdicion" class="formulario-usuario">
+  <h2>Perfil</h2>
+  <form #form="ngForm" (ngSubmit)="guardarUsuario(form)">
+    <div class="form-grid">
 
-  <!-- FORMULARIO DE DATOS DEL USUARIO -->
-  <div *ngIf="modoEdicion" class="formulario-usuario">
-    <h2>Perfil</h2>
-    <form #form="ngForm" (ngSubmit)="guardarUsuario(form)">
-      <div class="form-grid">
-        <div class="form-group">
-          <label>Nombre Completo</label>
-          <input type="text" [(ngModel)]="usuario.nombre" name="nombre" required>
-        </div>
-
-        <div class="form-group">
-          <label>Número de Cuenta</label>
-          <input type="text" [(ngModel)]="usuario.numeroCuenta" name="numeroCuenta" required>
-        </div>
-
-        <div class="form-group">
-          <label>Correo</label>
-          <input type="email" [(ngModel)]="usuario.correo" name="correo" required>
-        </div>
-
-        <div class="form-group">
-          <label>Teléfono</label>
-          <input type="text" [(ngModel)]="usuario.telefono" name="telefono">
-        </div>
-
-        <div class="form-group">
-          <label>Identidad</label>
-          <input type="text" [(ngModel)]="usuario.identidad" name="identidad" required>
-        </div>
-
-        <div class="form-group">
-          <label>Carrera</label>
-          <select [(ngModel)]="usuario.carrera" name="carrera">
-            <option value="Ingenieria en Informatica">Ingeniería en Informática</option>
-            <option value="Ingenieria Electronica">Ingeniería Electrónica</option>
-            <option value="Ingenieria en Gestion y Logistica">Ingeniería en Gestión y Logística</option>
-            <option value="Otro">Otro</option>
-          </select>
-        </div>
+      <!-- Nombre (solo letras y espacios) -->
+      <div class="form-group">
+        <label>Nombre Completo</label>
+        <input type="text"
+               [(ngModel)]="usuario.nombre"
+               name="nombre"
+               required
+               pattern="^[a-zA-ZÁÉÍÓÚáéíóúÑñ ]+$"
+               title="Solo se permiten letras y espacios">
       </div>
 
-      <button type="submit" class="btn-actualizar">Guardar / Actualizar</button>
-    </form>
-  </div>
+      <!-- Número de Cuenta (solo números) -->
+      <div class="form-group">
+        <label>Número de Cuenta</label>
+        <input type="text"
+               [(ngModel)]="usuario.numeroCuenta"
+               name="numeroCuenta"
+               required
+               pattern="^[0-9]+$"
+               (keydown)="soloNumeros($event)"
+               (paste)="validarPegado($event)">
+      </div>
+
+      <!-- Correo (solo lectura) -->
+      <div class="form-group">
+        <label>Correo</label>
+        <input type="email"
+               [(ngModel)]="usuario.correo"
+               name="correo"
+               required
+               readonly>
+      </div>
+
+      <!-- Teléfono (solo números) -->
+      <div class="form-group">
+        <label>Teléfono</label>
+        <input type="text"
+               [(ngModel)]="usuario.telefono"
+               name="telefono"
+               pattern="^[0-9]+$"
+               maxlength="8"
+               (keydown)="soloNumeros($event)"
+               (paste)="validarPegado($event)">
+      </div>
+
+      <!-- Identidad (solo números) -->
+      <div class="form-group">
+        <label>Identidad</label>
+        <input type="text"
+               [(ngModel)]="usuario.identidad"
+               name="identidad"
+               required
+               pattern="^[0-9]+$"
+               maxlength="13"
+               (keydown)="soloNumeros($event)"
+               (paste)="validarPegado($event)">
+      </div>
+
+      <!-- Carrera (lista CEUTEC) -->
+      <div class="form-group">
+        <label>Carrera</label>
+        <select [(ngModel)]="usuario.carrera" name="carrera" required>
+          <option value="">Seleccione una carrera</option>
+          <option value="Ingeniería en Sistemas">Ingeniería en Sistemas</option>
+          <option value="Ingeniería Industrial">Ingeniería Industrial</option>
+          <option value="Ingeniería Mecatrónica">Ingeniería Mecatrónica</option>
+          <option value="Ingeniería Civil">Ingeniería Civil</option>
+          <option value="Ingeniería Electrónica">Ingeniería Electrónica</option>
+          <option value="Administración de Empresas">Administración de Empresas</option>
+          <option value="Mercadotecnia">Mercadotecnia</option>
+          <option value="Contaduría Pública y Finanzas">Contaduría Pública y Finanzas</option>
+          <option value="Psicología">Psicología</option>
+          <option value="Derecho">Derecho</option>
+          <option value="Diseño Gráfico">Diseño Gráfico</option>
+          <option value="Comunicación Audiovisual y Publicitaria">Comunicación Audiovisual y Publicitaria</option>
+          <option value="Arquitectura">Arquitectura</option>
+          <option value="Enfermería">Enfermería</option>
+          <option value="Medicina">Medicina</option>
+          <option value="Otro">Otro</option>
+        </select>
+      </div>
+
+    </div>
+
+    <button type="submit" class="btn-actualizar">Guardar / Actualizar</button>
+  </form>
+</div>
+
 
   <div *ngIf="!modoEdicion" class="card-usuario" >
   <h2>Perfil</h2>

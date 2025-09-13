@@ -64,7 +64,7 @@ export class Buscarestudiantes implements OnInit {
     this.estudianteSeleccionado = { ...estudiante, actividades: [], horasAcumuladas: 0 };
 
     const asistenciasRef = collection(this.firestore, 'asistencias');
-    const q = query(asistenciasRef, where('identidad', '==', estudiante.identidad));
+    const q = query(asistenciasRef, where('correo', '==', estudiante.correo));
     const snap = await getDocs(q);
 
     let totalHoras = 0;

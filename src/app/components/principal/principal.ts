@@ -210,6 +210,23 @@ private getFechaLocal(): string {
     this.correoAlumno = '';
   }
 
+  // Solo números en inputs
+soloNumeros(event: KeyboardEvent) {
+  const tecla = event.key;
+  if (!/^[0-9]$/.test(tecla) && tecla !== "Backspace" && tecla !== "Tab") {
+    event.preventDefault();
+  }
+}
+
+// Validar que lo pegado sea solo números
+validarPegado(event: ClipboardEvent) {
+  const texto = event.clipboardData?.getData('text') || '';
+  if (!/^[0-9]+$/.test(texto)) {
+    event.preventDefault();
+  }
+}
+
+
   mailtoLink() {
     if (!this.actividadPago) return '#';
     const subject = `Comprobante de pago - ${this.actividadPago.nombre}`;

@@ -56,86 +56,111 @@
   </div>
 
   <!-- Modal Crear/Editar Actividad -->
-  <div class="modal" *ngIf="modalAbierto">
-    <div class="modal-contenido">
-      <h2>{{ modoEdicion ? 'Editar Actividad' : 'Crear Actividad' }}</h2>
-      <form #form="ngForm" (ngSubmit)="crearActividad(form)">
-        <!-- Campos de actividad (igual que tu HTML actual) -->
-        <div class="grupo">
-          <label>Nombre</label>
-          <input type="text" [(ngModel)]="nuevaActividad.nombre" name="nombre" required />
+  <div class="modal" *ngIf="modalAbierto" (click)="cerrarModal()">
+  <div class="modal-contenido" (click)="$event.stopPropagation()">
+
+    <h2>{{ modoEdicion ? 'Editar Actividad' : 'Crear Actividad' }}</h2>
+
+    <form #form="ngForm" (ngSubmit)="crearActividad(form)" novalidate>
+
+      <!-- Primera fila: Nombre y Lugar -->
+      <div class="grupo doble">
+        <div>
+          <label>Nombre *</label>
+          <input type="text" name="nombre" [(ngModel)]="nuevaActividad.nombre" required #nombre="ngModel"/>
+          <div class="error" *ngIf="nombre.invalid && nombre.touched">Nombre es requerido</div>
         </div>
-
-        <div class="grupo doble">
-          <div>
-            <label>Fecha</label>
-            <input type="date" [(ngModel)]="nuevaActividad.fecha" name="fecha" required />
-          </div>
-          <div>
-            <label>Hora</label>
-            <input type="time" [(ngModel)]="nuevaActividad.hora" name="hora" required />
-          </div>
+        <div>
+          <label>Lugar *</label>
+          <input type="text" name="lugar" [(ngModel)]="nuevaActividad.lugar" required #lugar="ngModel"/>
+          <div class="error" *ngIf="lugar.invalid && lugar.touched">Lugar es requerido</div>
         </div>
+      </div>
 
-        <div class="grupo">
-          <label>Lugar</label>
-          <input type="text" [(ngModel)]="nuevaActividad.lugar" name="lugar" required />
+      <!-- Segunda fila: Fecha y Hora -->
+      <div class="grupo doble">
+        <div>
+          <label>Fecha *</label>
+          <input type="date" name="fecha" [(ngModel)]="nuevaActividad.fecha" required
+                 [min]="hoy" #fecha="ngModel"/>
+          <div class="error" *ngIf="fecha.invalid && fecha.touched">Fecha no puede ser menor que hoy</div>
         </div>
-
-        <div class="grupo doble">
-          <div>
-            <label>Cantidad de horas</label>
-            <input type="number" [(ngModel)]="nuevaActividad.horas" name="horas" min="0" required />
-          </div>
-          <div>
-            <label>Cupo máximo</label>
-            <input type="number" [(ngModel)]="nuevaActividad.cupo" name="cupo" min="0" required />
-          </div>
+        <div>
+          <label>Hora *</label>
+          <input type="time" name="hora" [(ngModel)]="nuevaActividad.hora" required #hora="ngModel"/>
+          <div class="error" *ngIf="hora.invalid && hora.touched">Hora es requerida</div>
         </div>
+      </div>
 
-        <div class="grupo">
-          <label>
-            <input type="checkbox" [(ngModel)]="nuevaActividad.pago" name="pago" />
-            ¿Requiere pago?
-          </label>
-
-          <div *ngIf="nuevaActividad.pago" class="pago-opciones">
-            <label for="correoPago">Correo electrónico de pagos*</label>
-            <input type="email" id="correoPago" [(ngModel)]="nuevaActividad.correoPago" name="correoPago" required />
-
-            <label for="precio">Precio*</label>
-            <input type="number" id="precio" [(ngModel)]="nuevaActividad.precio" name="precio" required />
-
-            <label for="banco">Banco*</label>
-            <input type="text" id="banco" [(ngModel)]="nuevaActividad.banco" name="banco" required />
-
-            <label for="cuenta">Número de cuenta*</label>
-            <input type="text" id="cuenta" [(ngModel)]="nuevaActividad.numeroCuenta" name="numeroCuenta" required />
-          </div>
+      <!-- Tercera fila: Horas y Cupo -->
+      <div class="grupo doble">
+        <div>
+          <label>Cantidad de horas *</label>
+          <input type="number" name="horas" [(ngModel)]="nuevaActividad.horas"
+                 required min="1" step="1" #horas="ngModel"/>
+          <div class="error" *ngIf="horas.invalid && horas.touched">Horas debe ser entero > 0</div>
         </div>
-
-        <div class="grupo">
-          <label>Descripción</label>
-          <textarea [(ngModel)]="nuevaActividad.descripcion" name="descripcion"></textarea>
+        <div>
+          <label>Cupo máximo *</label>
+          <input type="number" name="cupo" [(ngModel)]="nuevaActividad.cupo"
+                 required min="1" step="1" #cupo="ngModel"/>
+          <div class="error" *ngIf="cupo.invalid && cupo.touched">Cupo debe ser entero > 0</div>
         </div>
+      </div>
 
-        <div class="grupo">
-          <label>URL de Imagen</label>
-          <input type="text" [(ngModel)]="nuevaActividad.imagen" name="imagen" placeholder="https://ejemplo.com/imagen.jpg" />
+      <!-- Checkbox de pago -->
+      <div class="grupo">
+        <label>
+          <input type="checkbox" [(ngModel)]="nuevaActividad.pago" name="pago"/> ¿Requiere pago?
+        </label>
+      </div>
+
+      <!-- Campos de pago -->
+      <div class="grupo doble" *ngIf="nuevaActividad.pago">
+        <div>
+          <label>Precio *</label>
+          <input type="number" name="precio" [(ngModel)]="nuevaActividad.precio" required min="0" step="0.01" #precio="ngModel"/>
+          <div class="error" *ngIf="precio.invalid && precio.touched">Precio >= 0</div>
         </div>
-
-        <div class="grupo" *ngIf="nuevaActividad.imagen">
-          <label>Vista previa</label>
-          <img [src]="nuevaActividad.imagen" alt="Vista previa" width="120" />
+        <div>
+          <label>Correo para pagos *</label>
+          <input type="email" name="correoPago" [(ngModel)]="nuevaActividad.correoPago" required #correoPago="ngModel"/>
+          <div class="error" *ngIf="correoPago.invalid && correoPago.touched">Correo válido es requerido</div>
         </div>
+      </div>
 
-        <button type="submit" class="btn submit">
-          {{ modoEdicion ? 'Guardar cambios' : 'Crear actividad' }}
-        </button>
-        <button type="button" class="btn cerrar" (click)="cerrarModal()">Cancelar</button>
-      </form>
-    </div>
+      <div class="grupo doble" *ngIf="nuevaActividad.pago">
+        <div>
+          <label>Banco *</label>
+          <input type="text" name="banco" [(ngModel)]="nuevaActividad.banco" required #banco="ngModel"/>
+          <div class="error" *ngIf="banco.invalid && banco.touched">Banco es requerido</div>
+        </div>
+        <div>
+          <label>Número de cuenta *</label>
+          <input type="text" name="numeroCuenta" [(ngModel)]="nuevaActividad.numeroCuenta" required #numeroCuenta="ngModel"/>
+          <div class="error" *ngIf="numeroCuenta.invalid && numeroCuenta.touched">Número de cuenta requerido</div>
+        </div>
+      </div>
+
+      <!-- Descripción -->
+      <div class="grupo">
+        <label>Descripción</label>
+        <textarea name="descripcion" [(ngModel)]="nuevaActividad.descripcion"></textarea>
+      </div>
+
+      <!-- URL de imagen -->
+      <div class="grupo">
+        <label>URL de Imagen</label>
+        <input type="text" name="imagen" [(ngModel)]="nuevaActividad.imagen" placeholder="https://ejemplo.com/imagen.jpg"/>
+      </div>
+
+      <button type="submit" class="btn submit" [disabled]="form.invalid">
+        {{ modoEdicion ? 'Guardar cambios' : 'Crear actividad' }}
+      </button>
+    </form>
   </div>
+</div>
+
 
 <!-- Modal estudiantes -->
 <div class="modal" *ngIf="mostrarEstudiantes">

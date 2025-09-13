@@ -17,6 +17,7 @@ type EstadoInscripcion = 'aceptado' | 'rechazado' | 'pendiente' | 'falta-pago';
 export class Actividades implements OnInit {
   hoy: string = this.getFechaLocal();
 
+tablaCompletaAbierta = false;
   actividades: Actividad[] = [];
   nuevaActividad: Actividad = this.resetActividad();
   modalAbierto = false;
@@ -43,6 +44,14 @@ export class Actividades implements OnInit {
     return `${año}-${mes}-${dia}`;
   }
 
+tablaExpandida = false;
+abrirTablaPantallaCompleta() {
+  this.tablaExpandida = true;
+}
+
+cerrarPantallaCompleta() {
+  this.tablaExpandida = false;
+}
   // ---------------- ESTUDIANTES ----------------
   verEstudiantes(idActividad: string) {
     this.actividadesService.obtenerInscritos(idActividad).subscribe(inscritos => {

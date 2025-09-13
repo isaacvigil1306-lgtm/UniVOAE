@@ -4,6 +4,10 @@
   
 }
 
+h1{
+  text-align: center;
+}
+
 html, body {
   margin: 0;
   padding: 0;
@@ -638,5 +642,68 @@ input, select {
         background-color: #badbcc;
       }
     }
+  }
+}
+
+
+/* CARD DE USUARIO: MOBILE-FIRST */
+.card-usuario {
+  background: linear-gradient(135deg, #fdfbfb, #ebedee);
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+  margin-bottom: 2rem;
+
+  h2 {
+    margin-bottom: 1.5rem;
+    color: #2c3e50;
+    text-align: center;
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Por defecto: 1 columna en móviles */
+    row-gap: 1rem;
+
+    p {
+      font-size: 1rem;
+      margin: 0;
+
+      strong {
+        display: block; /* FORZAR SALTO DE LÍNEA */
+        color: #1976D2;
+        margin-bottom: 0.25rem;
+      }
+    }
+  }
+
+  button.btn-editar {
+    display: block;
+    margin: 1.5rem auto 0 auto;
+    padding: 0.6rem 1.5rem;
+    background: #2196F3;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  button.btn-editar:hover {
+    background: #1976D2;
+  }
+}
+
+/* RESPONSIVE: PANTALLAS MÁS GRANDES */
+@media (min-width: 768px) {
+  .card-usuario .info-grid {
+    grid-template-columns: 1fr 1fr; /* 2 columnas en tablets/PC */
+    column-gap: 3rem;
+  }
+
+  .card-usuario .info-grid p strong {
+    display: inline-block; /* en desktop vuelve inline para alinear */
+    width: 140px;
+    margin-bottom: 0;
   }
 }

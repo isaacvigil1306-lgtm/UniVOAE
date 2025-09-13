@@ -21,7 +21,7 @@
 
       <div class="campo">
   <label for="identidad">Número de identidad*</label>
-  <input type="text" id="identidad" [(ngModel)]="identidad" name="identidad" required placeholder="Ej. 0801-1990-12345"/>
+  <input type="text" id="identidad" [(ngModel)]="identidad" name="identidad" required [readOnly]="perfilEncontrado" placeholder="Ej. 0801-1990-12345"/>
 </div>
 
 

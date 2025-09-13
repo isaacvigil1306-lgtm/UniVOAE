@@ -320,44 +320,7 @@
   }
 }
 
-/* Fondo del modal */
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
 
-/* Contenido del modal */
-.modal-contenido {
-  background: #fff;
-  padding: 2rem;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 800px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-  animation: fadeIn 0.3s ease;
-}
-
-/* Animación de entrada */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Título del modal */
-.modal-contenido h2 {
-  margin-bottom: 1rem;
-  font-size: 1.5rem;
-  text-align: center;
-  color: #333;
-}
 
 /* Tabla de estudiantes */
 .modal-contenido table {
@@ -452,5 +415,277 @@
   .modal-contenido th,
   .modal-contenido td {
     padding: 0.5rem 0.3rem;
+  }
+}
+
+
+/* ---------------- Modal ---------------- */
+.modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Contenido del modal */
+.modal-contenido {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  max-width: 800px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Título del modal */
+.modal-contenido h2 {
+  text-align: center;
+  color: #8b202a;
+  margin-bottom: 1.5rem;
+  font-size: 1.6rem;
+}
+
+/* ---------------- Formulario ---------------- */
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+.formulario-contenedor {
+  .grupo {
+    margin-bottom: 1rem;
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+      color: #333;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 0.5rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+      &:focus {
+        outline: none;
+        border-color: #8b202a;
+      }
+    }
+    textarea { height: 80px; resize: vertical; }
+    .error {
+      color: #dc3545;
+      font-size: 0.85rem;
+      margin-top: 0.2rem;
+    }
+  }
+
+  .doble {
+    display: flex;
+    gap: 1rem;
+    div { flex: 1; }
+  }
+
+  /* Botón enviar */
+  .btn.submit {
+    background: #8b202a;
+    color: #fff;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    display: block;
+    margin: 1rem auto 0 auto;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: background 0.3s;
+    &:disabled { background: #ccc; cursor: not-allowed; }
+    &:hover:not(:disabled) { background: #691313; }
+  }
+
+  /* Checkbox */
+  input[type="checkbox"] {
+    width: auto;
+    margin-right: 0.5rem;
+    transform: scale(1.1);
+  }
+}
+
+/* ---------------- Inputs válidos/inválidos ---------------- */
+input.ng-invalid.ng-touched,
+textarea.ng-invalid.ng-touched,
+select.ng-invalid.ng-touched {
+  border-color: #dc3545;
+}
+
+input.ng-valid.ng-touched,
+textarea.ng-valid.ng-touched,
+select.ng-valid.ng-touched {
+  border-color: #28a745;
+}
+
+/* ---------------- Responsive ---------------- */
+@media (max-width: 768px) {
+  .formulario-contenedor .doble {
+    flex-direction: column;
+  }
+}
+
+/* Modal fondo oscuro */
+.modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 1rem; /* Para que no toque los bordes en móviles */
+}
+
+/* Contenido del modal */
+.modal-contenido {
+  background: #fff;
+  padding: 1.5rem 2rem;
+  border-radius: 8px;
+  width: 420px;              /* Más pequeño que el anterior */
+  max-width: 90%;
+  max-height: 90vh;          /* Limita altura para scroll */
+  overflow-y: auto;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
+}
+
+/* Título dentro del modal */
+.modal-contenido h2 {
+  margin-bottom: 1rem;
+  color: #007bff;
+  font-weight: 600;
+  user-select: none;
+}
+
+/* Contenedor formulario */
+.formulario-contenedor {
+  background: #f9f9f9;
+  padding: 1.5rem 2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+  margin-top: 1rem;
+}
+
+/* Título dentro del formulario */
+.formulario-contenedor h2 {
+  margin-bottom: 1.5rem;
+  color: #333;
+  font-weight: 600;
+}
+
+/* Formulario */
+form {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Contenedor para dos columnas */
+form .doble {
+  display: flex;
+  gap: 1rem;
+}
+
+/* Cada columna flexible */
+form .doble > div {
+  flex: 1;
+  box-sizing: border-box;
+}
+
+/* Grupo de campo (label + input/select/textarea) */
+.grupo {
+  margin-bottom: 1.2rem;
+}
+
+/* Label */
+.grupo label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-weight: 500;
+  user-select: none;
+}
+
+/* Campos de formulario */
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+/* Resaltar campo enfocado */
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Textarea con tamaño vertical personalizado */
+textarea {
+  resize: vertical;
+  min-height: 100px;
+  font-family: inherit;
+}
+
+/* Botón submit */
+.btn.submit {
+  margin-top: 1rem;
+  background-color: #28a745;
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.3s ease;
+}
+
+/* Hover y focus en botón */
+.btn.submit:hover,
+.btn.submit:focus {
+  background-color: #218838;
+  outline: none;
+}
+
+/* RESPONSIVE */
+
+/* En pantallas pequeñas; el formulario pasa a 1 columna */
+@media (max-width: 600px) {
+  /* Modal contenido más pequeño en móviles */
+  .modal-contenido {
+    width: 95%;
+    padding: 1rem 1.2rem;
+  }
+
+  form .doble {
+    flex-direction: column;
   }
 }

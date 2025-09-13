@@ -152,9 +152,7 @@
   
 }
 
- .dia-pasado  .actividad{
- 
-}
+
 
 .actividad.cupos-llenos {
 background-color: #a31521;
@@ -173,19 +171,14 @@ background-color: #a31521;
 
 /* Día de hoy */
 .dia-hoy {
-  background-color: #851616 !important;
-  color: white !important;
+    border: 2px solid #851616 !important; /* borde alrededor */
+ /* para que el borde no quede pegado al texto */
+  color: black;
 }
 
 
-.dia-hoy .actividad {
- 
-  color: white !important;
-}
 
-.dia-hoy .numero-dia{
-  color: white;
-}
+
 
 /* Día pasado */
 .dia-pasado {
@@ -194,10 +187,6 @@ background-color: #a31521;
   cursor: default;
 }
 
-.dia-pasado .actividad {
- 
-  
-}
 
 
 
@@ -214,11 +203,16 @@ background-color: #a31521;
   }
 
   /* Encabezado de días más compacto */
-  .dia-header {
-    font-size: 0.75rem;      // más pequeño
-    padding: 0.2rem 0;       // menos padding
-    line-height: 1;           // elimina espacio extra
-  }
+  /* Encabezado de días más compacto */
+.dia-header {
+  font-size: 0.7rem;     /* más pequeño */
+  padding: 0.0005rem 0;    /* casi sin padding vertical */
+  line-height: 1;        /* altura ajustada al texto */
+  text-align: center; 
+  align-items: center;   /* centra el nombre */
+  font-weight: 600;      /* opcional: que resalte */
+}
+
 
   /* Abreviar nombres de días (Lun, Mar, etc) */
   .dia-header::after {
@@ -267,9 +261,9 @@ background-color: #a31521;
 
   /* Celdas más compactas */
   .celda-dia {
-    min-height: 40px;
+    min-height: 60px;
     width: 100%;
-    padding: 0.1rem;
+    padding: 0.02rem;
     border-radius: 5px;
 
   }
@@ -360,3 +354,19 @@ background-color: #a31521;
   background: #555;
 }
 
+/* colocar al final del CSS */
+@media (max-width: 599px) {
+  .dia-header {
+    padding: 0 !important;        /* elimina padding vertical/horizontal */
+    font-size: 0.78rem;           /* tamaño pequeño y legible */
+    line-height: 1;               /* evita espacio extra */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* si quieres abreviar y no duplicar texto, usa la Opción B */
+}
