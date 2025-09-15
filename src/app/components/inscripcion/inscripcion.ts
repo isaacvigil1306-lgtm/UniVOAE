@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule,NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import {
@@ -16,7 +16,7 @@ import { UsuariosService } from '../../servicios/usuarios';
   standalone: true,
   templateUrl: './inscripcion.html',
   styleUrls: ['./inscripcion.scss'],
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule,NgIf],
 })
 export class Inscripcion implements OnInit {
   // formulario

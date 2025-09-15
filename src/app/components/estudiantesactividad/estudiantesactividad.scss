@@ -1,0 +1,102 @@
+.estudiantes-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .btn-volver {
+    background-color: #800000; // rojo vino
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    font-weight: bold;
+    &:hover {
+      background-color: #a00000;
+    }
+  }
+
+  .tabla-scroll {
+    overflow-x: auto;
+  }
+
+  .tabla-estudiantes {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+
+    thead {
+      background-color: #800000; // rojo vino
+      color: white;
+
+      th {
+        padding: 10px;
+        text-align: left;
+      }
+    }
+
+    tbody {
+      tr {
+        border-bottom: 1px solid #ddd;
+
+        td {
+          padding: 10px;
+        }
+
+        .acciones {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 5px;
+
+          button {
+            padding: 5px 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+
+            &.aceptar { background-color: #5cb85c; }
+            &.falta-pago { background-color: #f0ad4e; color: black; }
+            &.mensaje { background-color: #0275d8; }
+            &.rechazar { background-color: #d9534f; }
+            &.cancelar { background-color: #6c757d; }
+
+            &:hover {
+              opacity: 0.9;
+            }
+          }
+        }
+
+        span.pendiente { background-color: #f0ad4e; padding: 2px 6px; border-radius: 4px; color: black; }
+        span.aceptado { background-color: #5cb85c; padding: 2px 6px; border-radius: 4px; }
+        span.falta-pago { background-color: #d9534f; padding: 2px 6px; border-radius: 4px; }
+        span.rechazado { background-color: #6c757d; padding: 2px 6px; border-radius: 4px; }
+      }
+    }
+  }
+}
+.btn-aceptar-todos {
+  text-align: right;
+  margin-bottom: 10px;
+
+  .btn.aceptar {
+    background-color: #5cb85c;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+}

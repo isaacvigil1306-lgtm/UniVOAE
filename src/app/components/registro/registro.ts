@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule,NgIf, NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import { Firestore, collection, getDocs, doc, getDoc, addDoc, query, where } from '@angular/fire/firestore';
 import { Timestamp } from '@angular/fire/firestore';
+import Swal from 'sweetalert2';
+
 
 type EstadoInscripcion = 'aceptado' | 'rechazado' | 'pendiente' | 'falta-pago';
 
@@ -12,7 +14,7 @@ type EstadoInscripcion = 'aceptado' | 'rechazado' | 'pendiente' | 'falta-pago';
   standalone: true,
   templateUrl: './registro.html',
   styleUrls: ['./registro.scss'],
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule,NgIf, NgFor],
 })
 export class Registro implements OnInit {
   actividades: any[] = [];
@@ -113,7 +115,13 @@ async guardarAsistencia() {
     }
   }
 
-  alert('Asistencia guardada con éxito');
+   Swal.fire({
+    title: '¡Asistencia guardada!',
+    text: 'Todas las asistencias fueron registradas correctamente.',
+    icon: 'success',
+    confirmButtonText: 'Aceptar',
+    confirmButtonColor: '#3085d6'
+  });
 }
 
 }

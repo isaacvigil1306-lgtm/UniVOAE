@@ -1,13 +1,13 @@
-<div class="contenedor">
-  <h2>Solicitudes de Usuarios</h2>
+<div class="contenedor" role="main" aria-labelledby="titulo-solicitudes">
+  <h2 id="titulo-solicitudes">Solicitudes de Usuarios</h2>
 
-  <table>
+  <table role="table" aria-labelledby="titulo-solicitudes">
     <thead>
       <tr>
-        <th>Correo</th>
-        <th>Nombre</th>
-        <th>Rol solicitado</th>
-        <th>Acciones</th>
+        <th scope="col">Correo</th>
+        <th scope="col">Nombre</th>
+        <th scope="col">Rol solicitado</th>
+        <th scope="col">Acciones</th>
       </tr>
     </thead>
     <tbody>
@@ -16,8 +16,22 @@
         <td>{{ user.nombre }}</td>
         <td>{{ user.rol }}</td>
         <td>
-          <button (click)="aprobar(user, 'usuario')">✅ Usuario</button>
-          <button (click)="aprobar(user, 'admin')">🛡️ Admin</button>
+          <button 
+  class="btn-usuario" 
+  (click)="aprobar(user, 'usuario')" 
+  [attr.aria-label]="'Aprobar a ' + user.nombre + ' como usuario'" 
+  title="Aprobar como usuario">
+  ✅ Usuario
+</button>
+
+<button 
+  class="btn-admin" 
+  (click)="aprobar(user, 'admin')" 
+  [attr.aria-label]="'Aprobar a ' + user.nombre + ' como administrador'" 
+  title="Aprobar como administrador">
+  🛡️ Admin
+</button>
+
         </td>
       </tr>
     </tbody>

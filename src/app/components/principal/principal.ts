@@ -1,6 +1,6 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule,NgIf, NgFor } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule, NgForm } from '@angular/forms';
 import Swal from 'sweetalert2';
@@ -10,7 +10,11 @@ import { UsuariosService, Usuario } from '../../servicios/usuarios';
 import { Firestore, collection, collectionData, doc, deleteDoc, query, where, getDocs,updateDoc, getDoc } from '@angular/fire/firestore';
 
 type EstadoInscripcion = 'aceptado' | 'rechazado' | 'pendiente' | 'falta-pago';
-type ActividadEstudiante = Actividad & { estadoInscripcion: EstadoInscripcion };
+type ActividadEstudiante = Actividad & { 
+  estadoInscripcion: EstadoInscripcion; 
+  mensajeAdmin?: string; // <- agregamos el mensaje del admin
+};
+
 
 @Component({
   selector: 'app-principal',
@@ -161,26 +165,30 @@ private cargarActividadesProximas() {
       const idsInscrito = new Set(inscripciones.map(i => i.idActividad));
 
       // Actividades de hoy en las que está inscrito
-      this.actividadesHoy = acts
-        .filter(act => act.fecha === hoy && idsInscrito.has(act.id!))
-        .map(act => {
-          const insc = inscripciones.find(i => i.idActividad === act.id);
-          return {
-            ...act,
-            estadoInscripcion: insc?.estadoInscripcion || 'pendiente'
-          } as ActividadEstudiante;
-        });
+    this.actividadesHoy = acts
+  .filter(act => act.fecha === hoy && idsInscrito.has(act.id!))
+  .map(act => {
+    const insc = inscripciones.find(i => i.idActividad === act.id);
+    return {
+      ...act,
+      estadoInscripcion: insc?.estadoInscripcion || 'pendiente',
+      mensajeAdmin: insc?.mensajeAdmin || ''
+    } as ActividadEstudiante;
+  });
+
 
       // Actividades futuras (sin hoy)
-      this.actividadesProximas = acts
-        .filter(act => act.fecha > hoy && idsInscrito.has(act.id!))
-        .map(act => {
-          const insc = inscripciones.find(i => i.idActividad === act.id);
-          return {
-            ...act,
-            estadoInscripcion: insc?.estadoInscripcion || 'pendiente'
-          } as ActividadEstudiante;
-        });
+     this.actividadesProximas = acts
+  .filter(act => act.fecha > hoy && idsInscrito.has(act.id!))
+  .map(act => {
+    const insc = inscripciones.find(i => i.idActividad === act.id);
+    return {
+      ...act,
+      estadoInscripcion: insc?.estadoInscripcion || 'pendiente',
+      mensajeAdmin: insc?.mensajeAdmin || '' // <- aquí agregamos el mensaje
+    } as ActividadEstudiante;
+  });
+
     });
   });
 }

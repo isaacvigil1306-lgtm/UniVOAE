@@ -4,207 +4,183 @@
 
   <!-- Tabla de actividades -->
   <div class="tabla-contenedor">
-    <table>
-      <thead>
-        <tr>
-          <th>Nombre</th>
-          <th>Fecha</th>
-          <th>Hora</th>
-          <th>Lugar</th>
-          <th>Horas</th>
-          <th>Cupo</th>
-          <th>Pago</th>
-          <th>Imagen</th>
-          <th>Estado</th>
-          
-          <th>Acciones</th>
-          <th>Estudiantes</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let act of actividades">
-          <td>{{ act.nombre }}</td>
-          <td>{{ act.fecha }}</td>
-          <td>{{ act.hora }}</td>
-          <td>{{ act.lugar }}</td>
-          <td>{{ act.horas }}</td>
-          <td>{{ act.cupo }}</td>
-          <td>{{ act.pago ? 'Sí' : 'No' }}</td>
-          <td>
-            <img *ngIf="act.imagen" [src]="act.imagen" alt="Imagen actividad" width="60" />
-            <span *ngIf="!act.imagen">—</span>
-          </td>
-          <td>
-            <button class="btn" [ngClass]="act.estado ? 'activo' : 'inactivo'" 
-                    (click)="toggleEstado(act)">
-              {{ act.estado ? 'Activo' : 'Inactivo' }}
-            </button>
-          </td>
-          
-          <td>
-            <button class="btn editar" (click)="abrirModal(act)">Editar</button>
-          </td>
-          <td>
-            <button class="btn ver" 
-                    (click)="act.id && verEstudiantes(act.id)">
-              👥 Ver Estudiantes
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+
+  <!-- Tabla normal para desktop -->
+  <table class="tabla-desktop">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Fecha</th>
+        <th>Hora</th>
+        <th>Lugar</th>
+        <th>Horas</th>
+        <th>Cupo</th>
+        <th>Pago</th>
+        <th>Imagen</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+        <th>Estudiantes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let act of actividades">
+        <td>{{ act.nombre }}</td>
+        <td>{{ act.fecha }}</td>
+        <td>{{ act.hora }}</td>
+        <td>{{ act.lugar }}</td>
+        <td>{{ act.horas }}</td>
+        <td>{{ act.cupo }}</td>
+        <td>{{ act.pago ? 'Sí' : 'No' }}</td>
+        <td>
+          <img *ngIf="act.imagen" [src]="act.imagen" alt="Imagen" width="60" />
+        </td>
+        <td>
+          <button class="btn" [ngClass]="act.estado ? 'activo' : 'inactivo'" (click)="toggleEstado(act)">
+            {{ act.estado ? 'Activo' : 'Inactivo' }}
+          </button>
+        </td>
+        <td>
+          <button class="btn editar" (click)="abrirModal(act)">Editar</button>
+        </td>
+        <td>
+          <button class="btn ver" [routerLink]="['/actividades/estudiantes', act.id]" [queryParams]="{ nombre: act.nombre }">
+            👥 Ver Estudiantes
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Cards para móvil -->
+  <div class="cards-mobile">
+    <div class="actividad-card" *ngFor="let act of actividades">
+      <div class="card-content">
+        <div class="card-imagen">
+          <img *ngIf="act.imagen" [src]="act.imagen" alt="Imagen" />
+          <span *ngIf="!act.imagen">—</span>
+        </div>
+        <div class="card-info">
+          <div><strong>Nombre:</strong> {{ act.nombre }}</div>
+          <div><strong>Fecha:</strong> {{ act.fecha }} {{ act.hora }}</div>
+          <div><strong>Lugar:</strong> {{ act.lugar }}</div>
+          <div><strong>Horas:</strong> {{ act.horas }}</div>
+          <div><strong>Cupo:</strong> {{ act.cupo }}</div>
+          <div><strong>Pago:</strong> {{ act.pago ? 'Sí' : 'No' }}</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="btn editar" (click)="abrirModal(act)">Editar</button>
+        <button class="btn ver" [routerLink]="['/actividades/estudiantes', act.id]" [queryParams]="{ nombre: act.nombre }">👥 Ver</button>
+        <button class="btn" [ngClass]="act.estado ? 'activo' : 'inactivo'" (click)="toggleEstado(act)">
+          {{ act.estado ? 'Activo' : 'Inactivo' }}
+        </button>
+      </div>
+    </div>
   </div>
 
-  <!-- Modal Crear/Editar Actividad -->
-  <div class="modal" *ngIf="modalAbierto" (click)="cerrarModal()">
-  <div class="modal-contenido" (click)="$event.stopPropagation()">
+</div>
 
+
+  <!-- Modal Crear/Editar Actividad -->
+<div class="modal" *ngIf="modalAbierto">
+  <div class="modal-contenido">
     <h2>{{ modoEdicion ? 'Editar Actividad' : 'Crear Actividad' }}</h2>
 
-    <form #form="ngForm" (ngSubmit)="crearActividad(form)" novalidate>
-
-      <!-- Primera fila: Nombre y Lugar -->
-      <div class="grupo doble">
-        <div>
-          <label>Nombre *</label>
-          <input type="text" name="nombre" [(ngModel)]="nuevaActividad.nombre" required #nombre="ngModel"/>
-          <div class="error" *ngIf="nombre.invalid && nombre.touched">Nombre es requerido</div>
-        </div>
-        <div>
-          <label>Lugar *</label>
-          <input type="text" name="lugar" [(ngModel)]="nuevaActividad.lugar" required #lugar="ngModel"/>
-          <div class="error" *ngIf="lugar.invalid && lugar.touched">Lugar es requerido</div>
-        </div>
-      </div>
-
-      <!-- Segunda fila: Fecha y Hora -->
-      <div class="grupo doble">
-        <div>
-          <label>Fecha *</label>
-          <input type="date" name="fecha" [(ngModel)]="nuevaActividad.fecha" required
-                 [min]="hoy" #fecha="ngModel"/>
-          <div class="error" *ngIf="fecha.invalid && fecha.touched">Fecha no puede ser menor que hoy</div>
-        </div>
-        <div>
-          <label>Hora *</label>
-          <input type="time" name="hora" [(ngModel)]="nuevaActividad.hora" required #hora="ngModel"/>
-          <div class="error" *ngIf="hora.invalid && hora.touched">Hora es requerida</div>
-        </div>
-      </div>
-
-      <!-- Tercera fila: Horas y Cupo -->
-      <div class="grupo doble">
-        <div>
-          <label>Cantidad de horas *</label>
-          <input type="number" name="horas" [(ngModel)]="nuevaActividad.horas"
-                 required min="1" step="1" #horas="ngModel"/>
-          <div class="error" *ngIf="horas.invalid && horas.touched">Horas debe ser entero > 0</div>
-        </div>
-        <div>
-          <label>Cupo máximo *</label>
-          <input type="number" name="cupo" [(ngModel)]="nuevaActividad.cupo"
-                 required min="1" step="1" #cupo="ngModel"/>
-          <div class="error" *ngIf="cupo.invalid && cupo.touched">Cupo debe ser entero > 0</div>
-        </div>
-      </div>
-
-      <!-- Checkbox de pago -->
+    <form #form="ngForm" (ngSubmit)="crearActividad(form)">
+      <!-- Nombre -->
       <div class="grupo">
-        <label>
-          <input type="checkbox" [(ngModel)]="nuevaActividad.pago" name="pago"/> ¿Requiere pago?
+        <label>Nombre</label>
+        <input type="text" [(ngModel)]="nuevaActividad.nombre" name="nombre" required />
+      </div>
+
+      <!-- Fecha y Hora -->
+      <div class="grupo doble">
+        <div>
+          <label>Fecha</label>
+          <input type="date" [(ngModel)]="nuevaActividad.fecha" name="fecha" required />
+        </div>
+        <div>
+          <label>Hora</label><br>
+          <input type="time" [(ngModel)]="nuevaActividad.hora" name="hora" required />
+        </div>
+      </div>
+
+      <!-- Lugar -->
+      <div class="grupo">
+        <label>Lugar</label>
+        <input type="text" [(ngModel)]="nuevaActividad.lugar" name="lugar" required />
+      </div>
+
+      <!-- Cantidad horas y cupo -->
+      <div class="grupo doble">
+        <div>
+          <label>Horas</label>
+          <input type="number" [(ngModel)]="nuevaActividad.horas" name="horas" min="0" required />
+        </div>
+        <div>
+          <label>Cupo</label>
+          <input type="number" [(ngModel)]="nuevaActividad.cupo" name="cupo" min="0" required />
+        </div>
+      </div>
+
+      <br>
+      <!-- Pago -->
+      <div class="grupo">
+        <label class="inline">
+          <input type="checkbox" [(ngModel)]="nuevaActividad.pago" name="pago" />
+          Requiere pago
         </label>
       </div>
-
-      <!-- Campos de pago -->
-      <div class="grupo doble" *ngIf="nuevaActividad.pago">
+<br>
+      <!-- Datos de pago -->
+      <div *ngIf="nuevaActividad.pago" class="grupo doble">
         <div>
-          <label>Precio *</label>
-          <input type="number" name="precio" [(ngModel)]="nuevaActividad.precio" required min="0" step="0.01" #precio="ngModel"/>
-          <div class="error" *ngIf="precio.invalid && precio.touched">Precio >= 0</div>
+          <label>Correo de pago*</label>
+          <input type="email" [(ngModel)]="nuevaActividad.correoPago" name="correoPago" required />
         </div>
         <div>
-          <label>Correo para pagos *</label>
-          <input type="email" name="correoPago" [(ngModel)]="nuevaActividad.correoPago" required #correoPago="ngModel"/>
-          <div class="error" *ngIf="correoPago.invalid && correoPago.touched">Correo válido es requerido</div>
-        </div>
-      </div>
-
-      <div class="grupo doble" *ngIf="nuevaActividad.pago">
-        <div>
-          <label>Banco *</label>
-          <input type="text" name="banco" [(ngModel)]="nuevaActividad.banco" required #banco="ngModel"/>
-          <div class="error" *ngIf="banco.invalid && banco.touched">Banco es requerido</div>
+          <label>Precio*</label>
+          <input type="number" [(ngModel)]="nuevaActividad.precio" name="precio" required />
         </div>
         <div>
-          <label>Número de cuenta *</label>
-          <input type="text" name="numeroCuenta" [(ngModel)]="nuevaActividad.numeroCuenta" required #numeroCuenta="ngModel"/>
-          <div class="error" *ngIf="numeroCuenta.invalid && numeroCuenta.touched">Número de cuenta requerido</div>
+          <label>Banco*</label>
+          <input type="text" [(ngModel)]="nuevaActividad.banco" name="banco" required />
+        </div>
+        <div>
+          <label>Cuenta*</label>
+          <input type="text" [(ngModel)]="nuevaActividad.numeroCuenta" name="numeroCuenta" required />
         </div>
       </div>
 
       <!-- Descripción -->
       <div class="grupo">
         <label>Descripción</label>
-        <textarea name="descripcion" [(ngModel)]="nuevaActividad.descripcion"></textarea>
+        <textarea [(ngModel)]="nuevaActividad.descripcion" name="descripcion"></textarea>
       </div>
 
-      <!-- URL de imagen -->
+      <!-- Imagen -->
       <div class="grupo">
-        <label>URL de Imagen</label>
-        <input type="text" name="imagen" [(ngModel)]="nuevaActividad.imagen" placeholder="https://ejemplo.com/imagen.jpg"/>
+        <label>URL Imagen</label>
+        <input type="text" [(ngModel)]="nuevaActividad.imagen" name="imagen" placeholder="https://ejemplo.com/imagen.jpg" />
       </div>
 
-      <button type="submit" class="btn submit" [disabled]="form.invalid">
-        {{ modoEdicion ? 'Guardar cambios' : 'Crear actividad' }}
-      </button>
+      <!-- Vista previa -->
+      <div class="grupo vista-previa" *ngIf="nuevaActividad.imagen">
+        <img [src]="nuevaActividad.imagen" alt="Vista previa" />
+      </div>
+
+      <!-- Botones -->
+      <div class="acciones">
+        <button type="submit" class="btn submit">
+          {{ modoEdicion ? 'Guardar cambios' : 'Crear actividad' }}
+        </button>
+        <button type="button" class="btn cerrar" (click)="cerrarModal()">Cancelar</button>
+      </div>
     </form>
   </div>
 </div>
 
-
 <!-- Modal estudiantes -->
-<div class="modal" *ngIf="mostrarEstudiantes">
-  <div class="modal-contenido">
-    <!-- Botón de cerrar con X -->
-    <button class="cerrar-x" (click)="cerrarEstudiantes()">×</button>
 
-    <h2>Estudiantes inscritos</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Número de cuenta</th>
-          <th>Nombre</th>
-          <th>Correo</th>
-          <th>Estado</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let est of estudiantes">
-          <td>{{ est.identidad }}</td>
-          <td>{{ est.nombre }}</td>
-          <td>{{ est.correo }}</td>
-          <td>
-            <span [ngClass]="{
-              'pendiente': est.estadoInscripcion === 'pendiente',
-              'aceptado': est.estadoInscripcion === 'aceptado',
-              'falta-pago': est.estadoInscripcion === 'falta-pago',
-              'rechazado': est.estadoInscripcion === 'rechazado'
-            }">
-              {{ est.estadoInscripcion || 'pendiente' }}
-            </span>
-          </td>
-          <td>
-            <select [(ngModel)]="est.estadoInscripcion" (change)="cambiarEstado(est, est.estadoInscripcion)">
-              <option value="aceptado">Aceptar</option>
-              <option value="falta-pago">Falta realizar el pago</option>
-              <option value="pendiente">Pendiente</option>
-              <option value="rechazado">Rechazar</option>
-            </select>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  
+
 </div>

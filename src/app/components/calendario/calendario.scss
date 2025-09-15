@@ -164,10 +164,7 @@ background-color: #a31521;
   color: white;
 }
 
-/* Celda con actividad */
-.con-actividad {
-  
-}
+
 
 /* Día de hoy */
 .dia-hoy {
@@ -308,9 +305,9 @@ background-color: #a31521;
 
 /* Vista de escritorio */
 @media (min-width: 1024px) {
-  .calendar-container {
+  
 
-  }
+  
   .calendar-day {
     min-height: 100px;
     font-size: 1rem;
@@ -369,4 +366,34 @@ background-color: #a31521;
   }
 
   /* si quieres abreviar y no duplicar texto, usa la Opción B */
+}
+/* Focus visible para teclado */
+.celda-dia:focus-visible,
+.navegacion-meses button:focus-visible,
+.navegacion-meses select:focus-visible {
+  outline: 3px solid #FFD700;
+  outline-offset: 2px;
+}
+
+/* Mejora de contraste en hover y focus */
+.navegacion-meses button:hover,
+.navegacion-meses button:focus {
+  background-color: #8b202a;
+}
+
+.celda-dia:hover,
+.celda-dia:focus {
+  box-shadow: 0 0 0 2px #b52a3a inset;
+}
+
+/* Texto de accesibilidad para lectores de pantalla */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  border: 0;
 }

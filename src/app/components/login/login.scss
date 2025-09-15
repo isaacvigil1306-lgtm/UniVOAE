@@ -7,7 +7,7 @@
 
 body {
   height: 100%;
-  overflow: hidden; /* Evita scroll */
+  overflow: hidden;
 }
 
 .login-container {
@@ -18,7 +18,7 @@ body {
   background-size: cover;
 }
 
-/* Mitad izquierda con imagen */
+/* Imagen izquierda */
 .login-container::before {
   content: "";
   flex: 0.5;
@@ -28,7 +28,7 @@ body {
   background-repeat: no-repeat;
 }
 
-/* Mitad derecha con login */
+/* Card derecha */
 .login-card {
   flex: 1;
   display: flex;
@@ -48,7 +48,7 @@ body {
 .login-card .title {
   font-size: 1.8rem;
   margin-bottom: 20px;
-  color: #ffffff; 
+  color: #ffffff;
   text-align: center;
 }
 
@@ -64,23 +64,28 @@ body {
 .form-group input {
   width: 100%;
   padding: 12px 10px;
-  border: 1px solid #8b202a;
+  border: 2px solid #8b202a;
   border-radius: 5px;
-  background: white; /* Fondo blanco para inputs */
+  background: white;
   outline: none;
   color: #000000;
 }
 
-.form-group label {
+.form-group input:focus {
+  outline: 3px solid #e71c31;
+  box-shadow: 0 0 5px #e71c31;
+}
+
+/* Texto oculto accesible */
+.sr-only {
   position: absolute;
-  top: 50%;
-  left: 12px;
-  transform: translateY(-50%);
-  padding: 0 5px;
-  color: #333333;
-  background: #ffffff; /* Fondo blanco para destacar texto */
-  pointer-events: none;
-  transition: 0.3s;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  border: 0;
 }
 
 .checkbox-group {
@@ -95,18 +100,18 @@ body {
   font-weight: normal;
 }
 
-/* Botones (Ingresar y Registrar) */
+/* Botones */
 .btn-login {
   width: 100%;
   padding: 12px;
-  background-color: #e71c31; /* Rojo vino */
+  background-color: #e71c31;
   color: white;
   border: none;
   border-radius: 5px;
   font-size: 1rem;
   cursor: pointer;
   transition: 0.3s;
-  margin-top: 10px; /* espacio entre botones */
+  margin-top: 10px;
 }
 
 .btn-login:disabled {
@@ -114,8 +119,11 @@ body {
   cursor: not-allowed;
 }
 
-.btn-login:hover:not(:disabled) {
+.btn-login:hover:not(:disabled),
+.btn-login:focus {
   background-color: #600f18;
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
 }
 
 .error {
@@ -125,16 +133,14 @@ body {
   font-size: 0.9rem;
 }
 
-/* ------------------ RESPONSIVE ------------------ */
+/* Responsivo */
 @media (max-width: 768px) {
   .login-container {
     height: cover;
   }
-
   .login-container::before {
     display: none;
   }
-
   .login-card {
     flex: none;
     width: 90%;
@@ -151,7 +157,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: #111; /* fondo oscuro */
+  background: #111;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -160,7 +166,7 @@ body {
 
 .spinner {
   border: 8px solid #f3f3f3;
-  border-top: 8px solid #e71c31; /* rojo vino */
+  border-top: 8px solid #e71c31;
   border-radius: 50%;
   width: 60px;
   height: 60px;
@@ -172,7 +178,6 @@ body {
   100% { transform: rotate(360deg); }
 }
 
-/* Ocultar login mientras carga */
 .hidden {
   opacity: 0;
   pointer-events: none;

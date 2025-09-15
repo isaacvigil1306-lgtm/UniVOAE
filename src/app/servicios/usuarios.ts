@@ -1,6 +1,6 @@
 
 import { Injectable } from '@angular/core';
-import { Firestore, doc, setDoc, collection, query, where, collectionData } from '@angular/fire/firestore';
+import { Firestore, doc, setDoc, collection, query, where, collectionData,getDoc } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 
 export interface Usuario {
@@ -42,4 +42,18 @@ obtenerUsuariosPendientes(): Observable<Usuario[]> {
     const docRef = doc(this.firestore, `usuarios/${usuario.correo}`);
     return setDoc(docRef, usuario, { merge: true });
   }
+
+  // Agregar este método en UsuariosService
+obtenerUsuarioPorUID(uid: string): Promise<Usuario | null> {
+  const userDocRef = doc(this.firestore, 'usuarios', uid);
+  return getDoc(userDocRef).then(docSnap => {
+    if (docSnap.exists()) {
+      return docSnap.data() as Usuario;
+    } else {
+      return null;
+    }
+  });
 }
+
+}
+

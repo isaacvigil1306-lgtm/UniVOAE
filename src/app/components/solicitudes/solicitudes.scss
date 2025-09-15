@@ -7,13 +7,13 @@
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
 
-  h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #333;
-    font-size: 1.8rem;
-  }
+.contenedor h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 1.8rem;
 }
 
 /* Tabla */
@@ -23,36 +23,36 @@ table {
   overflow: hidden;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
 
-  thead {
-    background: #2196f3;
-    color: #fff;
-    text-align: left;
+thead {
+  background: #2196f3;
+  color: #fff;
+  text-align: left;
+}
 
-    th {
-      padding: 12px 15px;
-      font-size: 14px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-  }
+th {
+  padding: 12px 15px;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
 
-  tbody {
-    tr {
-      border-bottom: 1px solid #eee;
-      transition: background 0.2s ease;
+tbody tr {
+  border-bottom: 1px solid #eee;
+  transition: background 0.2s ease;
+}
 
-      &:hover {
-        background: #f5faff;
-      }
+tbody tr:hover,
+tbody tr:focus-within {
+  background: #f5faff;
+  outline: 2px solid #0056b3; /* Foco visible para teclado */
+}
 
-      td {
-        padding: 12px 15px;
-        font-size: 14px;
-        color: #444;
-      }
-    }
-  }
+td {
+  padding: 12px 15px;
+  font-size: 14px;
+  color: #444;
 }
 
 /* Botones */
@@ -66,22 +66,26 @@ button {
   font-size: 13px;
   color: #fff;
   transition: all 0.2s ease;
+}
 
-  &.btn-usuario {
-    background: #4caf50;
+button:focus {
+  outline: 2px solid #0056b3; /* Foco visible para teclado */
+}
 
-    &:hover {
-      background: #388e3c;
-    }
-  }
+.btn-usuario {
+  background: #4caf50;
+}
 
-  &.btn-admin {
-    background: #e53935;
+.btn-usuario:hover {
+  background: #388e3c;
+}
 
-    &:hover {
-      background: #b71c1c;
-    }
-  }
+.btn-admin {
+  background: #e53935;
+}
+
+.btn-admin:hover {
+  background: #b71c1c;
 }
 
 /* Responsive */
@@ -113,11 +117,11 @@ button {
     display: flex;
     justify-content: space-between;
     font-size: 14px;
+  }
 
-    &::before {
-      content: attr(data-label);
-      font-weight: bold;
-      color: #555;
-    }
+  td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    color: #555;
   }
 }

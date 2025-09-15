@@ -1,35 +1,40 @@
-<!-- Contenido -->
-<main class="contenido">
+<main class="contenido" role="main">
   <div class="contenedor">
-    <h1>Historial de Actividades</h1>
+    <header>
+      <h1>Historial de Actividades</h1>
+    </header>
 
-    <table class="tabla-historial">
-      <thead>
-        <tr>
-          <th>Nombre de la Actividad</th>
-          <th>Fecha</th>
-          <th>Horas</th>
-          <th>Estado</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let actividad of historialActividades">
-          <td>{{ actividad.nombre }}</td>
-          <td>{{ actividad.fecha }}</td>
-          <td>{{ actividad.horas }}</td>
-          <td>
-            <span
-              class="estado"
-              [ngClass]="{
-                completada: actividad.estado.toLowerCase() === 'completada',
-                noCompletada: actividad.estado.toLowerCase() !== 'completada'
-              }"
-            >
-              {{ actividad.estado }}
-            </span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <section class="tabla-historial-wrapper" aria-label="Historial de actividades">
+      <table class="tabla-historial" role="table">
+        <thead>
+          <tr role="row">
+            <th role="columnheader" scope="col" title="Nombre de la Actividad">Nombre de la Actividad</th>
+            <th role="columnheader" scope="col" title="Fecha de la actividad">Fecha</th>
+            <th role="columnheader" scope="col" title="Horas asignadas">Horas</th>
+            <th role="columnheader" scope="col" title="Estado de la actividad">Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let actividad of historialActividades" role="row" tabindex="0" 
+              [title]="'Actividad: ' + actividad.nombre + ', Fecha: ' + actividad.fecha + ', Horas: ' + actividad.horas + ', Estado: ' + actividad.estado">
+            <td role="cell">{{ actividad.nombre }}</td>
+            <td role="cell">{{ actividad.fecha }}</td>
+            <td role="cell">{{ actividad.horas }}</td>
+            <td role="cell">
+              <span
+                class="estado"
+                [ngClass]="{
+                  completada: actividad.estado.toLowerCase() === 'completada',
+                  noCompletada: actividad.estado.toLowerCase() !== 'completada'
+                }"
+                [title]="actividad.estado"
+              >
+                {{ actividad.estado }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
   </div>
 </main>

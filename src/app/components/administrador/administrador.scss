@@ -47,10 +47,12 @@
         border-radius: 12px;
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         transition: transform 0.2s ease, box-shadow 0.2s ease;
+        cursor: pointer;
 
-        &:hover {
+        &:hover, &:focus-visible {
           transform: translateY(-3px);
           box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+          outline: 3px solid #FFD700; /* foco visible */
         }
 
         h3 {
@@ -88,14 +90,28 @@
 
     .no-datos {
       text-align: center;
-      color: #999;
+      color: #333;
       font-style: italic;
       padding: 1rem 0;
     }
   }
 }
 
-/* Responsive - tablets y escritorios */
+/* Contraste y accesibilidad */
+.actividad-card {
+  background-color: #fefefe;
+  color: #003366;
+}
+
+.actividad-card h3 {
+  color: #001f3f;
+}
+
+.actividad-card p {
+  color: #004080;
+}
+
+/* Responsive */
 @media (min-width: 600px) {
   .actividades-lista {
     flex-direction: row;

@@ -1,4 +1,3 @@
-
 import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -7,8 +6,8 @@ import { Permisos } from '../../servicios/permisos';
 import { Auth } from '@angular/fire/auth';
 import { Autenticacion } from '../../servicios/autenticacion';
 import { Usuario, UsuariosService } from '../../servicios/usuarios';
-import {  setDoc,  collection, collectionData, doc, deleteDoc, query, where, getDocs,updateDoc, getDoc } from '@angular/fire/firestore';
-
+import { setDoc, collection, collectionData, doc, deleteDoc, query, where, getDocs, updateDoc, getDoc } from '@angular/fire/firestore';
+    import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
@@ -18,9 +17,8 @@ import {  setDoc,  collection, collectionData, doc, deleteDoc, query, where, get
   imports: [FormsModule, CommonModule],
 })
 export class Login implements OnInit {
- 
   authService = inject(Autenticacion);
-  username: string = ''; // correo
+  username: string = '';
   password: string = '';
   errorMessage: string = '';
   isLoading: boolean = true;
@@ -30,9 +28,7 @@ export class Login implements OnInit {
     private router: Router,
     private Permisos: Permisos,
     private auth: Auth,
-    private usuariosService: UsuariosService ,
-    
-    
+    private usuariosService: UsuariosService,
   ) {}
 
   ngOnInit() {
@@ -45,94 +41,138 @@ export class Login implements OnInit {
     };
   }
 
-
-
-  // Login con Firebase usando solo correo
 async iniciarSesion() {
   if (!this.username || !this.password) return;
 
   try {
+    // 1️⃣ Iniciar sesión con Firebase Auth
     const credencial = await this.authService.iniciarSesion(
       this.username,
       this.password
     );
 
-    if (!credencial.user?.emailVerified) {
-      alert('Por favor verifica tu correo antes de iniciar sesión');
+    if (!credencial.user || !credencial.user.email) {
+      Swal.fire({
+        title: 'Error',
+        text: 'No se pudo obtener el correo del usuario.',
+        icon: 'error',
+        confirmButtonText: 'Cerrar'
+      });
       return;
     }
 
-    // 1️⃣ Obtener usuario desde Firestore
-    this.usuariosService.obtenerUsuarioPorCorreo(this.username).subscribe((usuarios) => {
-      if (usuarios.length === 0) {
-        this.errorMessage = 'Usuario no registrado correctamente';
+    const email = credencial.user.email;
+
+    // 2️⃣ Verificar email
+    if (!credencial.user.emailVerified) {
+      Swal.fire({
+        title: 'Correo no verificado',
+        text: 'Por favor verifica tu correo antes de iniciar sesión.',
+        icon: 'warning',
+        confirmButtonText: 'Entendido',
+        confirmButtonColor: '#f39c12'
+      });
+      return;
+    }
+
+    // 3️⃣ Obtener usuario desde Firestore por correo
+    this.usuariosService.obtenerUsuarioPorCorreo(email).subscribe((usuarios) => {
+      if (!usuarios || usuarios.length === 0) {
+        Swal.fire({
+          title: 'Usuario no encontrado',
+          text: 'Contacta con el administrador.',
+          icon: 'error',
+          confirmButtonText: 'Cerrar'
+        });
         return;
       }
 
       const user = usuarios[0];
 
+      // 4️⃣ Revisar rol y aprobación
       if (user.rol === 'pendiente' || !user.aprobado) {
-        alert('Tu cuenta está pendiente de aprobación por el administrador.');
+        Swal.fire({
+          title: 'Cuenta pendiente',
+          text: 'Tu cuenta está pendiente de aprobación por el administrador.',
+          icon: 'info',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#3498db'
+        });
         return;
       }
 
-      // 1️⃣ Guardar correo en localStorage después de iniciar sesión correctamente
-localStorage.setItem('usuario', JSON.stringify({ correo: this.username }));
+      // 5️⃣ Guardar datos en localStorage
+      localStorage.setItem('usuario', JSON.stringify({ correo: user.correo, rol: user.rol }));
 
-
-      // 2️⃣ Redirigir según rol
+      // 6️⃣ Redirigir según rol
       if (user.rol === 'admin') {
         this.router.navigate(['/administrador']);
-      } else if (user.rol === 'usuario'){this.router.navigate(['/principal']);
+      } else if (user.rol === 'usuario') {
+        this.router.navigate(['/principal']);
+      } else {
+        Swal.fire({
+          title: 'Rol desconocido',
+          text: 'Contacta con el administrador.',
+          icon: 'error',
+          confirmButtonText: 'Cerrar'
+        });
       }
     });
+
   } catch (error: any) {
     console.error(error);
-    this.errorMessage = error.message;
+    Swal.fire({
+      title: 'Error',
+      text: error.message,
+      icon: 'error',
+      confirmButtonText: 'Cerrar'
+    });
   }
 }
 
 
-  // Registro con Firebase usando solo correo
- async register() {
-  if (!this.username || !this.password) {
-    alert('Por favor, ingresa correo y contraseña');
-    return;
+
+  async register() {
+    if (!this.username || !this.password) {
+      alert('Por favor, ingresa correo y contraseña');
+      return;
+    }
+
+    if (!this.username.endsWith('@unitec.edu')) {
+      this.errorMessage = 'Solo se permiten correos @unitec.edu';
+      return;
+    }
+
+    try {
+      const credencial = await this.authService.registrarUsuario(
+        this.username,
+        this.password
+      );
+
+      const usuario: Usuario = {
+        correo: this.username,
+        rol: 'pendiente',
+        aprobado: false,
+      };
+
+      await this.usuariosService.guardarUsuario(usuario);
+      alert('Usuario registrado correctamente. Por favor verifica tu correo.');
+    } catch (error: any) {
+      console.error(error);
+      this.errorMessage = error.message;
+    }
   }
-
-  if (!this.username.endsWith('@unitec.edu')) {
-    this.errorMessage = 'Solo se permiten correos @unitec.edu';
-    return;
-  }
-
-  try {
-    // 1️⃣ Registrar en Firebase Auth
-    const credencial = await this.authService.registrarUsuario(
-      this.username,
-      this.password
-    );
-
-    // 2️⃣ Crear documento en usuarios con rol pendiente
-    const usuario: Usuario = {
-      correo: this.username,
-      rol: 'pendiente',
-      aprobado: false
-    };
-
-    await this.usuariosService.guardarUsuario(usuario);
-
-    alert('Usuario registrado correctamente. Por favor verifica tu correo.');
-  } catch (error: any) {
-    console.error(error);
-    this.errorMessage = error.message;
-  }
-}
-
-
 
   togglePassword() {
     const passwordInput = document.getElementById('password') as HTMLInputElement;
-    passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+    const isHidden = passwordInput.type === 'password';
+    passwordInput.type = isHidden ? 'text' : 'password';
+
+    // Accesibilidad: actualizar aria-label
+    passwordInput.setAttribute(
+      'aria-label',
+      isHidden ? 'Contraseña visible' : 'Contraseña oculta'
+    );
   }
 
   logout() {

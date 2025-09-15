@@ -6,79 +6,37 @@
   border: 1px solid #ccc;
 }
 
-.actividad-card {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-  overflow: hidden;
-}
-
-.actividad-header {
-  background: #8b202a;
-  color: white;
-  padding: 0.8rem 1rem;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  font-weight: bold;
-}
-
-.flecha {
-  transition: transform 0.3s ease;
-}
-
-.flecha.abierto {
-  transform: rotate(180deg);
-}
-
-.lista-estudiantes {
-  background: #f9f9f9;
-  padding: 0.8rem 1rem;
-}
-
-.estudiante-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 0.4rem 0;
-  border-bottom: 1px solid #eee;
-}
-
-.estudiante-item:last-child {
-  border-bottom: none;
-}
-
-.asistio {
-  color: green;
-  font-weight: bold;
-}
-
-.no-asistio {
-  color: red;
-  font-weight: bold;
+.buscador:focus-visible {
+  outline: 3px solid #FFD700;
 }
 
 .tabla-actividades, .tabla-estudiantes {
   width: 100%;
   border-collapse: collapse;
   margin-top: 1rem;
-
-  th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: center;
-  }
-
-  th {
-    background: #641010;
-    color: white;
-  }
-
-  tr:nth-child(even) {
-    background: #f9f9f9;
-  }
 }
 
-.btn-ver {
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+th {
+  background: #641010;
+  color: white;
+}
+
+tr:nth-child(even) {
+  background: #f9f9f9;
+}
+
+tr:focus-visible {
+  outline: 3px solid #FFD700;
+  outline-offset: -3px;
+}
+
+.btn-ver, .btn-cerrar {
   background: #001f3f;
   color: white;
   padding: 6px 12px;
@@ -87,8 +45,10 @@
   cursor: pointer;
 }
 
-.btn-ver:hover {
+.btn-ver:hover, .btn-ver:focus-visible,
+.btn-cerrar:hover, .btn-cerrar:focus-visible {
   background: #003366;
+  outline: 3px solid #FFD700;
 }
 
 .asistio {
@@ -110,6 +70,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 }
 
 .modal-contenido {
@@ -118,14 +79,9 @@
   border-radius: 8px;
   width: 80%;
   max-width: 600px;
+  outline: none;
 }
 
-.btn-cerrar {
-  margin-top: 15px;
-  background: #800020;
-  color: white;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
+.modal-contenido:focus-visible {
+  outline: 3px solid #FFD700;
 }

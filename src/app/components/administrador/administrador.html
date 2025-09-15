@@ -1,14 +1,16 @@
 <div class="contenedor">
   <!-- Encabezado con usuario logueado -->
-  <div class="admin-header">
+  <header class="admin-header" role="banner">
     <h1>Panel de Actividades - CEUTEC</h1>
-      </div>
+  </header>
 
   <!-- Actividades de hoy -->
-  <div class="seccion">
-    <h2>Actividades de Hoy</h2>
-    <div *ngIf="actividadesHoy.length > 0; else noHoy" class="actividades-lista">
-      <div class="actividad-card" *ngFor="let act of actividadesHoy">
+  <section class="seccion" aria-labelledby="hoy-title">
+    <h2 id="hoy-title">Actividades de Hoy</h2>
+    <div *ngIf="actividadesHoy.length > 0; else noHoy" class="actividades-lista" role="list">
+      <div class="actividad-card" *ngFor="let act of actividadesHoy" role="listitem" tabindex="0"
+           [attr.aria-label]="'Actividad: ' + act.nombre + ', Hora: ' + act.hora + ', Lugar: ' + act.lugar + ', Cupo: ' + act.cupo + ', Horas: ' + act.horas"
+           title="{{ act.nombre }}">
         <h3>{{ act.nombre }}</h3>
         <p><strong>Hora:</strong> {{ act.hora }} | <strong>Lugar:</strong> {{ act.lugar }}</p>
         <p><strong>Cupo:</strong> {{ act.cupo }} | <strong>Horas:</strong> {{ act.horas }}</p>
@@ -17,13 +19,15 @@
     <ng-template #noHoy>
       <p class="no-datos">No hay actividades programadas para hoy.</p>
     </ng-template>
-  </div>
+  </section>
 
   <!-- Actividades próximas -->
-  <div class="seccion">
-    <h2>Actividades Próximas</h2>
-    <div *ngIf="actividadesProximas.length > 0; else noProximas" class="actividades-lista">
-      <div class="actividad-card" *ngFor="let act of actividadesProximas">
+  <section class="seccion" aria-labelledby="proximas-title">
+    <h2 id="proximas-title">Actividades Próximas</h2>
+    <div *ngIf="actividadesProximas.length > 0; else noProximas" class="actividades-lista" role="list">
+      <div class="actividad-card" *ngFor="let act of actividadesProximas" role="listitem" tabindex="0"
+           [attr.aria-label]="'Actividad: ' + act.nombre + ', Fecha: ' + act.fecha + ', Hora: ' + act.hora + ', Lugar: ' + act.lugar + ', Cupo: ' + act.cupo"
+           title="{{ act.nombre }}">
         <h3>{{ act.nombre }}</h3>
         <p><strong>Fecha:</strong> {{ act.fecha }} | <strong>Hora:</strong> {{ act.hora }}</p>
         <p><strong>Lugar:</strong> {{ act.lugar }} | <strong>Cupo:</strong> {{ act.cupo }}</p>
@@ -32,10 +36,6 @@
     <ng-template #noProximas>
       <p class="no-datos">No hay actividades próximas programadas.</p>
     </ng-template>
-  </div>
+  </section>
 
-  <!-- Actividades pasadas -->
- 
-
-  
 </div>

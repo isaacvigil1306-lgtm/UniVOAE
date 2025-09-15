@@ -1,0 +1,51 @@
+<div class="estudiantes-container">
+  <!-- Flecha para volver -->
+  <button class="btn-volver" (click)="router.navigate(['/actividades'])">
+    ← Volver a Actividades
+  </button>
+
+  <h1>Estudiantes de: {{ nombreActividad }}</h1>
+
+  <!-- Botón aceptar todos -->
+  <div class="btn-aceptar-todos">
+    <button class="btn aceptar" (click)="aceptarATodos()">Aceptar a todos</button>
+  </div>
+
+  <div class="tabla-scroll">
+    <table class="tabla-estudiantes">
+      <thead>
+        <tr>
+          <th>Número de identidad</th>
+          <th>Nombre</th>
+          <th>Correo</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let est of estudiantes">
+          <td>{{ est.identidad }}</td>
+          <td>{{ est.nombre }}</td>
+          <td>{{ est.correo }}</td>
+          <td>
+            <span [ngClass]="{
+              'pendiente': est.estadoInscripcion === 'pendiente',
+              'aceptado': est.estadoInscripcion === 'aceptado',
+              'falta-pago': est.estadoInscripcion === 'falta-pago',
+              'rechazado': est.estadoInscripcion === 'rechazado'
+            }">
+              {{ est.estadoInscripcion || 'pendiente' }}
+            </span>
+          </td>
+          <td class="acciones">
+            <button class="btn aceptar" (click)="cambiarEstado(est,'aceptado')">Aceptar</button>
+            <button class="btn falta-pago" (click)="cambiarEstado(est,'falta-pago')">Falta pago</button>
+            <button class="btn mensaje" (click)="enviarMensaje(est)">Mensaje</button>
+            <button class="btn rechazar" (click)="cambiarEstado(est,'rechazado')">Rechazar</button>
+            <button class="btn cancelar" (click)="cancelarInscripcionAdmin(est)">Cancelar Inscripción</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,14 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Firestore, collection, query, where, getDocs } from '@angular/fire/firestore';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf, NgFor } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { ActividadesService, Actividad } from '../../servicios/actividades';
 
 @Component({
   selector: 'app-buscarestudiantes',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, NgIf, NgFor],
   templateUrl: './buscarestudiantes.html',
   styleUrls: ['./buscarestudiantes.scss']
 })
@@ -23,39 +22,38 @@ export class Buscarestudiantes implements OnInit {
 
   async ngOnInit() {
     await this.cargarEstudiantes();
-    this.filtrarEstudiantes(); // Inicializa la lista filtrada
+    this.filtrarEstudiantes();
   }
 
   // ---------------- Cargar todos los estudiantes ----------------
-  async cargarEstudiantes() {
-    const estudiantesRef = collection(this.firestore, 'usuarios');
-    const snap = await getDocs(estudiantesRef);
+async cargarEstudiantes() {
+  const estudiantesRef = collection(this.firestore, 'usuarios');
+  const snap = await getDocs(estudiantesRef);
 
-    this.estudiantes = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  this.estudiantes = snap.docs
+    .map(doc => ({ id: doc.id, ...(doc.data() as any) })) // 👈 Aquí le decimos que es any
+    .filter(est => est.nombre && est.identidad); // 👈 Filtramos los que tienen nombre e identidad
 
-    // Inicializar lista filtrada
-    this.estudiantesFiltradosList = [...this.estudiantes];
-  }
+  this.estudiantesFiltradosList = [...this.estudiantes];
+}
 
   // ---------------- Filtrar estudiantes ----------------
   async filtrarEstudiantes() {
     const texto = this.busqueda.trim().toLowerCase();
 
-    // Filtrado seguro: verifica que nombre e identidad existan
     this.estudiantesFiltradosList = this.estudiantes.filter(est => {
       const nombre = est.nombre?.toLowerCase() || '';
       const identidad = est.identidad?.toLowerCase() || '';
       return nombre.includes(texto) || identidad.includes(texto);
     });
 
-    // Si hay solo un estudiante filtrado, abrir modal automáticamente
     if (this.estudiantesFiltradosList.length === 1) {
       const est = this.estudiantesFiltradosList[0];
       if (!this.estudianteSeleccionado || this.estudianteSeleccionado.id !== est.id) {
         await this.abrirModalEstudiante(est);
       }
     } else {
-      this.estudianteSeleccionado = null; // cerrar modal si no hay coincidencias únicas
+      this.estudianteSeleccionado = null;
     }
   }
 

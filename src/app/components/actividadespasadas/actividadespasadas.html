@@ -7,29 +7,35 @@
     placeholder="Buscar actividad o estudiante..."
     [(ngModel)]="busqueda"
     class="buscador"
+    aria-label="Buscar actividad o estudiante"
   />
 
   <!-- Tabla de actividades -->
-  <table class="tabla-actividades">
+  <table class="tabla-actividades" role="table" aria-label="Tabla de actividades">
     <thead>
-      <tr>
-        <th>Nombre</th>
-        <th>Fecha</th>
-        <th>Lugar</th>
-        <th>Horas</th>
-        <th>Acciones</th>
+      <tr role="row">
+        <th role="columnheader">Nombre</th>
+        <th role="columnheader">Fecha</th>
+        <th role="columnheader">Lugar</th>
+        <th role="columnheader">Horas</th>
+        <th role="columnheader">Acciones</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let actividad of actividadesFiltradas()">
-        <td>{{ actividad.nombre }}</td>
-        <td>{{ actividad.fecha }}</td>
-        <td>{{ actividad.lugar || '-' }}</td>
-        <td>{{ actividad.horas || '-' }}</td>
-        <td>
-          <button class="btn-ver" (click)="abrirModalEstudiantes(actividad)">
-            👥 Ver estudiantes
-          </button>
+      <tr *ngFor="let actividad of actividadesFiltradas()" role="row">
+        <td role="cell">{{ actividad.nombre }}</td>
+        <td role="cell">{{ actividad.fecha }}</td>
+        <td role="cell">{{ actividad.lugar || '-' }}</td>
+        <td role="cell">{{ actividad.horas || '-' }}</td>
+        <td role="cell">
+          <button 
+  class="btn-ver" 
+  (click)="abrirModalEstudiantes(actividad)"
+  [title]="'Ver estudiantes de ' + actividad.nombre"
+  [attr.aria-label]="'Ver estudiantes de ' + actividad.nombre"
+>
+  👥 Ver estudiantes
+</button>
         </td>
       </tr>
     </tbody>
@@ -37,25 +43,36 @@
 </div>
 
 <!-- Modal estudiantes -->
-<div class="modal" *ngIf="actividadSeleccionada">
+<div 
+  class="modal" 
+  *ngIf="actividadSeleccionada" 
+  role="dialog" 
+  aria-modal="true" 
+  aria-labelledby="modal-title"
+  aria-describedby="modal-desc"
+>
   <div class="modal-contenido">
-    <h2>Estudiantes - {{ actividadSeleccionada.nombre }}</h2>
+    <h2 id="modal-title">Estudiantes - {{ actividadSeleccionada.nombre }}</h2>
 
     <div *ngIf="actividadSeleccionada.estudiantes?.length > 0; else noAsistencia">
-      <table class="tabla-estudiantes">
+      <table class="tabla-estudiantes" role="table" aria-label="Tabla de estudiantes">
         <thead>
-          <tr>
-            <th>Identidad</th>
-            <th>Nombre</th>
-            <th>Asistencia</th>
+          <tr role="row">
+            <th role="columnheader">Identidad</th>
+            <th role="columnheader">Nombre</th>
+            <th role="columnheader">Asistencia</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let est of actividadSeleccionada.estudiantes">
-            <td>{{ est.identidad }}</td>
-            <td>{{ est.nombre }}</td>
-            <td>
-              <span [class.asistio]="est.asistio" [class.no-asistio]="!est.asistio">
+          <tr *ngFor="let est of actividadSeleccionada.estudiantes" role="row">
+            <td role="cell">{{ est.identidad }}</td>
+            <td role="cell">{{ est.nombre }}</td>
+            <td role="cell">
+              <span 
+                [class.asistio]="est.asistio" 
+                [class.no-asistio]="!est.asistio"
+                [attr.aria-label]="est.asistio ? 'Asistió' : 'No asistió'"
+              >
                 {{ est.asistio ? '✅ Asistió' : '❌ No asistió' }}
               </span>
             </td>
@@ -65,9 +82,16 @@
     </div>
 
     <ng-template #noAsistencia>
-      <p class="no-datos">No hubo estudiantes registrados.</p>
+      <p class="no-datos" id="modal-desc">No hubo estudiantes registrados.</p>
     </ng-template>
 
-    <button class="btn-cerrar" (click)="cerrarModal()">Cerrar</button>
+    <button 
+  class="btn-cerrar" 
+  (click)="cerrarModal()"
+  title="Cerrar modal"
+  aria-label="Cerrar modal"
+>
+  Cerrar
+</button>
   </div>
 </div>

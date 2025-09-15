@@ -1,6 +1,6 @@
 
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule,NgIf, NgFor } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ActividadesService, Actividad } from '../../servicios/actividades';
 import { Firestore, collection, query, where, getDocs } from '@angular/fire/firestore';
@@ -8,7 +8,8 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-actividadespasadas',
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule,NgIf, NgFor],
+    
   templateUrl: './actividadespasadas.html',
   styleUrl: './actividadespasadas.scss'
 })

@@ -1,25 +1,25 @@
-<div class="contenedor">
-  <h1>Registro de Participación</h1>
+<div class="contenedor" role="main" aria-labelledby="titulo-principal">
+  <h1 id="titulo-principal">Registro de Participación</h1>
 
   <div class="grupo">
     <label for="actividad-select">Seleccione actividad</label>
-    <select id="actividad-select" (change)="seleccionarActividad($event)">
+    <select id="actividad-select" (change)="seleccionarActividad($event)" aria-required="true" aria-label="Seleccione la actividad">
       <option value="">--Seleccione--</option>
-      <option *ngFor="let act of actividades" [value]="act.id">
+      <option *ngFor="let act of actividades" [value]="act.id" [attr.title]="act.nombre + ' - ' + act.fecha">
         {{ act.nombre }} - {{ act.fecha }}
       </option>
     </select>
   </div>
 
   <div *ngIf="actividadSeleccionadaId">
-    <h2>Estudiantes inscritos</h2>
+    <h2 id="titulo-estudiantes-inscritos">Estudiantes inscritos</h2>
 
-    <table *ngIf="inscritos.length > 0; else noInscritos" class="tabla-inscritos">
+    <table *ngIf="inscritos.length > 0; else noInscritos" class="tabla-inscritos" role="table" aria-labelledby="titulo-estudiantes-inscritos">
       <thead>
         <tr>
-          <th>Identidad</th>
-          <th>Nombre</th>
-          <th>Asistió</th>
+          <th scope="col">Identidad</th>
+          <th scope="col">Nombre</th>
+          <th scope="col">Asistió</th>
         </tr>
       </thead>
       <tbody>
@@ -27,18 +27,25 @@
           <td>{{ estudiante.identidad }}</td>
           <td>{{ estudiante.nombre }}</td>
           <td>
-            <input type="checkbox" [(ngModel)]="estudiante.asistio">
+            <label>
+              <input type="checkbox"
+       [(ngModel)]="estudiante.asistio"
+       [attr.aria-label]="'Marcar asistencia de ' + estudiante.nombre">
+
+            </label>
           </td>
         </tr>
       </tbody>
     </table>
 
-    <button *ngIf="inscritos.length > 0" class="btn guardar" (click)="guardarAsistencia()">
+    <button *ngIf="inscritos.length > 0" class="btn guardar" (click)="guardarAsistencia()" aria-label="Guardar asistencia" title="Guardar asistencia">
       Guardar asistencia
     </button>
 
     <ng-template #noInscritos>
-      <p class="no-datos">No hay estudiantes con inscripción aceptada para esta actividad.</p>
+      <p class="no-datos" role="status" aria-live="polite">
+        No hay estudiantes con inscripción aceptada para esta actividad.
+      </p>
     </ng-template>
   </div>
 </div>

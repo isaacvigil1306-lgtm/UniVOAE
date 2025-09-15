@@ -1,15 +1,31 @@
 <!-- Preloader -->
-<div class="preloader" *ngIf="isLoading">
-  <div class="spinner"></div>
+<div
+  class="preloader"
+  *ngIf="isLoading"
+  role="status"
+  aria-busy="true"
+  aria-label="Cargando..."
+>
+  <div class="spinner" aria-hidden="true"></div>
 </div>
 
-<div class="login-container" [class.hidden]="isLoading">
+<div
+  class="login-container"
+  [class.hidden]="isLoading"
+  role="main"
+  aria-labelledby="loginTitle"
+>
   <!-- Card de Login -->
-  <div class="login-card">
-    <h2 class="title">Iniciar Sesión</h2>
+  <section class="login-card" aria-live="polite">
+    <h2 id="loginTitle" class="title">Iniciar Sesión</h2>
 
-    <form #form="ngForm" class="login-form">
+    <form #form="ngForm" class="login-form" role="form" aria-describedby="formDesc">
+      <p id="formDesc" class="sr-only">
+        Introduzca su número de cuenta y contraseña para acceder.
+      </p>
+
       <div class="form-group">
+        <label for="username" class="sr-only">Número de cuenta</label>
         <input
           type="text"
           id="username"
@@ -17,10 +33,14 @@
           [(ngModel)]="username"
           placeholder="Escriba su número de cuenta..."
           required
+          aria-required="true"
+          aria-label="Número de cuenta"
+          title="Ingrese su número de cuenta"
         />
       </div>
 
       <div class="form-group">
+        <label for="password" class="sr-only">Contraseña</label>
         <input
           type="password"
           id="password"
@@ -28,11 +48,20 @@
           [(ngModel)]="password"
           placeholder="Escriba su contraseña"
           required
+          aria-required="true"
+          aria-label="Contraseña"
+          title="Ingrese su contraseña"
         />
       </div>
 
       <div class="checkbox-group">
-        <input type="checkbox" id="showPassword" (change)="togglePassword()" />
+        <input
+          type="checkbox"
+          id="showPassword"
+          (change)="togglePassword()"
+          aria-controls="password"
+          aria-label="Mostrar u ocultar contraseña"
+        />
         <label for="showPassword">Mostrar contraseña</label>
       </div>
 
@@ -42,22 +71,38 @@
         class="btn-login"
         [disabled]="!form.valid"
         (click)="iniciarSesion()"
+        aria-label="Ingresar al sistema"
+        title="Ingresar"
       >
         Ingresar
       </button>
 
       <!-- Botón Registrar -->
-      <button type="button" class="btn-login" (click)="register()">
+      <button
+        type="button"
+        class="btn-login"
+        (click)="register()"
+        aria-label="Registrar nueva cuenta"
+        title="Registrar nueva cuenta"
+      >
         Registrar
       </button>
 
       <!-- Botón Cerrar Sesión -->
-      <button type="button" class="btn-login" (click)="logout()">
+      <button
+        type="button"
+        class="btn-login"
+        (click)="logout()"
+        aria-label="Cerrar sesión"
+        title="Cerrar sesión"
+      >
         Cerrar Sesión
       </button>
 
       <!-- Mensaje de error -->
-      <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+      <p *ngIf="errorMessage" class="error" role="alert" aria-live="assertive">
+        {{ errorMessage }}
+      </p>
     </form>
-  </div>
+  </section>
 </div>

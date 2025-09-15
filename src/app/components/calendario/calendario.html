@@ -1,50 +1,50 @@
+<div class="contenedor" role="main">
+  <header>
+    <h1>Calendario de Actividades</h1>
+  </header>
 
-<div class="contenedor">
+  <section class="navegacion-meses" aria-label="Navegación de meses">
+    <button (click)="cambiarMes(-1)" aria-label="Mes anterior" title="Mes anterior">&#8592;</button>
+    <span aria-live="polite">{{ obtenerNombreMes(mesActual) }} {{ anioActual }}</span>
+    <button (click)="cambiarMes(1)" aria-label="Mes siguiente" title="Mes siguiente">&#8594;</button>
+    <button class="btn-hoy" (click)="irAHoy()" aria-label="Ir al día de hoy" title="Hoy">Hoy</button>
 
- <h1>Calendario de Actividades</h1>
+    <label for="filtro-meses" class="sr-only">Filtrar actividades</label>
+    <select id="filtro-meses" [(ngModel)]="filtro" (change)="generarCalendario()" aria-label="Filtrar actividades">
+      <option value="todas">Todas</option>
+      <option value="futuras">Solo futuras</option>
+    </select>
+  </section>
 
-<div class="navegacion-meses">
-  <button (click)="cambiarMes(-1)">&#8592;</button>
-  <span>{{ obtenerNombreMes(mesActual) }} {{ anioActual }}</span>
-  <button (click)="cambiarMes(1)">&#8594;</button>
+  <section class="calendario-grid" role="grid" aria-label="Calendario mensual">
+    <div class="dia-header" role="columnheader" *ngFor="let dia of diasSemana" title="{{ dia }}">
+      {{ dia }}
+    </div>
 
-  <button class="btn-hoy" (click)="irAHoy()">Hoy</button>
+    <div
+      class="celda-dia"
+      *ngFor="let dia of calendarioDias"
+      [class.con-actividad]="tieneActividad(dia)"
+      [class.dia-hoy]="esHoy(dia)"
+      [class.dia-pasado]="esPasado(dia)"
+      (click)="seleccionarActividad(dia)"
+      role="gridcell"
+      tabindex="0"
+      [attr.aria-current]="esHoy(dia) ? 'date' : null"
+      [attr.aria-selected]="tieneActividad(dia) ? 'true' : 'false'"
+      [title]="esDiaValido(dia) ? 'Día ' + dia.getDate() + (tieneActividad(dia) ? ' con actividad' : '') : 'Día inválido'"
+    >
+      <div class="numero-dia">{{ esDiaValido(dia) ? dia.getDate() : '' }}</div>
 
-  <select [(ngModel)]="filtro" (change)="generarCalendario()">
-    <option value="todas">Todas</option>
-    <option value="futuras">Solo futuras</option>
-  </select>
-</div>
-
-<div class="calendario-grid">
-  <div class="dia-header" *ngFor="let dia of diasSemana">{{ dia }}</div>
-
- <div
-  class="celda-dia"
-  *ngFor="let dia of calendarioDias"
-  [class.con-actividad]="tieneActividad(dia)"
-  [class.dia-hoy]="esHoy(dia)"
-  [class.dia-pasado]="esPasado(dia)"
-  (click)="seleccionarActividad(dia)"
->
-  <div class="numero-dia">
-  {{ esDiaValido(dia) ? dia.getDate() : '' }}
-</div>
-
-
-
- <div 
-  class="actividad" 
-  [class.cupos-llenos]="act.cupo === 0"
-  *ngFor="let act of actividadesDelDia(dia); let i = index"
->
-  <!-- Normal en escritorio -->
-  <span class="nombre-actividad">{{ act.nombre }}</span>
-
-  <!-- En móvil: puntito -->
-  <span class="punto-actividad" [class.punto-pasado]="esPasado(dia)"></span>
-</div>
-
-
-</div>
+      <div 
+        class="actividad" 
+        *ngFor="let act of actividadesDelDia(dia)"
+        [class.cupos-llenos]="act.cupo === 0"
+        title="{{ act.nombre + (act.cupo === 0 ? ' (cupos llenos)' : '') }}"
+      >
+        <span class="nombre-actividad">{{ act.nombre }}</span>
+        <span class="punto-actividad" [class.punto-pasado]="esPasado(dia)"></span>
+      </div>
+    </div>
+  </section>
 </div>

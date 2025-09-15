@@ -210,3 +210,28 @@ input[readonly] {
   color: #1976d2;
   font-weight: bold;
 }
+
+/* Foco visible para inputs y botones */
+input:focus-visible,
+select:focus-visible,
+button:focus-visible {
+  outline: 3px solid #FFD700;
+  outline-offset: 2px;
+}
+
+/* Contraste reforzado para botones principales */
+.btn-principal {
+  color: #ffffff;
+  background-color: #660b0b;
+}
+
+/* Contraste reforzado para botones de cierre y modal */
+.btn-cerrar-x {
+  color: #ffffff;
+  background-color: var(--vino-oscuro);
+}
+
+/* Modal enfocado */
+.modal:focus {
+  outline: none;
+}

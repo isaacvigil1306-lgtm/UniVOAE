@@ -1,63 +1,78 @@
-<div class="contenedor">
-  <h1>Buscar estudiantes</h1>
+<div class="contenedor" role="main">
+  <header>
+    <h1>Buscar estudiantes</h1>
+  </header>
 
+  <label for="buscador-estudiantes" class="sr-only">Buscar estudiante por nombre o identidad</label>
   <input
-  type="text"
-  placeholder="Buscar estudiante por nombre o identidad..."
-  [(ngModel)]="busqueda"
-  (ngModelChange)="filtrarEstudiantes()"
-  class="buscador"
-/>
+    id="buscador-estudiantes"
+    type="text"
+    placeholder="Buscar estudiante por nombre o identidad..."
+    [(ngModel)]="busqueda"
+    (ngModelChange)="filtrarEstudiantes()"
+    class="buscador"
+    aria-label="Buscar estudiante por nombre o identidad"
+  />
 
-<ul class="lista-estudiantes">
-  <li *ngFor="let est of estudiantesFiltradosList">
+  <ul class="lista-estudiantes" role="list">
+  <li *ngFor="let est of estudiantesFiltradosList" 
+      role="listitem" 
+      tabindex="0"
+      (click)="abrirModalEstudiante(est)"
+      title="{{ est.nombre }} - {{ est.identidad }}">
     👤 {{ est.nombre }} - {{ est.identidad }}
   </li>
 </ul>
 
-<p *ngIf="estudiantesFiltradosList.length === 0 && busqueda">
-  No se encontraron estudiantes con esa búsqueda.
-</p>
+
+  <p *ngIf="estudiantesFiltradosList.length === 0 && busqueda">
+    No se encontraron estudiantes con esa búsqueda.
+  </p>
 </div>
 
 <!-- Modal de perfil -->
-<div class="modal" *ngIf="estudianteSeleccionado">
-  <div class="modal-contenido">
-    <h2>Perfil de {{ estudianteSeleccionado.nombre }}</h2>
+<div class="modal" *ngIf="estudianteSeleccionado" role="dialog" aria-modal="true" aria-labelledby="perfil-titulo">
+  <div class="modal-contenido" tabindex="0">
+    <h2 id="perfil-titulo">Perfil de {{ estudianteSeleccionado.nombre }}</h2>
 
-    <div class="info-perfil">
+    <section class="info-perfil">
       <p><strong>Identidad:</strong> {{ estudianteSeleccionado.identidad }}</p>
       <p><strong>Correo:</strong> {{ estudianteSeleccionado.correo }}</p>
       <p><strong>Carrera:</strong> {{ estudianteSeleccionado.carrera }}</p>
       <p><strong>Horas acumuladas:</strong> {{ estudianteSeleccionado.horasAcumuladas }} horas</p>
-    </div>
+    </section>
 
-    <h3>Actividades</h3>
-    <table class="tabla-actividades">
-      <thead>
-        <tr>
-          <th>Actividad</th>
-          <th>Fecha</th>
-          <th>Lugar</th>
-          <th>Horas</th>
-          <th>Asistencia</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let act of estudianteSeleccionado.actividades">
-          <td>{{ act.nombre }}</td>
-          <td>{{ act.fecha }}</td>
-          <td>{{ act.lugar || '-' }}</td>
-          <td>{{ act.horas || '-' }}</td>
-          <td>
-            <span [class.asistio]="act.asistio" [class.no-asistio]="!act.asistio">
-              {{ act.asistio ? '✅ Asistió' : '❌ No asistió' }}
-            </span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <section aria-labelledby="actividades-titulo">
+      <h3 id="actividades-titulo">Actividades</h3>
+      <table class="tabla-actividades" role="table">
+        <thead>
+          <tr role="row">
+            <th role="columnheader">Actividad</th>
+            <th role="columnheader">Fecha</th>
+            <th role="columnheader">Lugar</th>
+            <th role="columnheader">Horas</th>
+            <th role="columnheader">Asistencia</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let act of estudianteSeleccionado.actividades" role="row" tabindex="0" title="{{ act.nombre }}">
+            <td role="cell">{{ act.nombre }}</td>
+            <td role="cell">{{ act.fecha }}</td>
+            <td role="cell">{{ act.lugar || '-' }}</td>
+            <td role="cell">{{ act.horas || '-' }}</td>
+            <td role="cell">
+              <span [class.asistio]="act.asistio" [class.no-asistio]="!act.asistio"
+                    title="{{ act.asistio ? 'Asistió' : 'No asistió' }}">
+                {{ act.asistio ? '✅ Asistió' : '❌ No asistió' }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
 
-    <button class="btn-cerrar" (click)="cerrarModal()">Cerrar</button>
+    <button class="btn-cerrar" (click)="cerrarModal()" aria-label="Cerrar modal" title="Cerrar modal">
+      Cerrar
+    </button>
   </div>
 </div>

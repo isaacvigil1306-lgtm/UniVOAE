@@ -73,6 +73,11 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./components/actividades/actividades').then((m) => m.Actividades),
       },
+      {
+  path: 'actividades/estudiantes/:id',
+  loadComponent: () =>
+          import('./components/estudiantesactividad/estudiantesactividad').then((m) => m.EstudiantesActividad),
+},
         {
         path: 'buscarestudiantes',
         loadComponent: () =>

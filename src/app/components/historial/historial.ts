@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf, NgFor } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { Firestore, collection, collectionData, query, where } from '@angular/fire/firestore';
 import { ActividadesService, Actividad } from '../../servicios/actividades';
@@ -7,7 +7,7 @@ import { ActividadesService, Actividad } from '../../servicios/actividades';
 @Component({
   selector: 'app-historial',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, NgFor],
   templateUrl: './historial.html',
   styleUrls: ['./historial.scss']
 })

@@ -1,221 +1,238 @@
 <div class="contenedor">
-  <h1>Bienvenido, {{ estudiante }}!</h1>
-<br>
-<!-- FORMULARIO DE DATOS DEL USUARIO -->
-<div *ngIf="modoEdicion" class="formulario-usuario">
-  <h2>Perfil</h2>
-  <form #form="ngForm" (ngSubmit)="guardarUsuario(form)">
-    <div class="form-grid">
 
-      <!-- Nombre (solo letras y espacios) -->
-      <div class="form-group">
-        <label>Nombre Completo</label>
-        <input type="text"
-               [(ngModel)]="usuario.nombre"
-               name="nombre"
-               required
-               pattern="^[a-zA-ZÁÉÍÓÚáéíóúÑñ ]+$"
-               title="Solo se permiten letras y espacios">
+  <!-- Bienvenida -->
+  <h1 id="bienvenida">Bienvenido, {{ estudiante }}!</h1>
+
+  <!-- FORMULARIO DE DATOS DEL USUARIO -->
+  <section *ngIf="modoEdicion" class="formulario-usuario" aria-labelledby="perfil-title">
+    <h2 id="perfil-title">Perfil</h2>
+    <form #form="ngForm" (ngSubmit)="guardarUsuario(form)" aria-describedby="perfil-desc">
+      <p id="perfil-desc" class="sr-only">Formulario para actualizar los datos del usuario.</p>
+
+      <div class="form-grid">
+        <!-- Nombre (solo letras y espacios) -->
+        <div class="form-group">
+          <label for="nombre">Nombre Completo</label>
+          <input type="text"
+                 id="nombre"
+                 [(ngModel)]="usuario.nombre"
+                 name="nombre"
+                 required
+                 pattern="^[a-zA-ZÁÉÍÓÚáéíóúÑñ ]+$"
+                 title="Solo se permiten letras y espacios"
+                 aria-required="true"
+                 aria-label="Nombre completo del estudiante"
+                 placeholder="Ej. Ana López"/>
+        </div>
+
+        <!-- Número de Cuenta (solo números) -->
+        <div class="form-group">
+          <label for="numeroCuenta">Número de Cuenta</label>
+          <input type="text"
+                 id="numeroCuenta"
+                 [(ngModel)]="usuario.numeroCuenta"
+                 name="numeroCuenta"
+                 required
+                 pattern="^[0-9]+$"
+                 (keydown)="soloNumeros($event)"
+                 (paste)="validarPegado($event)"
+                 aria-required="true"
+                 aria-label="Número de cuenta del estudiante"
+                 placeholder="Ej. 20231234567"/>
+        </div>
+
+        <!-- Correo (solo lectura) -->
+        <div class="form-group">
+          <label for="correo">Correo</label>
+          <input type="email"
+                 id="correo"
+                 [(ngModel)]="usuario.correo"
+                 name="correo"
+                 required
+                 readonly
+                 aria-readonly="true"
+                 aria-label="Correo electrónico del estudiante"/>
+        </div>
+
+        <!-- Teléfono (solo números) -->
+        <div class="form-group">
+          <label for="telefono">Teléfono</label>
+          <input type="text"
+                 id="telefono"
+                 [(ngModel)]="usuario.telefono"
+                 name="telefono"
+                 pattern="^[0-9]+$"
+                 maxlength="8"
+                 (keydown)="soloNumeros($event)"
+                 (paste)="validarPegado($event)"
+                 aria-label="Teléfono del estudiante"
+                 placeholder="Ej. 9876-5432"/>
+        </div>
+
+        <!-- Identidad (solo números) -->
+        <div class="form-group">
+          <label for="identidad">Identidad</label>
+          <input type="text"
+                 id="identidad"
+                 [(ngModel)]="usuario.identidad"
+                 name="identidad"
+                 required
+                 pattern="^[0-9]+$"
+                 maxlength="13"
+                 (keydown)="soloNumeros($event)"
+                 (paste)="validarPegado($event)"
+                 aria-required="true"
+                 aria-label="Número de identidad del estudiante"
+                 placeholder="Ej. 0801-1990-12345"/>
+        </div>
+
+        <!-- Carrera -->
+        <div class="form-group">
+          <label for="carrera">Carrera</label>
+          <select id="carrera" [(ngModel)]="usuario.carrera" name="carrera" required aria-required="true" aria-label="Seleccione la carrera del estudiante">
+            <option value="">Seleccione una carrera</option>
+            <option value="Ingeniería en Sistemas">Ingeniería en Sistemas</option>
+            <option value="Ingeniería Industrial">Ingeniería Industrial</option>
+            <option value="Ingeniería Mecatrónica">Ingeniería Mecatrónica</option>
+            <option value="Ingeniería Civil">Ingeniería Civil</option>
+            <option value="Ingeniería Electrónica">Ingeniería Electrónica</option>
+            <option value="Administración de Empresas">Administración de Empresas</option>
+            <option value="Mercadotecnia">Mercadotecnia</option>
+            <option value="Contaduría Pública y Finanzas">Contaduría Pública y Finanzas</option>
+            <option value="Psicología">Psicología</option>
+            <option value="Derecho">Derecho</option>
+            <option value="Diseño Gráfico">Diseño Gráfico</option>
+            <option value="Comunicación Audiovisual y Publicitaria">Comunicación Audiovisual y Publicitaria</option>
+            <option value="Arquitectura">Arquitectura</option>
+            <option value="Enfermería">Enfermería</option>
+            <option value="Medicina">Medicina</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
       </div>
 
-      <!-- Número de Cuenta (solo números) -->
-      <div class="form-group">
-        <label>Número de Cuenta</label>
-        <input type="text"
-               [(ngModel)]="usuario.numeroCuenta"
-               name="numeroCuenta"
-               required
-               pattern="^[0-9]+$"
-               (keydown)="soloNumeros($event)"
-               (paste)="validarPegado($event)">
-      </div>
+      <button type="submit" class="btn-actualizar" aria-label="Guardar o actualizar datos del usuario" title="Guardar / Actualizar con teclado">Guardar / Actualizar</button>
+    </form>
+  </section>
 
-      <!-- Correo (solo lectura) -->
-      <div class="form-group">
-        <label>Correo</label>
-        <input type="email"
-               [(ngModel)]="usuario.correo"
-               name="correo"
-               required
-               readonly>
-      </div>
-
-      <!-- Teléfono (solo números) -->
-      <div class="form-group">
-        <label>Teléfono</label>
-        <input type="text"
-               [(ngModel)]="usuario.telefono"
-               name="telefono"
-               pattern="^[0-9]+$"
-               maxlength="8"
-               (keydown)="soloNumeros($event)"
-               (paste)="validarPegado($event)">
-      </div>
-
-      <!-- Identidad (solo números) -->
-      <div class="form-group">
-        <label>Identidad</label>
-        <input type="text"
-               [(ngModel)]="usuario.identidad"
-               name="identidad"
-               required
-               pattern="^[0-9]+$"
-               maxlength="13"
-               (keydown)="soloNumeros($event)"
-               (paste)="validarPegado($event)">
-      </div>
-
-      <!-- Carrera (lista CEUTEC) -->
-      <div class="form-group">
-        <label>Carrera</label>
-        <select [(ngModel)]="usuario.carrera" name="carrera" required>
-          <option value="">Seleccione una carrera</option>
-          <option value="Ingeniería en Sistemas">Ingeniería en Sistemas</option>
-          <option value="Ingeniería Industrial">Ingeniería Industrial</option>
-          <option value="Ingeniería Mecatrónica">Ingeniería Mecatrónica</option>
-          <option value="Ingeniería Civil">Ingeniería Civil</option>
-          <option value="Ingeniería Electrónica">Ingeniería Electrónica</option>
-          <option value="Administración de Empresas">Administración de Empresas</option>
-          <option value="Mercadotecnia">Mercadotecnia</option>
-          <option value="Contaduría Pública y Finanzas">Contaduría Pública y Finanzas</option>
-          <option value="Psicología">Psicología</option>
-          <option value="Derecho">Derecho</option>
-          <option value="Diseño Gráfico">Diseño Gráfico</option>
-          <option value="Comunicación Audiovisual y Publicitaria">Comunicación Audiovisual y Publicitaria</option>
-          <option value="Arquitectura">Arquitectura</option>
-          <option value="Enfermería">Enfermería</option>
-          <option value="Medicina">Medicina</option>
-          <option value="Otro">Otro</option>
-        </select>
-      </div>
-
+  <!-- Perfil en vista solo lectura -->
+  <section *ngIf="!modoEdicion" class="card-usuario" aria-labelledby="perfil-title-view">
+    <h2 id="perfil-title-view">Perfil</h2>
+    <div class="info-grid">
+      <p><strong>Nombre:</strong> {{ usuario.nombre }}</p>
+      <p><strong>Número de Cuenta:</strong> {{ usuario.numeroCuenta }}</p>
+      <p><strong>Correo:</strong> {{ usuario.correo }}</p>
+      <p><strong>Teléfono:</strong> {{ usuario.telefono }}</p>
+      <p><strong>Identidad:</strong> {{ usuario.identidad }}</p>
+      <p><strong>Carrera:</strong> {{ usuario.carrera }}</p>
     </div>
-
-    <button type="submit" class="btn-actualizar">Guardar / Actualizar</button>
-  </form>
-</div>
-
-
-  <div *ngIf="!modoEdicion" class="card-usuario" >
-  <h2>Perfil</h2>
-  <div class="info-grid">
-    <p><strong>Nombre:</strong> {{ usuario.nombre }}</p>
-    <p><strong>Número de Cuenta:</strong> {{ usuario.numeroCuenta }}</p>
-
-    <p><strong>Correo:</strong> {{ usuario.correo }}</p>
-    <p><strong>Teléfono:</strong> {{ usuario.telefono }}</p>
-
-    <p><strong>Identidad:</strong> {{ usuario.identidad }}</p>
-    <p><strong>Carrera:</strong> {{ usuario.carrera }}</p>
-  </div>
-  <button class="btn-editar" (click)="editarUsuario()">Editar</button>
-</div>
+    <button class="btn-editar" (click)="editarUsuario()" aria-label="Editar datos del usuario" title="Editar">Editar</button>
+  </section>
 
   <!-- Horas acumuladas -->
-  <div class="resumen-horas">
-    <div class="caja">
+  <section class="resumen-horas" aria-label="Resumen de horas del estudiante">
+    <div class="caja" tabindex="0">
       <h3>Horas Acumuladas</h3>
       <p>{{ horasAcumuladas }} horas</p>
     </div>
-    <div class="caja">
+    <div class="caja" tabindex="0">
       <h3>Horas Pendientes</h3>
       <p>{{ horasPendientes }} horas</p>
     </div>
-  </div>
+  </section>
 
-<br><br>
-
-<!-- Actividades de Hoy -->
-<!-- Actividades de Hoy -->
-<!-- Actividades de Hoy -->
-<div class="actividades-hoy" *ngIf="actividadesHoy.length > 0">
-  <div class="recordatorio">
-    <span class="icono-alerta">⚠️</span>
-    <strong>¡EY! Recuerda que tienes esta(s) actividad(es) el día de hoy</strong>
-  </div>
-
-  <div class="cards-container">
-    <div class="card" *ngFor="let act of actividadesHoy">
-      <h3><span class="icono-actividad">📌</span> {{ act.nombre }}</h3>
-      
-      <p><span class="icono-lugar">📍</span> <strong>Lugar:</strong> {{ act.lugar }}</p>
-      <p><span class="icono-hora">⏰</span> <strong>Hora:</strong> {{ act.hora || 'No especificada' }}</p>
-      <p><span class="icono-estado">✅</span> <strong>Estado:</strong> {{ act.estadoInscripcion || 'pendiente' }}</p>
-      
-
+  <!-- Actividades de Hoy -->
+  <section class="actividades-hoy" *ngIf="actividadesHoy.length > 0" aria-labelledby="actividades-hoy-title">
+    <h2 id="actividades-hoy-title" class="sr-only">Actividades de hoy</h2>
+    <div class="recordatorio" role="alert">
+      <span class="icono-alerta" aria-hidden="true">⚠️</span>
+      <strong>¡EY! Recuerda que tienes esta(s) actividad(es) el día de hoy</strong>
     </div>
-  </div>
-</div>
 
+    <div class="cards-container">
+      <div class="card" *ngFor="let act of actividadesHoy" tabindex="0"
+     [attr.aria-label]="'Actividad: ' + act.nombre + ', Lugar: ' + act.lugar + ', Hora: ' + (act.hora || 'No especificada') + ', Estado: ' + (act.estadoInscripcion || 'pendiente')">
 
+        <h3><span class="icono-actividad" aria-hidden="true">📌</span> {{ act.nombre }}</h3>
+        <p><span class="icono-lugar" aria-hidden="true">📍</span> <strong>Lugar:</strong> {{ act.lugar }}</p>
+        <p><span class="icono-hora" aria-hidden="true">⏰</span> <strong>Hora:</strong> {{ act.hora || 'No especificada' }}</p>
+        <p><span class="icono-estado" aria-hidden="true">✅</span> <strong>Estado:</strong> {{ act.estadoInscripcion || 'pendiente' }}</p>
+      </div>
+    </div>
+  </section>
 
-<br>
   <!-- Actividades próximas -->
-  <div class="actividades">
-  <h2>Actividades Próximas</h2>
+  <section class="actividades" aria-labelledby="actividades-proximas-title">
+    <h2 id="actividades-proximas-title">Actividades Próximas</h2>
 
-  <div class="tabla-wrapper">
+    <div class="tabla-wrapper">
+      <div class="tabla-scroll">
+        <table *ngIf="actividadesProximas.length > 0" class="tabla-actividades" role="table" aria-label="Tabla de actividades próximas">
+          <thead>
+            <tr>
+              <th scope="col">Actividad</th>
+              <th scope="col">Fecha</th>
+              <th scope="col">Lugar</th>
+              <th scope="col">Acción</th>
+              <th scope="col">Estado</th>
+              <th scope="col">Pago</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let act of actividadesProximas">
+              <td>{{ act.nombre }}</td>
+              <td>{{ act.fecha }}</td>
+              <td>{{ act.lugar }}</td>
+              <td>
+                <button class="btn-cancelar" 
+        (click)="cancelarInscripcion(act.id!)" 
+        [attr.aria-label]="'Cancelar inscripción de ' + act.nombre" 
+        title="Cancelar">❌ Cancelar</button>
 
-  <div class="tabla-scroll">
-    <table *ngIf="actividadesProximas.length > 0" class="tabla-actividades">
-      <thead>
-        <tr>
-          <th>Actividad</th>
-          <th>Fecha</th>
-          <th>Lugar</th>
-          <th>Acción</th>
-          <th>Estado</th>
-          <th>Pago</th>
-        </tr>
-      </thead>
-      <tbody>
-       <tr *ngFor="let act of actividadesProximas">
-  <td>{{ act.nombre }}</td>
-  <td>{{ act.fecha }}</td>
-  <td>{{ act.lugar }}</td>
-  <td>
-    <button class="btn-cancelar" (click)="cancelarInscripcion(act.id!)">❌ Cancelar</button>
+              </td>
+              <td>
+  {{ act.estadoInscripcion || 'pendiente' }}
+  <span *ngIf="act.mensajeAdmin"> - {{ act.mensajeAdmin }}</span>
+</td>
 
-    <!-- Botón de pago solo si requiere pago -->
-   
-  </td>
-  <td>{{ act.estadoInscripcion || 'pendiente' }}</td>
-  <td> <button *ngIf="act.pago"
-            class="btn-pago"
-            (click)="abrirModalPago(act, usuario.nombre ?? '', usuario.numeroCuenta ?? '', usuario.correo ?? '')"
->
-      Enviar comprobante
-    </button></td>
-</tr>
+             <td>
+  <button *ngIf="act.pago" 
+        class="btn-pago" 
+        (click)="abrirModalPago(act, usuario.nombre || '', usuario.numeroCuenta || '', usuario.correo || '')" 
+        [attr.aria-label]="'Enviar comprobante de pago para ' + act.nombre" 
+        title="Enviar comprobante">Enviar comprobante</button>
 
-      </tbody>
-    </table>
-  </div>
-</div>
+</td>
 
-  <p *ngIf="actividadesProximas.length === 0">
-    No tienes actividades próximas registradas.
-  </p>
-</div>
-<!-- Modal de pago -->
-<div class="modal" *ngIf="mostrarModalPago">
-  <div class="modal-contenido">
-    <button class="btn-cerrar-x" (click)="cerrarModalPago()">×</button>
-    <h2>Información de Pago</h2>
-
-    <div class="detalle" *ngIf="actividadPago">
-      <p><strong>Actividad:</strong> {{ actividadPago.nombre }}</p>
-      <p><strong>Precio:</strong> {{ actividadPago.precio }} Lps</p>
-      <p><strong>Banco:</strong> {{ actividadPago.banco }}</p>
-      <p><strong>Número de cuenta:</strong> {{ actividadPago.numeroCuenta }}</p>
+            </tr>
+          </tbody>
+        </table>
+        <p *ngIf="actividadesProximas.length === 0">No tienes actividades próximas registradas.</p>
+      </div>
     </div>
+  </section>
 
-    <p class="nota">Realiza la transferencia y envía el comprobante por correo:</p>
+  <!-- Modal de pago -->
+  <div class="modal" *ngIf="mostrarModalPago" role="dialog" aria-modal="true" aria-labelledby="modal-pago-title">
+    <div class="modal-contenido">
+      <button class="btn-cerrar-x" 
+        (click)="cerrarModalPago()" 
+        [attr.aria-label]="'Cerrar modal de pago'" 
+        title="Cerrar">×</button>
 
-    <a [href]="mailtoLink()" class="btn-mail" target="_blank" rel="noopener">
-      📧 Presione aquí para enviar su comprobante
-    </a>
+      <h2 id="modal-pago-title">Información de Pago</h2>
+
+      <div class="detalle" *ngIf="actividadPago">
+        <p><strong>Actividad:</strong> {{ actividadPago.nombre }}</p>
+        <p><strong>Precio:</strong> {{ actividadPago.precio }} Lps</p>
+        <p><strong>Banco:</strong> {{ actividadPago.banco }}</p>
+        <p><strong>Número de cuenta:</strong> {{ actividadPago.numeroCuenta }}</p>
+      </div>
+
+      <p class="nota">Realiza la transferencia y envía el comprobante por correo:</p>
+
+      <a [href]="mailtoLink()" class="btn-mail" target="_blank" rel="noopener" aria-label="Enviar comprobante por correo" title="Enviar comprobante">📧 Presione aquí para enviar su comprobante</a>
+    </div>
   </div>
-</div>
 
 </div>

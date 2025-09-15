@@ -1,73 +1,72 @@
-<div class="contenedor">
+<main class="contenido" role="main">
+  <div class="contenedor">
+    
+    <button class="btn-flecha" (click)="irCalendario()" title="Volver al calendario" aria-label="Volver al calendario">← Calendario</button>
 
-  <!-- Flecha para volver al calendario -->
-  <button class="btn-flecha" (click)="irCalendario()">← Calendario</button>
+    <header>
+      <h1>Formulario de Inscripción</h1>
+    </header>
 
-  <h1>Formulario de Inscripción</h1>
+    <!-- Formulario -->
+    <form role="form" aria-label="Formulario de inscripción" (ngSubmit)="enviarInscripcion()" *ngIf="!enviado" class="form">
+      <div class="grid">
+        <!-- Campos del formulario -->
+        <div class="campo">
+          <label for="nombre">Nombre completo*</label>
+          <input type="text" id="nombre" [(ngModel)]="nombre" name="nombre" required [readOnly]="perfilEncontrado" placeholder="Ej. Ana López" aria-required="true" title="Ingrese su nombre completo"/>
+        </div>
 
-  <!-- Formulario -->
-  <form (ngSubmit)="enviarInscripcion()" *ngIf="!enviado" class="form">
-    <div class="grid">
-      <!-- Campos del formulario -->
-      <div class="campo">
-        <label for="nombre">Nombre completo*</label>
-        <input type="text" id="nombre" [(ngModel)]="nombre" name="nombre" required [readOnly]="perfilEncontrado" placeholder="Ej. Ana López"/>
+        <div class="campo">
+          <label for="numeroCuenta">Número de cuenta*</label>
+          <input type="text" id="numeroCuenta" [(ngModel)]="numeroCuenta" name="numeroCuenta" required [readOnly]="perfilEncontrado" placeholder="Ej. 20231234567" aria-required="true" title="Ingrese su número de cuenta"/>
+        </div>
+
+        <div class="campo">
+          <label for="identidad">Número de identidad*</label>
+          <input type="text" id="identidad" [(ngModel)]="identidad" name="identidad" required [readOnly]="perfilEncontrado" placeholder="Ej. 0801-1990-12345" aria-required="true" title="Ingrese su número de identidad"/>
+        </div>
+
+        <div class="campo">
+          <label for="correo">Correo electrónico*</label>
+          <input type="email" id="correo" [(ngModel)]="correo" name="correo" required [readOnly]="perfilEncontrado" placeholder="tu@unitec.edu" aria-required="true" title="Ingrese su correo electrónico"/>
+        </div>
+
+        <div class="campo">
+          <label for="telefono">Teléfono (opcional)</label>
+          <input type="tel" id="telefono" [(ngModel)]="telefono" name="telefono" placeholder="Ej. 9876-5432" title="Ingrese su teléfono (opcional)"/>
+        </div>
       </div>
 
-      <div class="campo">
-        <label for="numeroCuenta">Número de cuenta*</label>
-        <input type="text" id="numeroCuenta" [(ngModel)]="numeroCuenta" name="numeroCuenta" required [readOnly]="perfilEncontrado" placeholder="Ej. 20231234567"/>
-      </div>
+      <button type="submit" class="btn-principal" title="Enviar inscripción" aria-label="Enviar inscripción">Enviar inscripción</button>
+    </form>
 
-      <div class="campo">
-  <label for="identidad">Número de identidad*</label>
-  <input type="text" id="identidad" [(ngModel)]="identidad" name="identidad" required [readOnly]="perfilEncontrado" placeholder="Ej. 0801-1990-12345"/>
-</div>
+    <!-- Mensaje de confirmación -->
+    <div *ngIf="enviado" class="confirmacion" role="status" aria-live="polite" tabindex="0">
+      <h2>¡Inscripción enviada con éxito!</h2>
+      <p>Gracias por registrarte.</p>
 
-
-      <div class="campo">
-        <label for="correo">Correo electrónico*</label>
-        <input type="email" id="correo" [(ngModel)]="correo" name="correo" required [readOnly]="perfilEncontrado" placeholder="tu@unitec.edu"/>
-      </div>
-
-      <div class="campo">
-        <label for="telefono">Teléfono (opcional)</label>
-        <input type="tel" id="telefono" [(ngModel)]="telefono" name="telefono" placeholder="Ej. 9876-5432"/>
-      </div>
+      <button *ngIf="actividad?.pago" class="btn-principal" (click)="mostrarModalPago = true" title="Enviar comprobante" aria-label="Enviar comprobante">Enviar comprobante</button>
     </div>
-
-    <button type="submit" class="btn-principal">Enviar inscripción</button>
-  </form>
-
-  <!-- Mensaje de confirmación -->
-  <div *ngIf="enviado" class="confirmacion">
-    <h2>¡Inscripción enviada con éxito!</h2>
-    <p>Gracias por registrarte.</p>
-
-    <!-- Botón para enviar comprobante -->
-    <button *ngIf="actividad?.pago" class="btn-principal" (click)="mostrarModalPago = true">
-      Enviar comprobante
-    </button>
   </div>
-</div>
 
-<!-- Modal de pago -->
-<div class="modal" *ngIf="mostrarModalPago">
-  <div class="modal-contenido">
-    <button class="btn-cerrar-x" (click)="cerrarModalPago()">×</button>
-    <h2>Información de Pago</h2>
+  <!-- Modal de pago -->
+  <div class="modal" *ngIf="mostrarModalPago" role="dialog" aria-labelledby="modalPagoTitulo" aria-describedby="modalPagoDetalle" tabindex="-1">
+    <div class="modal-contenido">
+      <button class="btn-cerrar-x" (click)="cerrarModalPago()" aria-label="Cerrar modal" title="Cerrar modal">×</button>
+      <h2 id="modalPagoTitulo">Información de Pago</h2>
 
-    <div class="detalle">
-      <p><strong>Actividad:</strong> {{ actividad?.nombre }}</p>
-      <p><strong>Precio:</strong> {{ actividad?.precio }} Lps</p>
-      <p><strong>Banco:</strong> {{ actividad?.banco }}</p>
-      <p><strong>Número de cuenta:</strong> {{ actividad?.numeroCuenta }}</p>
+      <div class="detalle" id="modalPagoDetalle">
+        <p><strong>Actividad:</strong> {{ actividad?.nombre }}</p>
+        <p><strong>Precio:</strong> {{ actividad?.precio }} Lps</p>
+        <p><strong>Banco:</strong> {{ actividad?.banco }}</p>
+        <p><strong>Número de cuenta:</strong> {{ actividad?.numeroCuenta }}</p>
+      </div>
+
+      <p class="nota">Realiza la transferencia y envía el comprobante por correo:</p>
+
+      <a [href]="mailtoLink()" class="btn-mail" target="_blank" rel="noopener" title="Enviar comprobante por correo" aria-label="Enviar comprobante por correo">
+        📧 Presione aquí para enviar su comprobante.
+      </a>
     </div>
-
-    <p class="nota">Realiza la transferencia y envía el comprobante por correo:</p>
-
-    <a [href]="mailtoLink()" class="btn-mail" target="_blank" rel="noopener">
-      📧 Presione aquí para enviar su comprobante.
-    </a>
   </div>
-</div>
+</main>

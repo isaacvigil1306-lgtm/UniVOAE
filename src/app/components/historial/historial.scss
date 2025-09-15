@@ -171,3 +171,39 @@
     }
   }
 }
+
+/* Foco visible para filas de la tabla */
+.tabla-historial tbody tr:focus-visible {
+  outline: 3px solid #FFD700;
+  outline-offset: 2px;
+  background-color: #f0f8ff; /* resalta el foco */
+}
+
+/* Contraste en estados de actividad */
+.estado.completada {
+  background-color: #001f3f; /* Azul marino oscuro */
+  color: #ffffff;
+}
+
+.estado.noCompletada {
+  background-color: #800020; /* Rojo vino */
+  color: #ffffff;
+}
+
+/* Tooltips visibles al pasar el mouse */
+.tabla-historial td[title],
+.tabla-historial th[title],
+.estado[title] {
+  cursor: help;
+}
+
+/* Mejoras generales de accesibilidad móvil */
+@media (max-width: 768px) {
+  .tabla-historial tbody tr {
+    font-size: 0.85rem;
+  }
+
+  .tabla-historial th, .tabla-historial td {
+    padding: 0.4rem 0.3rem;
+  }
+}

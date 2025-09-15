@@ -43,6 +43,14 @@ body, html, .layout {
   cursor: pointer;
 }
 
+.hamburger-btn:focus-visible,
+.close-btn:focus-visible,
+.menu-item:focus-visible,
+.btn-logout:focus-visible {
+  outline: 3px solid #FFD700;
+  outline-offset: 2px;
+}
+
 .mobile-username {
   font-weight: 600;
   font-size: 1rem;
@@ -53,7 +61,7 @@ body, html, .layout {
 .sidebar {
   position: fixed;
   top: 50px;
-  left: -250px; /* oculto por defecto */
+  left: -250px;
   width: 250px;
   height: calc(100% - 50px);
   background-color: #001333;
@@ -66,7 +74,7 @@ body, html, .layout {
 }
 
 .sidebar.open {
-  left: 0; /* cuando está abierto, visible */
+  left: 0;
 }
 
 /* Franja usuario */
@@ -117,8 +125,9 @@ body, html, .layout {
 }
 
 .menu-item:hover,
-.menu-item:focus {
+.menu-item:focus-visible {
   background-color: #3d566e;
+  color: #fff;
 }
 
 /* Footer */
@@ -148,8 +157,9 @@ body, html, .layout {
 }
 
 .btn-logout:hover,
-.btn-logout:focus {
+.btn-logout:focus-visible {
   background-color: #83281e;
+  color: #fff;
 }
 
 /* Contenido principal */
@@ -169,17 +179,17 @@ body, html, .layout {
 /* Media queries escritorio */
 @media (min-width: 768px) {
   .mobile-header {
-    display: flex; /* mostrar franja en PC */
+    display: flex;
   }
 
   .sidebar {
     top: 50px;
-    left: -250px; /* oculto por defecto en PC también */
+    left: -250px;
     height: calc(100% - 50px);
   }
 
   .sidebar.open {
-    left: 0; /* abrir con la X */
+    left: 0;
   }
 
   .main-content {
@@ -189,6 +199,19 @@ body, html, .layout {
   }
 }
 
+/* Focus y accesibilidad */
 .main-content{
   overflow-y: auto; 
+}
+
+/* Screen reader only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  border: 0;
 }

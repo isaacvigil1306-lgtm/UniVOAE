@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
+import { Firestore, collection, collectionData, doc, deleteDoc, query, where, getDocs,updateDoc, getDoc } from '@angular/fire/firestore';
 
 import { ActividadesService, Actividad } from '../../servicios/actividades';
 type EstadoInscripcion = 'aceptado' | 'rechazado' | 'pendiente' | 'falta-pago';
@@ -29,7 +30,7 @@ tablaCompletaAbierta = false;
   mostrarInscritos = false;
   inscritosPorActividad: { [key: string]: any[] } = {};
 
-  constructor(private actividadesService: ActividadesService) {}
+  constructor(private actividadesService: ActividadesService, private firestore: Firestore) {}
 
   ngOnInit() {
     this.cargarActividades();
@@ -49,6 +50,27 @@ abrirTablaPantallaCompleta() {
   this.tablaExpandida = true;
 }
 
+enviarMensaje(estudiante: any) {
+  Swal.fire({
+    title: `Mensaje para ${estudiante.nombre}`,
+    input: 'textarea',
+    inputLabel: 'Escribe tu mensaje',
+    showCancelButton: true,
+    confirmButtonText: 'Enviar',
+    cancelButtonText: 'Cancelar'
+  }).then(result => {
+    if (result.isConfirmed) {
+      const mensaje = result.value;
+      // concatena con el estado actual
+      this.cambiarEstado(estudiante, estudiante.estadoInscripcion.split(':')[0] as EstadoInscripcion, mensaje);
+      Swal.fire('Enviado', 'Tu mensaje ha sido enviado correctamente.', 'success');
+    }
+  });
+}
+
+
+
+
 cerrarPantallaCompleta() {
   this.tablaExpandida = false;
 }
@@ -65,18 +87,78 @@ cerrarPantallaCompleta() {
     this.estudiantes = [];
   }
 
-  cambiarEstado(estudiante: any, nuevoEstado: EstadoInscripcion) {
-    if (!estudiante.id) return;
+  async cancelarInscripcionAdmin(estudiante: any) {
+  if (!estudiante.correo || !estudiante.idActividad) return;
 
-    this.actividadesService.actualizarInscripcion(estudiante.id, {
-      estadoInscripcion: nuevoEstado
-    }).then(() => {
-      estudiante.estadoInscripcion = nuevoEstado;
-    }).catch(err => {
-      console.error('Error al actualizar el estado', err);
-      Swal.fire('Error', 'No se pudo actualizar el estado del estudiante', 'error');
+  try {
+    const result = await Swal.fire({
+      title: '¿Estás seguro?',
+      text: `Se eliminará la inscripción de ${estudiante.nombre} y se liberará el cupo.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, cancelar',
+      cancelButtonText: 'No, mantener',
+      reverseButtons: true
     });
+
+    if (!result.isConfirmed) return;
+
+    const inscripcionesRef = collection(this.firestore, 'inscripciones');
+    const q = query(
+      inscripcionesRef,
+      where('correo', '==', estudiante.correo),
+      where('idActividad', '==', estudiante.idActividad)
+    );
+
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.empty) {
+      Swal.fire('Error', 'No se encontró la inscripción para cancelar.', 'error');
+      return;
+    }
+
+    for (const inscripcion of querySnapshot.docs) {
+      await deleteDoc(doc(this.firestore, 'inscripciones', inscripcion.id));
+    }
+
+    // Actualizar cupo de la actividad
+    const actRef = doc(this.firestore, 'actividades', estudiante.idActividad);
+    const actSnap = await getDoc(actRef);
+    if (actSnap.exists()) {
+      const actividad = actSnap.data();
+      const nuevoCupo = (actividad['cupo'] || 0) + 1;
+      await updateDoc(actRef, { cupo: nuevoCupo });
+    }
+
+    Swal.fire('Cancelada', `La inscripción de ${estudiante.nombre} ha sido cancelada.`, 'success');
+
+    // Refresca lista de estudiantes inscritos
+    if (this.actividadSeleccionada) {
+      this.verInscritos(this.actividadSeleccionada.id!);
+    }
+
+  } catch (err) {
+    console.error(err);
+    Swal.fire('Error', 'No se pudo cancelar la inscripción.', 'error');
   }
+}
+
+
+
+cambiarEstado(estudiante: any, nuevoEstado: EstadoInscripcion, mensaje?: string) {
+  if (!estudiante.id) return;
+
+  const estadoConMensaje = mensaje ? `${nuevoEstado}: ${mensaje}` : nuevoEstado;
+
+  this.actividadesService.actualizarInscripcion(estudiante.id, {
+    estadoInscripcion: estadoConMensaje
+  }).then(() => {
+    estudiante.estadoInscripcion = estadoConMensaje;
+  }).catch(err => {
+    console.error('Error al actualizar el estado', err);
+    Swal.fire('Error', 'No se pudo actualizar el estado del estudiante', 'error');
+  });
+}
+
 
   // ---------------- ACTIVIDADES ----------------
   cargarActividades() {

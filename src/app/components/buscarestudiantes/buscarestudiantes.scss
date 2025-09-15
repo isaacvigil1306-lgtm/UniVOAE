@@ -149,3 +149,15 @@
     }
   }
 }
+
+/* Focus visible para navegación por teclado */
+.buscador:focus-visible,
+.lista-estudiantes li:focus-visible,
+.modal-contenido:focus-visible,
+.btn-cerrar:focus-visible,
+.tabla-actividades tr:focus-visible {
+  outline: 3px solid #FFD700;
+  outline-offset: 2px;
+}
+
+/* Tooltips ya se activan con 'title' en cada elemento */

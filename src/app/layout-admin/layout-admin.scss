@@ -43,6 +43,14 @@ body, html, .layout {
   cursor: pointer;
 }
 
+.hamburger-btn:focus-visible,
+.close-btn:focus-visible,
+.menu-item:focus-visible,
+.btn-logout:focus-visible {
+  outline: 3px solid #FFD700;
+  outline-offset: 2px;
+}
+
 .mobile-username {
   font-weight: 600;
   font-size: 1rem;
@@ -72,10 +80,9 @@ body, html, .layout {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 4rem 1rem 1rem 1rem; /* más espacio arriba: 2rem */
+  padding: 4rem 1rem 1rem 1rem;
   border-bottom: 1px solid rgba(255,255,255,0.1);
 }
-
 
 .logo {
   font-size: 2rem;
@@ -83,7 +90,7 @@ body, html, .layout {
 
 .username {
   flex-grow: 1;
-  margin-left: 1rem; /* espacio lateral para no chocar con la hamburguesa */
+  margin-left: 1rem;
   font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
@@ -91,7 +98,7 @@ body, html, .layout {
 }
 
 .close-btn {
-  display: inline-flex; /* siempre visible */
+  display: inline-flex;
   margin-left: 0.5rem;
 }
 
@@ -110,7 +117,7 @@ body, html, .layout {
   color: white;
   text-decoration: none;
   font-weight: 500;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .menu-item i {
@@ -120,8 +127,10 @@ body, html, .layout {
   font-size: 1.2rem;
 }
 
-.menu-item:hover {
+.menu-item:hover,
+.menu-item:focus-visible {
   background-color: #3d566e;
+  color: #fff;
 }
 
 /* Footer */
@@ -150,14 +159,16 @@ body, html, .layout {
   font-size: 1.2rem;
 }
 
-.btn-logout:hover {
+.btn-logout:hover,
+.btn-logout:focus-visible {
   background-color: #83281e;
+  color: #fff;
 }
 
 /* Main content */
 .main-content {
   flex-grow: 1;
-  margin-top: 50px; /* espacio para header */
+  margin-top: 50px;
   padding: 1.5rem;
   overflow-y: auto;
   width: 100%;
@@ -170,7 +181,19 @@ body, html, .layout {
 
 @media (min-width: 768px) {
   .mobile-username {
-    margin-left: auto;   /* empuja el texto a la derecha */
-    margin-right: 1rem;  /* opcional, un poco de espacio desde el borde */
+    margin-left: auto;
+    margin-right: 1rem;
   }
+}
+
+/* Screen reader only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  border: 0;
 }
