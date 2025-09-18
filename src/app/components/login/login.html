@@ -12,33 +12,41 @@
 <div
   class="login-container"
   [class.hidden]="isLoading"
+  [ngClass]="{ 'modo-registro': modoRegistro }"
   role="main"
   aria-labelledby="loginTitle"
 >
   <!-- Card de Login -->
   <section class="login-card" aria-live="polite">
-    <h2 id="loginTitle" class="title">Iniciar Sesión</h2>
+    <h2 id="loginTitle" class="title">
+      {{ modoRegistro ? 'Crear Cuenta' : 'Iniciar Sesión' }}
+    </h2>
 
     <form #form="ngForm" class="login-form" role="form" aria-describedby="formDesc">
       <p id="formDesc" class="sr-only">
-        Introduzca su número de cuenta y contraseña para acceder.
+        {{ modoRegistro
+          ? 'Introduce tus datos para registrarte.'
+          : 'Introduce tu número de cuenta y contraseña para acceder.' }}
       </p>
 
+      <!-- Correo -->
       <div class="form-group">
-        <label for="username" class="sr-only">Número de cuenta</label>
+        <label for="username" class="sr-only">Correo universitario</label>
         <input
           type="text"
           id="username"
           name="username"
           [(ngModel)]="username"
-          placeholder="Escriba su número de cuenta..."
+          (ngModelChange)="username = username.toLowerCase()"
+          placeholder="Ingrese su correo electronico universitario"
           required
           aria-required="true"
-          aria-label="Número de cuenta"
-          title="Ingrese su número de cuenta"
+          aria-label="Correo universitario"
+          title="Ingrese su correo electronico universitario"
         />
       </div>
 
+      <!-- Contraseña -->
       <div class="form-group">
         <label for="password" class="sr-only">Contraseña</label>
         <input
@@ -46,7 +54,7 @@
           id="password"
           name="password"
           [(ngModel)]="password"
-          placeholder="Escriba su contraseña"
+          placeholder="{{ modoRegistro ? 'Crea una contraseña segura' : 'Escriba su contraseña' }}"
           required
           aria-required="true"
           aria-label="Contraseña"
@@ -54,6 +62,7 @@
         />
       </div>
 
+      <!-- Mostrar contraseña -->
       <div class="checkbox-group">
         <input
           type="checkbox"
@@ -64,28 +73,25 @@
         />
         <label for="showPassword">Mostrar contraseña</label>
       </div>
+      
 
-      <!-- Botón Ingresar -->
+      <!-- Olvidaste tu contraseña (solo en login) -->
+      <p *ngIf="!modoRegistro" class="link-olvidaste">
+        <a href="#" (click)="olvidarContrasena(); $event.preventDefault()">
+          ¿Olvidaste tu contraseña?
+        </a>
+      </p>
+
+      <!-- Botón principal -->
       <button
         type="button"
         class="btn-login"
         [disabled]="!form.valid"
-        (click)="iniciarSesion()"
-        aria-label="Ingresar al sistema"
-        title="Ingresar"
+        (click)="modoRegistro ? register() : iniciarSesion()"
+        [attr.aria-label]="modoRegistro ? 'Registrar cuenta' : 'Ingresar al sistema'"
+        [attr.title]="modoRegistro ? 'Registrar' : 'Ingresar'"
       >
-        Ingresar
-      </button>
-
-      <!-- Botón Registrar -->
-      <button
-        type="button"
-        class="btn-login"
-        (click)="register()"
-        aria-label="Registrar nueva cuenta"
-        title="Registrar nueva cuenta"
-      >
-        Registrar
+        {{ modoRegistro ? 'Registrar' : 'Ingresar' }}
       </button>
 
       <!-- Botón Cerrar Sesión -->
@@ -93,11 +99,18 @@
         type="button"
         class="btn-login"
         (click)="logout()"
-        aria-label="Cerrar sesión"
+        [attr.aria-label]="'Cerrar sesión'"
         title="Cerrar sesión"
       >
         Cerrar Sesión
       </button>
+
+      <!-- Link para cambiar de vista -->
+      <p class="cambio-vista">
+        <a href="#" (click)="cambiarVista(); $event.preventDefault()">
+          {{ modoRegistro ? '¿Ya tienes cuenta? Inicia sesión' : '¿No tienes cuenta? Regístrate aquí' }}
+        </a>
+      </p>
 
       <!-- Mensaje de error -->
       <p *ngIf="errorMessage" class="error" role="alert" aria-live="assertive">

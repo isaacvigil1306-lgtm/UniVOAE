@@ -17,6 +17,7 @@ export class Buscarestudiantes implements OnInit {
   estudiantes: any[] = [];
   estudiantesFiltradosList: any[] = [];
   estudianteSeleccionado: any = null;
+  cargando = false;
 
   constructor(private firestore: Firestore) {}
 
@@ -58,7 +59,9 @@ async cargarEstudiantes() {
   }
 
   // ---------------- Abrir modal perfil ----------------
-  async abrirModalEstudiante(estudiante: any) {
+async abrirModalEstudiante(estudiante: any) {
+  try {
+    this.cargando = true; // Muestra el loader inmediatamente
     this.estudianteSeleccionado = { ...estudiante, actividades: [], horasAcumuladas: 0 };
 
     const asistenciasRef = collection(this.firestore, 'asistencias');
@@ -69,6 +72,8 @@ async cargarEstudiantes() {
 
     for (const docSnap of snap.docs) {
       const data = docSnap.data();
+
+      // Consulta de la actividad relacionada
       const actRef = collection(this.firestore, 'actividades');
       const actSnap = await getDocs(query(actRef, where('__name__', '==', data['idActividad'])));
       const actData = actSnap.docs[0]?.data() || {};
@@ -86,7 +91,16 @@ async cargarEstudiantes() {
     }
 
     this.estudianteSeleccionado.horasAcumuladas = totalHoras;
+  } catch (error) {
+    console.error('Error al cargar las actividades:', error);
+  } finally {
+    // Agregamos un pequeño retraso para que el loader sea visible aunque cargue rápido
+    setTimeout(() => {
+      this.cargando = false;
+    }, 500);
   }
+}
+
 
   cerrarModal() {
     this.estudianteSeleccionado = null;

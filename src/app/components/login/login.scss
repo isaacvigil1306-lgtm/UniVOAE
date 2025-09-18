@@ -182,3 +182,50 @@ body {
   opacity: 0;
   pointer-events: none;
 }
+/* Link: ¿Olvidaste tu contraseña? */
+.link-olvidaste {
+  text-align: right;
+  margin-top: -10px;
+  margin-bottom: 15px;
+
+  a {
+    color: #ffffff;
+    font-size: 0.9rem;
+    text-decoration: underline;
+    cursor: pointer;
+    transition: color 0.3s ease;
+
+    &:hover,
+    &:focus {
+      color: #ffcccc;
+      outline: none;
+    }
+  }
+}
+
+/* Link: Cambiar vista (registro / login) */
+.cambio-vista {
+  text-align: center;
+  margin-top: 15px;
+
+  a {
+    color: #ffffff;
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.3s ease;
+
+    &:hover,
+    &:focus {
+      color: #ffcccc;
+      text-decoration: underline;
+      outline: none;
+    }
+  }
+}
+/* Recordar usuario */
+#rememberUser {
+  margin-left: 5px;
+}
+
+

@@ -3,6 +3,7 @@ import { Auth, authState, createUserWithEmailAndPassword, sendEmailVerification,
 import { addDoc, setDoc, Firestore, collection, docData,doc } from '@angular/fire/firestore';
 import { signOut } from 'firebase/auth';
 import { lastValueFrom } from 'rxjs';
+import { sendPasswordResetEmail } from '@angular/fire/auth';
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +27,10 @@ if (user){
 }
 });
 
+}
+async recuperarContrasena(email: string) {
+  if (!email) throw new Error('Debes ingresar un correo');
+  return await sendPasswordResetEmail(this.auth, email);
 }
 
 addUser(user: any, id: string) {

@@ -31,8 +31,15 @@
 </div>
 
 <!-- Modal de perfil -->
+<!-- Modal de perfil -->
 <div class="modal" *ngIf="estudianteSeleccionado" role="dialog" aria-modal="true" aria-labelledby="perfil-titulo">
-  <div class="modal-contenido" tabindex="0">
+  <!-- Loader -->
+  <div class="loader-overlay" *ngIf="cargando">
+    <div class="loader"></div>
+    <p>Cargando actividades...</p>
+  </div>
+
+  <div class="modal-contenido" tabindex="0" [class.oculto]="cargando">
     <h2 id="perfil-titulo">Perfil de {{ estudianteSeleccionado.nombre }}</h2>
 
     <section class="info-perfil">

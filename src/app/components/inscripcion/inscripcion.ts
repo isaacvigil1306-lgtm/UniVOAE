@@ -101,7 +101,7 @@ export class Inscripcion implements OnInit {
 
   async enviarInscripcion() {
    if (!this.nombre || !this.numeroCuenta || !this.correo || !this.identidad) {
-  Swal.fire('Campos requeridos', 'Completa nombre, número de cuenta, correo e identidad.', 'warning');
+  Swal.fire('Campos requeridos', 'Completa los campos en el perfil de inicio para poder inscribirte.', 'warning');
   return;
 }
 

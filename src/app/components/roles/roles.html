@@ -1,0 +1,49 @@
+<div class="roles-contenedor">
+  <h2>Administradores</h2>
+  <div class="tabla-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th>Correo</th>
+          <th>Nombre</th>
+          <th>Rol</th>
+          <th>Cambiar a</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of administradores">
+          <td data-label="Correo">{{ user.correo }}</td>
+          <td data-label="Nombre">{{ user.nombre }}</td>
+          <td data-label="Rol">{{ user.rol }}</td>
+          <td data-label="Acciones">
+            <button (click)="cambiarRol(user, 'usuario')">👥 Estudiante</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Estudiantes</h2>
+  <div class="tabla-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th>Correo</th>
+          <th>Nombre</th>
+          <th>Rol</th>
+          <th>Cambiar a</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of estudiantes">
+          <td data-label="Correo">{{ user.correo }}</td>
+          <td data-label="Nombre">{{ user.nombre }}</td>
+          <td data-label="Rol">{{ user.rol }}</td>
+          <td data-label="Acciones">
+            <button (click)="cambiarRol(user, 'admin')">🛡️ Admin</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

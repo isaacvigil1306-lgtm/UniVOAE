@@ -6,6 +6,7 @@ import { Permisos } from '../../servicios/permisos';
 import { Auth } from '@angular/fire/auth';
 import { Autenticacion } from '../../servicios/autenticacion';
 import { Usuario, UsuariosService } from '../../servicios/usuarios';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-solicitudes',
@@ -42,4 +43,25 @@ ngOnInit() {
       this.cargarUsuariosPendientes();
     });
   }
+  asignarATodosEstudiantes() {
+  const pendientes = this.usuariosPendientes.filter(u => u.rol === 'pendiente');
+  pendientes.forEach(user => {
+    user.rol = 'usuario'; // aquí decides que 'usuario' significa estudiante
+    user.aprobado = true;
+    this.usuariosService.guardarUsuario(user).then(() => {
+      console.log(`${user.correo} asignado como estudiante`);
+    });
+  });
+  Swal.fire({
+            title: 'Exitoso',
+            text: 'Todos las solicitudes fueron enviadas como estudiantes.',
+            icon: 'success',
+            confirmButtonText: 'Cerrar'
+          });
+  this.cargarUsuariosPendientes(); // refresca la lista
+}
+verTodosRoles() {
+  this.router.navigate(['/roles']); // ruta hacia el nuevo componente
+}
+
 }

@@ -125,3 +125,50 @@ button:focus {
     color: #555;
   }
 }
+
+.btn-ver-roles, 
+.btn-asignar-todos {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px; // para separar el emoji del texto
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.btn-ver-roles {
+  background-color: #4CAF50; // verde
+  color: white;
+
+  &:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+}
+
+.btn-asignar-todos {
+  background-color: #2196F3; // azul
+  color: white;
+
+  &:hover {
+    background-color: #1976D2;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+}

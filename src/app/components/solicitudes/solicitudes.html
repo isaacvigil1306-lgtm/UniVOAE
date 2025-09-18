@@ -1,5 +1,18 @@
 <div class="contenedor" role="main" aria-labelledby="titulo-solicitudes">
   <h2 id="titulo-solicitudes">Solicitudes de Usuarios</h2>
+  <button 
+  class="btn-ver-roles"
+  (click)="verTodosRoles()"
+  title="Ver todos los roles">
+  📋 Ver todos los roles
+</button>
+
+<button 
+  class="btn-asignar-todos"
+  (click)="asignarATodosEstudiantes()"
+  title="Asignar rol de estudiante a todos los pendientes">
+  👥 Asignar a todos estudiantes
+</button>
 
   <table role="table" aria-labelledby="titulo-solicitudes">
     <thead>

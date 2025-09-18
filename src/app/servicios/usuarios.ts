@@ -54,6 +54,12 @@ obtenerUsuarioPorUID(uid: string): Promise<Usuario | null> {
     }
   });
 }
+// Obtener todos los usuarios sin filtrar
+obtenerTodosUsuarios(): Observable<Usuario[]> {
+  const usuariosRef = collection(this.firestore, 'usuarios');
+  return collectionData(usuariosRef, { idField: 'id' }) as Observable<Usuario[]>;
+}
+
 
 }
 

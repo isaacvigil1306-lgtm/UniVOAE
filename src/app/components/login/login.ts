@@ -9,6 +9,7 @@ import { Usuario, UsuariosService } from '../../servicios/usuarios';
 import { setDoc, collection, collectionData, doc, deleteDoc, query, where, getDocs, updateDoc, getDoc } from '@angular/fire/firestore';
     import Swal from 'sweetalert2';
 
+
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -23,6 +24,8 @@ export class Login implements OnInit {
   errorMessage: string = '';
   isLoading: boolean = true;
   isLoggedIn: boolean = false;
+  modoRegistro: boolean = false;
+  recordarUsuario: boolean = false; // <-- NUEVO
 
   constructor(
     private router: Router,
@@ -32,6 +35,7 @@ export class Login implements OnInit {
   ) {}
 
   ngOnInit() {
+
     const img = new Image();
     img.src = 'https://portal.unitec.edu/Documentos/2025/CEUTEC/FondoZoom_CEUTEC_3.png';
     img.onload = () => (this.isLoading = false);
@@ -40,6 +44,41 @@ export class Login implements OnInit {
       this.isLoading = false;
     };
   }
+
+  cambiarVista() {
+  this.modoRegistro = !this.modoRegistro;
+}
+
+
+async olvidarContrasena() {
+  if (!this.username) {
+    Swal.fire({
+      title: 'Correo requerido',
+      text: 'Por favor, ingresa tu correo electrónico para enviarte un enlace de recuperación.',
+      icon: 'info',
+      confirmButtonText: 'Entendido'
+    });
+    return;
+  }
+
+  try {
+    await this.authService.recuperarContrasena(this.username);
+    Swal.fire({
+      title: 'Correo enviado',
+      text: 'Hemos enviado un enlace de recuperación a tu correo.',
+      icon: 'success',
+      confirmButtonText: 'Cerrar'
+    });
+  } catch (error: any) {
+    Swal.fire({
+      title: 'Error',
+      text: this.traducirErrorFirebase(error.code),
+      icon: 'error',
+      confirmButtonText: 'Cerrar'
+    });
+  }
+}
+
 
 async iniciarSesion() {
   if (!this.username || !this.password) return;
@@ -120,16 +159,29 @@ async iniciarSesion() {
     });
 
   } catch (error: any) {
-    console.error(error);
-    Swal.fire({
-      title: 'Error',
-      text: error.message,
-      icon: 'error',
-      confirmButtonText: 'Cerrar'
-    });
-  }
+  console.error(error);
+  Swal.fire({
+    title: 'Error',
+    text: this.traducirErrorFirebase(error.code),
+    icon: 'error',
+    confirmButtonText: 'Cerrar'
+  });
 }
 
+  
+}
+
+private traducirErrorFirebase(codigo: string): string {
+  const mensajes: Record<string, string> = {
+    'auth/email-already-in-use': 'Esta cuenta ya se encuentra registrada.',
+    'auth/invalid-email': 'El correo ingresado no es válido.',
+    'auth/user-not-found': 'No existe una cuenta con este correo.',
+    'auth/wrong-password': 'La contraseña es incorrecta.',
+    'auth/too-many-requests': 'Demasiados intentos fallidos. Intente de nuevo más tarde.',
+    'auth/network-request-failed': 'Error de conexión. Revisa tu internet.',
+  };
+  return mensajes[codigo] || 'Ocurrió un error inesperado. Intenta nuevamente.';
+}
 
 
   async register() {
@@ -158,9 +210,15 @@ async iniciarSesion() {
       await this.usuariosService.guardarUsuario(usuario);
       alert('Usuario registrado correctamente. Por favor verifica tu correo.');
     } catch (error: any) {
-      console.error(error);
-      this.errorMessage = error.message;
-    }
+  console.error(error);
+  Swal.fire({
+    title: 'Error',
+    text: this.traducirErrorFirebase(error.code),
+    icon: 'error',
+    confirmButtonText: 'Cerrar'
+  });
+}
+
   }
 
   togglePassword() {
